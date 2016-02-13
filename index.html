@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--
+ #     #                                         
+ #     #  ######    ##    #####   ######  #####  
+ #     #  #        #  #   #    #  #       #    # 
+ #######  #####   #    #  #    #  #####   #    # 
+ #     #  #       ######  #    #  #       #####  
+ #     #  #       #    #  #    #  #       #   #  
+ #     #  ######  #    #  #####   ######  #    #
+-->
 <head>
 
     <meta charset="utf-8">
@@ -11,6 +20,8 @@
 
     <title>Alexander Gurung</title>
 
+    <!--JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -20,13 +31,23 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+
+
     <!-- Main CSS -->
     <link href="main.css" rel="stylesheet">
 
 </head>
 
+<!--
+ ######                         
+ #     #   ####   #####   #   # 
+ #     #  #    #  #    #   # #  
+ ######   #    #  #    #    #   
+ #     #  #    #  #    #    #   
+ #     #  #    #  #    #    #   
+ ######    ####   #####     #   
+-->
 <body>
-
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -46,13 +67,18 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">About</a>
+                        <a href="#">Home</a>
                     </li>
                     <li>
                         <a href="Projects.html">Projects</a>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="#" onclick="alertContact()">Contact</a>
+                        <script type="text/javascript">
+                            function alertContact(){
+                                alert("Name: Alexander Gurung\nEmail:aag1234@gmail.com");
+                            }
+                        </script>
                     </li>
                 </ul>
             </div>
@@ -67,7 +93,70 @@
         <!-- Heading Row -->
         <div class="row">
             <div class="col-md-8">
-                <img class="img-responsive img-rounded" src="http://placehold.it/900x350" alt="">
+                <!--http://placehold.it/900x350-->
+                <!--<img class="img-responsive img-rounded" src="http://placehold.it/900x350" alt="">-->
+                <script src="js/three.min.js"></script>
+                <div id="3jsCanvas" width="900" height="350">
+                <script>
+                    //Setting up
+                    var WIDTH = 700,
+                        HEIGHT = 350;
+                    var VIEW_ANGLE = 45,
+                        ASPECT = WIDTH / HEIGHT,
+                        NEAR = 0.1,
+                        FAR = 1000;
+                    var container = document.getElementById('3jsCanvas');
+
+                    var renderer = new THREE.WebGLRenderer();
+                    var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+                    var scene = new THREE.Scene();
+                    var pointCloud;
+                    scene.add(camera);
+                    camera.position.z = 300;
+                    renderer.setSize(WIDTH, HEIGHT);
+                    container.appendChild(renderer.domElement);
+                    
+                    //Other Stuff
+                    var geometrysph = new THREE.SphereGeometry( 100, 32, 16 );
+                    // vertex colors
+                    var colourVerts = [];
+                    geometrysph.colors = createPC();
+
+                    material = new THREE.PointsMaterial({size:5, transparent: true, opacity: 0.5, vertexColors: THREE.VertexColors});
+                    pointCloud = new THREE.Points(geometrysph, material);
+                    scene.add(pointCloud);
+                    var count = 0;
+                    anim();
+                    function createPC(){
+                        //colourVerts = [];
+                        for (var i = 0; i < geometrysph.vertices.length; i++) {
+                            colourVerts[i] = new THREE.Color();
+                            colourVerts[i].setHSL(Math.random(), 1.0, 0.5);
+                        }
+                        return colourVerts;
+                        //pointCloud = new THREE.Points(geometrysph, material);
+                    }
+                    function anim(){
+                        requestAnimationFrame(anim);
+                        render();
+                    }
+                    function render(){
+                        // rotate
+                        pointCloud.rotation.x += 0.005;
+                        pointCloud.rotation.y += 0.005;
+                        if (count % 5 == 0){
+                            pointCloud.rotation.x += -0.1;
+                            pointCloud.rotation.y += 0.05;
+                        }
+                        createPC();
+                        count++;
+
+                        // render
+                        renderer.render(scene, camera);
+                    }
+                    
+                </script>
+                </div>
             </div>
             <!-- /.col-md-8 -->
             <div class="col-md-4">
@@ -88,13 +177,12 @@
                 <p>I am a curriculum coordinator at Project Codet, a computer science Non-Profit that aims to teach and inspire future computer science students. Aside from running small workshops, I helped run and created the curriculums for the major event, called "Codet Day", where hundreds of elementary to middle school students were helped in creating projects related to different areas of computer science. This years projects were related to Fashion, Biology, and Gaming, chosen because they showcase the wide use of computer science.</p>
                 <a class="btn btn-default" href="http://www.projectcodet.org">More Info</a>
             </div>
-            <!--DO STUFF HERE-->
             <!-- /.col-md-4 -->
-            <!--<div class="col-md-4">
-                <h2>Heading 2</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe rem nisi accusamus error velit animi non ipsa placeat. Recusandae, suscipit, soluta quibusdam accusamus a veniam quaerat eveniet eligendi dolor consectetur.</p>
-                <a class="btn btn-default" href="#">More Info</a>
-            </div>-->
+            <div class="col-md-4">
+                <h2>This Website!</h2>
+                <p>This website was created by me!</p>
+            </div>
+            <!--DO STUFF HERE-->
             <!-- /.col-md-4 -->
             <!--<div class="col-md-4">
                 <h2>Heading 3</h2>
@@ -104,7 +192,16 @@
             <!-- /.col-md-4 -->
         </div>
         <!-- /.row -->
-
+<!--
+ #######                                        
+ #         ####    ####   #####  ######  #####  
+ #        #    #  #    #    #    #       #    # 
+ #####    #    #  #    #    #    #####   #    # 
+ #        #    #  #    #    #    #       #####  
+ #        #    #  #    #    #    #       #   #  
+ #         ####    ####     #    ######  #    #  
+-->
+        
         <!-- Footer -->
         <footer class="footer">
                     <p>Copyright &copy; Alexander Gurung 2016</p>
