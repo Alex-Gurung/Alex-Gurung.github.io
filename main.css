@@ -34,3 +34,43 @@ body {
         padding: 15px 0;
     }
 }
+#logoName{
+  font-family: 'nexa_rust_slabblack_shadow_01';
+  color: white;
+}
+/*
+ * Web Fonts from fontspring.com
+ *
+ * All OpenType features and all extended glyphs have been removed.
+ * Fully installable fonts can be purchased at http://www.fontspring.com
+ *
+ * The fonts included in this stylesheet are subject to the End User License you purchased
+ * from Fontspring. The fonts are protected under domestic and international trademark and 
+ * copyright law. You are prohibited from modifying, reverse engineering, duplicating, or
+ * distributing this font software.
+ *
+ * (c) 2010-2016 Fontspring
+ *
+ *
+ *
+ *
+ * The fonts included are copyrighted by the vendor listed below.
+ *
+ * Vendor:      Fontfabric
+ * License URL: http://www.fontspring.com/licenses/fontfabric/webfont
+ *
+ *
+ */
+
+@font-face {
+    font-family: 'nexa_rust_slabblack_shadow_01';
+    src: url('NexaRustSlab-BlackShadow01-Free-webfont.eot');
+    src: url('NexaRustSlab-BlackShadow01-Free-webfont.eot?#iefix') format('embedded-opentype'),
+         url('NexaRustSlab-BlackShadow01-Free-webfont.woff2') format('woff2'),
+         url('NexaRustSlab-BlackShadow01-Free-webfont.woff') format('woff'),
+         url('NexaRustSlab-BlackShadow01-Free-webfont.ttf') format('truetype'),
+         url('NexaRustSlab-BlackShadow01-Free-webfont.svg#nexa_rust_slabblack_shadow_01') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
