@@ -35,7 +35,7 @@ body {
     }
 }
 #logoName{
-  font-family: 'nexa_rust_slabblack_shadow_01';
+  font-family: 'nexa_rust_slabblack_shadow_01'; /*Font family is taken from the @font-face below*/
   color: white;
 }
 /*
