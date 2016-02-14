@@ -17,7 +17,7 @@ body {
 }
 
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   padding-left: 70%;
   width: 90%;
