@@ -34,6 +34,10 @@ body {
         padding: 15px 0;
     }
 }
+#3jsCanvas{
+  width: 50%;
+  height: 50%;
+}
 #logoName{
   font-family: 'nexa_rust_slabblack_shadow_01'; /*Font family is taken from the @font-face below*/
   color: white;

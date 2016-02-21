@@ -99,11 +99,15 @@
                 <!--<img class="img-responsive img-rounded" src="http://placehold.it/900x350" alt="">-->
                 <script src="js/three.min.js"></script>
                 <!--The threejs animation is below-->
-                <div id="3jsCanvas" width="900" height="350">
+                <div id="3jsCanvas">
                 <script>
+                    canvas = document.getElementById("3jsCanvas");
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = window.innerHeight;
                     //Setting up
-                    var WIDTH = 700,
-                        HEIGHT = 350;
+                    //var WIDTH = 700;
+                    var WIDTH = canvas.width;
+                    var HEIGHT = 350;
                     var VIEW_ANGLE = 45,
                         ASPECT = WIDTH / HEIGHT,
                         NEAR = 0.1,
