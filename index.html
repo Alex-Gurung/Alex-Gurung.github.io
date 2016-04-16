@@ -110,9 +110,9 @@
                 <!--The threejs animation is below-->
                 <div id="3jsCanvas">
                 <script>
-                    canvas = document.getElementById("3jsCanvas");
-                    canvas.width = canvas.offsetWidth;
-                    canvas.height = window.innerHeight;
+                    canvas = document.getElementById("3jsCanvas"); //Creates a canvas with the specific part of the webpage
+                    canvas.width = canvas.offsetWidth; //Sets the width
+                    canvas.height = window.innerHeight; //Sets the height
                     //Setting up
                     //var WIDTH = 700;
                     var WIDTH = canvas.width;
@@ -121,7 +121,7 @@
                         ASPECT = WIDTH / HEIGHT,
                         NEAR = 0.1,
                         FAR = 1000;
-                    var container = document.getElementById('3jsCanvas');
+                    var container = document.getElementById('3jsCanvas'); //Creates the container
 
                     var renderer = new THREE.WebGLRenderer();
                     var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
