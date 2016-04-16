@@ -147,12 +147,12 @@
                         //colourVerts = [];
                         for (var i = 0; i < geometrysph.vertices.length; i++) {
                             colourVerts[i] = new THREE.Color();
-                            colourVerts[i].setHSL(Math.random(), 1.0, 0.5);
+                            colourVerts[i].setHSL(Math.random(), 1.0, 0.5); //Randomly sets the colour
                         }
                         return colourVerts;
                         //pointCloud = new THREE.Points(geometrysph, material);
                     }
-                    function anim(){
+                    function anim(){ //Animation
                         requestAnimationFrame(anim);
                         render();
                     }
