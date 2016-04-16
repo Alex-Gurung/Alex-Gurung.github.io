@@ -127,8 +127,8 @@
                     var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
                     var scene = new THREE.Scene();
                     var pointCloud;
-                    scene.add(camera);
-                    camera.position.z = 300;
+                    scene.add(camera); //Adds the camera to the scene
+                    camera.position.z = 300; //Sets the camera position
                     renderer.setSize(WIDTH, HEIGHT);
                     container.appendChild(renderer.domElement);
                     
