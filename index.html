@@ -1,231 +1,117 @@
-<!DOCTYPE html>
 <html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Alex Gurung</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!--Import Google Icon Font-->
+      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="dist/css/materialize.min.css"  media="screen,projection"/>
+      <link type="text/css" rel="stylesheet" href="dist/css/style.css"/>
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   </head>
+   <body id="snowElement">
+      <div id="banner" class="container">
+         <div class="seasonSet">
+            <a id="winter" class="waves-effect waves-light btn blue lighten-3">Winter</a>
+            <a id="spring" class="waves-effect waves-light btn light-green accent-3">Spring</a>
+            <a id="summer" class="waves-effect waves-light btn yellow">Summer</a>
+            <a id="autumn" class="waves-effect waves-light btn amber darken-4">Autumn</a>
+         </div>
+         <br>
+         <div class="timeSet">
+            <a id="night" class="waves-effect waves-light btn grey darken-4">Night</a>
+            <a id="day" class="waves-effect waves-light btn grey lighten-5">Day</a>
+         </div>
+         <h1 class="text">Alex Gurung
+         </h1>
+         <div class="buttonSet">
+            <a id="about" href="#aboutMe" class="smoothScroll waves-effect waves-light btn blue darken-4">About</a>
+            <a id="projects" href="#myProjects" class="smoothScroll waves-effect waves-light btn indigo darken-4">Projects</a>
+         
+            <a id="cv" class="waves-effect waves-light btn teal darken-4">CV</a>
+         </div>
+      </div>
+      <div class="divider" ></div>
+      <section id="aboutMe">
+         <div  class="thinPart container">
+            <h2 class="text">About me!</h2>
+            <blockquote class="pText text" >  Hi! My name is Alex Gurung, and I'm a junior at <a href="https://www.tjhsst.edu/" target="_blank">TJHSST</a>. I make coding projects for fun in my free time, in addition to Linguistics Club (I'm President), FTC (First Tech Challenge), and whatever seems interesting.</blockquote>
+      <br>
+	  <div class="divider" ></div>
+	<br>
+		<blockquote class="pText text" > You can find me at my <a href="https://github.com/Alex-Gurung/PythonSpeechRecognition" target="_blank">Github</a>, or email me at <a href="mailto:aag1234@gmail" target="_blank">aag1234@gmail.com</a> </blockquote>
+			</div>
+      </section>
+	  
+      <div class="divider" ></div>
+		
 
-<!--
- #     #                                         
- #     #  ######    ##    #####   ######  #####  
- #     #  #        #  #   #    #  #       #    # 
- #######  #####   #    #  #    #  #####   #    # 
- #     #  #       ######  #    #  #       #####  
- #     #  #       #    #  #    #  #       #   #  
- #     #  ######  #    #  #####   ######  #    #
--->
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Alexander Gurung</title>
-
-    <!--JQuery-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-
-
-    <!-- Main CSS -->
-    <link href="main.css" rel="stylesheet">
-
-</head>
-
-<!--
- ######                         
- #     #   ####   #####   #   # 
- #     #  #    #  #    #   # #  
- ######   #    #  #    #    #   
- #     #  #    #  #    #    #   
- #     #  #    #  #    #    #   
- ######    ####   #####     #   
--->
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <h1 id="logoName">Alex Gurung</h1>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li>
-                        <a href="Projects.html">Projects</a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="alertContact()">Contact</a>
-                        <script type="text/javascript">
-                            function alertContact(){
-                                alert("Name: Alexander Gurung\nEmail: aag1234@gmail.com");
-                            }
-                        </script>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
-    <!-- Page Content -->
-    <div class="container">
-
-        <!-- Heading Row -->
+         <div id="myProjects" class="thinPart container">
+            <h2 class="text">My Projects!</h2>
+				  <h6> (more are on my <a class="urlText" href="http://www.github.com/alex-gurung" target="_blank">Github</a>)</h6>
         <div class="row">
-            <div class="col-md-8">
-                <!--
-  ______     ______  _______     _____  _______   _________  
-.' ____ \  .' ___  ||_   __ \   |_   _||_   __ \ |  _   _  | 
-| (___ \_|/ .'   \_|  | |__) |    | |    | |__) ||_/ | | \_| 
- _.____`. | |         |  __ /     | |    |  ___/     | |     
-| \____) |\ `.___.'\ _| |  \ \_  _| |_  _| |_       _| |_    
- \______.' `.____ .'|____| |___||_____||_____|     |_____|   
-                                                             Varsity Font http://patorjk.com/software/taag
-                -->
-                <script src="js/three.min.js"></script>
-                <!--The threejs sphere dot animation is below-->
-                <div id="3jsCanvas">
-                <script>
-                    canvas = document.getElementById("3jsCanvas"); //Creates a canvas with the specific part of the webpage
-                    canvas.width = canvas.offsetWidth; //Sets the width
-                    canvas.height = window.innerHeight; //Sets the height
-                    //Setting up
-                    //var WIDTH = 700;
-                    var WIDTH = canvas.width;
-                    var HEIGHT = canvas.height/2;
-                    var VIEW_ANGLE = 45,
-                        ASPECT = WIDTH / HEIGHT,
-                        NEAR = 0.1,
-                        FAR = 1000;
-                    var container = document.getElementById('3jsCanvas'); //Creates the container
-
-                    var renderer = new THREE.WebGLRenderer();
-                    var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-                    var scene = new THREE.Scene();
-                    var pointCloud;
-                    scene.add(camera); //Adds the camera to the scene
-                    camera.position.z = 300; //Sets the camera position
-                    renderer.setSize(WIDTH, HEIGHT);
-                    container.appendChild(renderer.domElement);
-                    
-                    //Other Stuff
-                    var geometrysph = new THREE.SphereGeometry( 100, 32, 16 ); //Creates a sphere shape
-                    // vertex colors
-                    var colourVerts = [];
-                    geometrysph.colors = createPC();
-
-                    material = new THREE.PointsMaterial({size:10, transparent: true, opacity: 0.7, vertexColors: THREE.VertexColors});
-                    pointCloud = new THREE.Points(geometrysph, material);
-                    scene.add(pointCloud);
-                    var count = 0;
-                    anim();
-                    function createPC(){
-                        //colourVerts = [];
-                        for (var i = 0; i < geometrysph.vertices.length; i++) {
-                            colourVerts[i] = new THREE.Color();
-                            colourVerts[i].setHSL(Math.random(), 1.0, 0.5); //Randomly sets the colour
-                        }
-                        return colourVerts;
-                        //pointCloud = new THREE.Points(geometrysph, material);
-                    }
-                    function anim(){ //Animation
-                        requestAnimationFrame(anim); 
-                        render();
-                    }
-                    function render(){ //Renders, rotation the cloud
-                        // rotate
-                        pointCloud.rotation.x += 0.005;
-                        pointCloud.rotation.y += 0.005;
-                        /*if (count % 5 == 0){
-                            pointCloud.rotation.x += -0.1;
-                            pointCloud.rotation.y += 0.05;
-                        }*/
-                        createPC();
-                        count++;
-
-                        // render
-                        renderer.render(scene, camera);
-                    }
-                    
-                </script>
-                </div>
+        <div class="col m6">
+          <div class="card blue accent-4">
+            <div class="card-content white-text">
+              <span class="card-title">Project Codet</span>
+              <p>I am Chief Program Officer of Project Codet, a non-profit organization that works to bring computer science to children both locally and abroad.</p>
             </div>
-            <!-- /.col-md-8 -->
-            <div class="col-md-4">
-                <h1>Alexander Gurung</h1>
-                <p>Hello! My name is Alexander Gurung, and I am a high school student at TJHSST. I am an applications developer, and I enjoy actively creating projects in my spare time.</p>
-                <a class="btn btn-primary btn-lg" href="http://github.com/Alex-Gurung">See Work Here!</a>
+            <div class="card-action">
+              <a class="urlText" href="http://www.projectcodet.org/" target="_blank">Website</a>
             </div>
-            <!-- /.col-md-4 -->
+          </div>
         </div>
-        <!-- /.row -->
-
-        <hr>
-        <h1>Here is some of my recent work/experience:</h1>
-        <!-- Content Row -->
-        <div class="row">
-            <div class="col-md-4">
-                <h2>Project Codet</h2>
-                <p>I am a curriculum coordinator at Project Codet, a computer science Non-Profit that aims to teach and inspire future computer science students. Aside from running small workshops, I helped run and created the curriculums for the major event, called "Codet Day", where hundreds of elementary to middle school students were helped in creating projects related to different areas of computer science. This years projects were related to Fashion, Biology, and Gaming, chosen because they showcase the wide use of computer science.</p>
-                <a class="btn btn-default" href="http://www.projectcodet.org">More Info</a>
+		<div class="col m6">
+          <div class="card purple accent-2">
+            <div class="card-content white-text">
+              <span class="card-title">Scrape the News</span>
+              <p>A python program to scrape news sites(Washington Post, New York Times, CNN, etc.) using Beautiful-Soup, and output</p>
             </div>
-            <!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>Scrape the News</h2>
-                <p>I'm attempting to create a simple python program to pull article information from a set of different news sites(cnn, bbc, nytimes, etc.).</p>
-                <a class="btn btn-default" href="https://github.com/Alex-gurung/ScrapeTheNews">Github</a>
-            </div><!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>Math Speech</h2>
-                <p>An in-development project using speech recognition(in python) to solve math problems spoken normally(As one would normally say the problem). It can currently solve mathematical operations, but I am working towards adding equation support and complex functions.</p>
-                <a href="http://github.com/alex-gurung/WebPeriodicCalculator">Github</a> --
-                <a href="https://alex-gurung.github.io/WebPeriodicCalculator">Website</a>
+            <div class="card-action">
+              <a class="urlText" href="https://github.com/Alex-gurung/ScrapeTheNews" target="_blank">Github</a>
             </div>
-            <!--DO STUFF HERE-->
-            <!-- /.col-md-4 -->
-            <!--<div class="col-md-4">
-                <h2>Heading 3</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe rem nisi accusamus error velit animi non ipsa placeat. Recusandae, suscipit, soluta quibusdam accusamus a veniam quaerat eveniet eligendi dolor consectetur.</p>
-                <a class="btn btn-default" href="#">More Info</a>
-            </div>-->
-            <!-- /.col-md-4 -->
+          </div>
         </div>
-        <!-- /.row -->
-<!--
- #######                                        
- #         ####    ####   #####  ######  #####  
- #        #    #  #    #    #    #       #    # 
- #####    #    #  #    #    #    #####   #    # 
- #        #    #  #    #    #    #       #####  
- #        #    #  #    #    #    #       #   #  
- #         ####    ####     #    ######  #    #  
--->
-        
-        <!-- Footer -->
-        <footer class="footer">
-                    <p>Copyright &copy; Alexander Gurung 2016</p>
-        </footer>
+      </div>
+	  <div class="row">
+        <div class="col m8 offset-m2">
+          <div class="card indigo">
+            <div class="card-content white-text">
+              <span class="card-title">Math Speech</span>
+              <p>(In development) A Python program to take in speech in the form of equations or problems and evaluate the output.</p>
+            </div>
+            <div class="card-action">
+              <a class="urlText" href="https://github.com/Alex-Gurung/PythonSpeechRecognition" target="_blank">Github</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    </div>
-    <!-- /.container -->
-
-
-</body>
-
+         </div>
+	 
+            <h2 class="text">Contact Me!</h2>
+            
+			
+	  
+	  
+      <div class="fixed-action-btn">
+         <a class="btn-floating btn-large red">
+         <i class="large material-icons">view_list</i>
+         </a>
+         <ul>
+		 <li><a href="#banner" class="smoothScroll btn-floating teal"><i class="material-icons">loop</i></a></li>
+            <li><a href="#aboutMe" class="smoothScroll btn-floating red"><i class="material-icons">info_outline</i></a></li>
+            <li><a href="#myProjects" class="smoothScroll btn-floating yellow darken-1"><i class="material-icons">assignment</i></a></li>
+            <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+         </ul>
+      </div>
+      <!-- Javascript -->
+      <script type="text/javascript" src="dist/js/jquery-3.1.1.min.js"></script>
+      <script type="text/javascript" src="dist/js/materialize.min.js"></script>
+      <script src="dist/js/smoothscroll.js"></script>
+      <script src="dist/js/snowstorm-min.js"></script>
+      <script src="dist/js/script.js"></script>		
+   </body>
 </html>

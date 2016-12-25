@@ -1,0 +1,55 @@
+html {
+
+	background-color: #a8c4Fe; /*Winter*/
+	/* background-color: #FFC300; /*Summer*/*/
+	/* background-color: #58D68D; /*Spring*/*/  
+	/* background-color: #F39C12; /*Autumn*/*/ 
+}
+h1 {
+	text-align: center;
+	font-weight: 300;
+	font-size: 10vw;
+	height: 40%;
+}
+h2 {
+	text-align: center;
+	font-weight: 300;
+	font-size: 8vw;
+	height: 20%;
+}
+.pText {
+	font-weight: 300;
+	font-size: 3vw;
+}
+.buttonSet {
+	text-align: center;
+}
+.btn {
+	width: 10%;
+	font-size: 1.1vw;
+	text-align: center;
+}
+
+#day {
+	color: black;
+	font-weight: bold;
+}
+#banner {
+	width: 100%;
+	height: 100%;
+}
+.container {
+	width: 100%;
+	height: 100%;
+}
+.text {
+	text-align: center;
+}
+.urlText {
+	font-style: italic;
+	font-weight: 600;
+	text-decoration: underline;
+}
+.thinPart{
+	width: 70%;
+}
