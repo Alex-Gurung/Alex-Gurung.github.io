@@ -1,0 +1,174 @@
+body {
+    height:100%;
+    margin:0;
+    padding:0;
+    background: url('../img/header.png') no-repeat fixed;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    background-color: #4fa3b3;
+    font-family: 'Ubuntu', sans-serif;
+}
+.description {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    text-align: center;
+    border-radius: 15px;
+}
+h1 {
+    color: black;
+}
+.description p {
+    color: black;
+    padding-bottom: 15px;
+}
+a {
+    text-decoration: none;
+}
+a {
+    color: white;
+    margin-top: 0;
+}
+.description a {
+    text-decoration: none;
+}
+p {
+    margin-bottom: 0;
+}
+.projects {
+    margin-top: 20px;
+    margin-left: 120px;
+}
+
+.card {
+    opacity: 1;
+    width: 200px;
+    background-color: #e74c3c;
+    box-shadow: 0px 0px 20px 5px #273748;
+    transition: transform .2s ease-in-out;
+    margin-bottom: 25px;
+    border-radius: 16px;
+}
+.card:hover {
+    -ms-transform: scale(1.1, 1.1);
+    /* IE 9 */
+    -webkit-transform: scale(1.1, 1.1);
+    /* Chrome, Safari, Opera */
+    transform: scale(1.1, 1.1);
+}
+
+.logo-card {
+    background-color: #f39c12;
+}
+.news-card {
+    background-color: #95a5a6;
+}
+.git-card{
+    /*background-color: black;*/
+    background-color: #5a6465;
+}
+.notes-card{
+    background-color: #1abc9c;
+}
+
+
+.logo {
+    background-image: url("../img/lighthouse.png");
+        -webkit-background-size: 100%;
+        -moz-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+}
+.news {
+    background-image: url("../img/news.png");
+        -webkit-background-size: 100%;
+        -moz-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+}
+.notes {
+    background-image: url("../img/note.png");
+        -webkit-background-size: 100%;
+        -moz-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+}
+.git {
+    background-image: url("../img/GitHub-Mark.png");
+        -webkit-background-size: 100%;
+        -moz-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+}
+
+.card .image-card {
+    border-radius: 15px;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /*opacity: 1;*/
+    height: 200px;
+}
+
+.logo-card .image-card {
+    background-color: #bf2718;
+}
+.news-card .image-card {
+    background-color: #2c3e50;
+}
+.notes-card .image-card {
+    background-color: #395795;
+}
+
+
+.logo-card .description {
+    background-color: #f39c12;/*#f39c12;*//*#e74c3c;*/
+}
+.notes-card .description {
+    background-color: #1abc9c;
+}
+.git-card .description p,
+.git-card .description h1 {
+    color: white;
+}
+@media only screen and (max-width: 700px) {
+    body {
+        background: url('../img/phonesharphead.png') no-repeat fixed;
+        -webkit-background-size: contain;
+        -moz-background-size: contain;
+        -o-background-size: contain;
+        background-size: contain;
+        /*overflow-x: hidden;
+	overflow-y: hidden;*/
+        background-color: #4fa3b3;
+    }
+    .projects {
+        margin-top: 200px;
+        margin-left: 15%;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1025px) {
+    body {
+        background: url('../img/tabletheader.png') no-repeat fixed;
+        -webkit-background-size: contain;
+        -moz-background-size: contain;
+        -o-background-size: contain;
+        background-size: contain;
+        /*overflow-x: hidden;
+	overflow-y: hidden;*/
+        background-color: #4fa3b3;
+    }
+    .projects {
+        margin-top: 200px;
+        margin-left: 2%;
+    }
+}
