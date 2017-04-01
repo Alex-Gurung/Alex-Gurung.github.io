@@ -141,7 +141,7 @@ p {
 }
 @media only screen and (max-width: 700px) {
     body {
-        background: url('../img/phonesharphead.png') no-repeat fixed;
+        background: url('../img/phoneheader.png') no-repeat fixed;
         -webkit-background-size: contain;
         -moz-background-size: contain;
         -o-background-size: contain;
