@@ -55,13 +55,14 @@ html {
     text-align: center;
     padding: 20px;
     /*font-size: 20px;*/
-    font-size: 3em;
+    font-size: 2em;
     /*padding-left: 10px;*/
     font-family: 'Alegreya Sans SC', sans-serif;
 }
 
 .dynamic-title:not(h4) {
-    font-size: 50px;
+    /*font-size: 50px;*/
+    font-size: 8em;
 }
 
 .container {
