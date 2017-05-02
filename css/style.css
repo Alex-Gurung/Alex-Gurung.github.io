@@ -126,8 +126,13 @@ img {
 
 .container:hover .button {
     opacity: 1;
-    pointer-events: auto;
     /*cursor: default;*/
+}
+.container:hover .button a{
+    pointer-events: none;
+}
+.container:hover .button a {
+    pointer-events: auto;
 }
 
 .container:hover .title {
@@ -182,6 +187,7 @@ img {
     z-index: 1;
     padding: 5% 15%;
     text-decoration: none;
+    pointer-events: none;
 }
 
 span a {
@@ -231,4 +237,21 @@ span a:hover {
         padding: 2% 10%;
         font-size: 1em;
     }
+    .container img {
+    opacity: 0.1;
+}
+
+.container .button {
+    opacity: 1;
+    /*cursor: default;*/
+}
+
+
+.container .title {
+    opacity: 1;
+}
+.container:hover .title {
+    top: 20%;
+    color: white;
+}
 }
