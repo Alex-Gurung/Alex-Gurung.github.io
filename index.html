@@ -2,74 +2,99 @@
 <html lang="en">
 
 <head>
-    <title></title>
+    <title>Personal Website</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<script src="js/masonry.js"></script>-->
+    <link rel="stylesheet" href="css/aos.css">
     <link href="css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 </head>
 
 <body>
-    <div class="wrapper">
-        <div class="grid">
-            <div class="grid-sizer"></div>
-
-            <h2 class="grid-item big horizontal dynamic-title"><span><a href="https://www.linkedin.com/in/alexandergurung/">Alex Gurung</a></span></h2>
-            <h4 class="grid-item big horizontal dynamic-title">Hi! I'm Alex Gurung, a junior at TJHSST who likes to program in his free time! I tend to develop in Python, Java,
-                and HTML/CSS/JS, in addition to whatever works best for the specific project.</h4>
-            <h4 class="grid-item big horizontal dynamic-title">Here are a few of my projects (and visit my github for more!):</h4>
-
-
-
-            <div class="grid-item big horizontal container">
-                <img src="img/GitHub-Mark.png" alt="" />
-                <p class="title">Github</p>
-                <!--<div class="overlay"></div>-->
-                <div class="button"><a target="_blank" href="https://github.com/Alex-Gurung"> Come Visit! </a></div>
+    <div class="content">
+        <div class="head">
+            <a data-scroll href="#about" id="bar" class="navbar"></a>
+        </div>
+        <div class="intro">
+            <div class="inline">
+                <p>Hi! My name is</p>
+                <div class="nav" id="spacer"></div>
+                <div class="nav"><a data-scroll href="#about">About</a></div>
+                <div class="nav"><a data-scroll href="#projects" href="">Projects</a></div>
+                <div class="nav"><a target="_blank" href="https://www.linkedin.com/in/alexandergurung">Contact</a></div>
             </div>
-            
+            <div class="inline">
+                <div class="title">
+                    <h1>Alex Gurung</h1>
+                </div>
+                <div class="git-image">
+                    
+                    <img data-aos="fade-left" data-aos-delay="300" class="github-inline bottom" src="img/Github-Invert.png" alt="">
+                    <img data-aos="fade-left" data-aos-delay="300" class="github-inline top" src="img/Github-Mark.png" alt="">
+                </div>
 
-            <div class="grid-item big horizontal container">
-                <img src="img/lighthouse.png" alt="" />
-                <p class="title">Lighthouse</p>
-                <!--<div class="overlay"></div>-->
-                <div class="button"><a target="_blank" href="https://github.com/Alex-Gurung/Lighthousee"> Github Page </a></div>
             </div>
-
-            <div class="grid-item big horizontal container">
-                <div class="item-content">
-                <img src="img/note.png" alt="" />
-                <p class="title">Notes with Markov</p>
-                <div class="overlay"></div>
-                <div class="button"><a target="_blank" href="https://github.com/Alex-Gurung/noteswithmarkov"> Github Page </a></div>
+            <h2>Explore to learn about: <span id="typer"></span></h2>
+        </div>
+        <div class="about" id="about">
+            <h1>About Me!</h1>
+            <!--<div class="cards">-->
+                <p>Hi! My name is Alex Gurung, I'm a rising senior at TJHSST and I love to program! I generally work in Python,
+                    Java, and HTML/CSS/JS or whatever else I need for a project. Here are a few recent examples!</p>
+                
+            <!--</div>-->
+        </div>
+        <div class="projects" id="projects">
+            <div class="header">
+                <h1>My Projects</h1>
+                <p>Here are some of my recent projects, check out my <a href="https://www.github.com/alex-gurung" target="_blank">Github</a>                    to see more!</p>
+            </div>
+            <div class="split">
+                <div class="image">
+                    <div data-aos="fade-down" data-aos-anchor-placement="center-bottom" data-aos-easing="linear" data-aos-duration="800" data-aos-delay="100" class="progress" alt=""><div class="title">Finished</div></div>
+                    <div class="image-logo"><img src="img/lighthouse.png" alt=""></div>
+                </div>
+                <div class="desc">
+                    <h3>Lighthouse</h3>
+                    <p>Made during <a href="https://www.hacktj.org/2017/" target="_blank" class="lighthouse">HackTJ 2017</a>,
+                        Lighthouse is an app that connects victims of some crisis to people who are willing to act as short-term
+                        hosts.
+                    </p>
+                    <p>See Github <a href="https://www.github.com/alex-gurung/lighthouse" target="_blank" class="lighthouse">here:</a></p>
+                </div>
+            </div>
+            <div class="split">
+                <div class="image">
+                    <div data-aos="fade-down" data-aos-anchor-placement="center-bottom" data-aos-easing="linear" data-aos-duration="800" data-aos-delay="100" class="progress" alt=""><div class="title">Finished</div></div>
+                    <div class="image-logo"><img src="img/sockets.png" alt=""></div>
+                </div>
+                <div class="desc">
+                    <h3>Sockets to Sockets/Sockets Against Humanity</h3>
+                    <p>A webapp made using React and Socket.io to play apples to apples or cards against humanity (currently
+                        set up for the former)</p>
+                    <p>See Github <a href="https://www.github.com/Alex-Gurung/sockets-against-humanity" target="_blank" class="sah">here:</a></p>
+                </div>
+            </div>
+            <div class="split">
+                <div class="image">
+                    <div data-aos="fade-down" data-aos-anchor-placement="center-bottom" data-aos-easing="linear" data-aos-duration="800" data-aos-delay="100" class="progress" alt=""><div class="title">In Progress</div></div>
+                </div>
+                <div class="desc">
+                    <h3>Words With Friends Bot</h3>
+                    <p>I'm currently in the process of making a python bot to evaluate words with friends boards and determine the best moves</p>
+                    <p>See Github <a href="https://github.com/Alex-Gurung/wordwfriendsbot" target="_blank" class="friends">here:</a></p>
                 </div>
             </div>
 
-            <div class="grid-item big horizontal container">
-                <img src="img/news.png" alt="" />
-                <p class="title">News Scraper</p>
-                <div class="overlay"></div>
-                <div class="button"><a target="_blank" href="https://github.com/Alex-Gurung/scrapethenews"> Github Page </a></div>
-            </div>
-            <div class="grid-item big horizontal container">
-                <img src="img/ship.png" alt="" />
-                <p class="title">Ship Creator</p>
-                <div class="overlay"></div>
-                <div class="button"><a target="_blank" href="https://github.com/Alex-Gurung/ship_creator"> Github Page </a></div>
-            </div>
-            </div>
-            </div>
-<script>
-// console.log('scripts loaded')
-// window.onload = function () {
-//     var grid = document.querySelector(".grid");
-//     new Masonry(grid, {
-//         itemSelector: ".grid-item",
-//         columnWidth: ".grid-sizer",
-//         // percentPosition: !0
-//     })
-// };
-</script>
+        </div>
+    </div>
+    <script src="js/smooth-scroll.min.js"></script>
+    <script src="js/progress.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/flowtype.js"></script>
+    <script src="js/typed.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 
 </html>
