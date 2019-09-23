@@ -17,7 +17,7 @@ let resumeData = {
         },
 
       ],
-    "aboutme":"I'm a Computer Science major at Georgia Tech set to graduate Fall 2020 with a Bachelor's of Science in CS and a Minor in Linguistics. I'm hoping to pursue graduate school but am looking for internships and/or full-time opportunities in the meantime!",
+    "aboutme":"I'm a Computer Science major at Georgia Tech set to graduate Spring 2021 with a Bachelor's of Science in CS and a Minor in Linguistics. I'm hoping to pursue graduate school but am looking for internships and/or full-time opportunities in the meantime!",
     "website":"https://alex-gurung.github.io",
     "education":[
       {
@@ -26,8 +26,8 @@ let resumeData = {
         "secondSpecialization":"",
         "MonthOfPassing":"Aug",
         "YearOfPassing":"2018",
-        "MonthEnded":"Dec",
-        "YearEnded":"2020 (predicted)",
+        "MonthEnded":"Apr",
+        "YearEnded":"2021 (predicted)",
         "Achievements":"Member of Honors Program, Member of Machine Learning and Data Science clubs, Undergraduate Researcher on campus",
         "relevantCoursework": "Data Structures & Algorithms, Discrete Mathematics, Object Oriented Programming, AGILE Development, Machine Learning, Computational Linguistics, Probability & Statistics"
       },
