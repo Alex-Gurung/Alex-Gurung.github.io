@@ -3,7 +3,7 @@ let resumeData = {
     "name": "Alex Gurung",
     "role": "Backend Developer/Data Scientist",
     "linkedinId":"alexandergurung",
-    "roleDescription": "Hi! I'm a backend developer (although I have full-stack experience) who's hoping to pursue a career in Machine Learning and Data Science! I'm currently looking for both summer internships and full-time opportunities!",
+    "roleDescription": "Hi! I'm a backend developer (although I have full-stack experience) and Machine Learning Researcher who's hoping to pursue a career in Machine Learning and Data Science! I'm currently looking for both summer internships and full-time opportunities!",
     "socialLinks":[
         {
           "name":"linkedin",
@@ -17,18 +17,29 @@ let resumeData = {
         },
 
       ],
-    "aboutme":"I'm a Computer Science major at Georgia Tech set to graduate Spring 2021 with a Bachelor's of Science in CS and a Minor in Linguistics. I'm hoping to pursue graduate school but am looking for internships and/or full-time opportunities in the meantime!",
+    "aboutme":"I'm a Computer Science major at Georgia Tech set to graduate Fall 2020 with a Bachelor's of Science in CS and a Minor in Linguistics. I've begun my Master's at Georgia Tech through the BSMS program and am hoping to graduate in Spring 2022. In the meantime I'm looking for summer internship or co-op opportunities!",
     "website":"https://alex-gurung.github.io",
     "education":[
+      {
+        "UniversityName":"Georgia Institute of Technology",
+        "specialization":"MS in Computer Science",
+        "secondSpecialization":"",
+        "MonthOfPassing":"Aug",
+        "YearOfPassing":"2020",
+        "MonthEnded":"Apr",
+        "YearEnded":"2022 (predicted)",
+        "Achievements":"",
+        "relevantCoursework": ""
+      },
       {
         "UniversityName":"Georgia Institute of Technology",
         "specialization":"BS in Computer Science - Linguistics Minor",
         "secondSpecialization":"",
         "MonthOfPassing":"Aug",
         "YearOfPassing":"2018",
-        "MonthEnded":"Apr",
-        "YearEnded":"2021 (predicted)",
-        "Achievements":"Member of Honors Program, Member of Machine Learning and Data Science clubs, Undergraduate Researcher on campus",
+        "MonthEnded":"Dec",
+        "YearEnded":"2020 (predicted)",
+        "Achievements":"Member of Honors Program, Undergraduate Researcher in Computational Social Science",
         "relevantCoursework": "Data Structures & Algorithms, Discrete Mathematics, Object Oriented Programming, AGILE Development, Machine Learning, Computational Linguistics, Probability & Statistics"
       },
       {
@@ -42,6 +53,23 @@ let resumeData = {
       }
     ],
     "work":[
+      {
+        "CompanyName":"The Home Depot",
+        "specialization":"Software Engineer Intern",
+        "MonthOfLeaving":"Feb",
+        "YearOfLeaving":"2020",
+        "MonthEnded": "May",
+        "YearEnded": "2020",
+        "Achievements":"I worked on a 3 person team and created a proof-of-concept recommender system using a combination of NLP and Object-Detection techniques. To that end we trained a DistilBert classifier and Inception V3 model and showed that their results outperformed the current system."
+      },
+      {
+        "CompanyName":"Computational Social Science Lab",
+        "specialization":"Undergraduate Researcher",
+        "MonthOfLeaving":"Oct",
+        "YearOfLeaving":"2019",
+        "MonthEnded": "present",
+        "Achievements":"I'm currently working on a research team analysing twitter-based complaints concerning transportation. We perform topic modeling and train classifiers on twitter data to help inform transportation and infrastructure policy."
+      },
       {
         "CompanyName":"Monotto",
         "specialization":"Backend/Data Science Developer",

@@ -33,6 +33,20 @@ export default  class Resume extends Component {
                   if (item.MonthEnded) {
                     ending = <span>- {item.MonthEnded} {item.YearEnded} </span>
                   }
+                  let achievements = (<span />);
+                  if (item.Achievements) {
+                    achievements = (<div><h6>Achievements</h6>
+                      <p>
+                      {item.Achievements}
+                      </p></div>)
+                  }
+                  let relevant = (<span />);
+                  if (item.relevantCoursework) {
+                    relevant = (<div><h6>Relevant Coursework</h6>
+                      <p>
+                      {item.relevantCoursework}
+                      </p></div>)
+                  }
                   return(
                     <div className="row item">
                        <div className="twelve columns">
@@ -40,14 +54,8 @@ export default  class Resume extends Component {
                           <p className="info">
                           {item.specialization}
                           <span>&bull;</span> <em className="date">{item.MonthOfPassing} {item.YearOfPassing} {ending}</em></p>
-                          <h6>Relevant Coursework</h6>
-                          <p>
-                          {item.relevantCoursework}
-                          </p>
-                          <h6>Achievements</h6>
-                          <p>
-                          {item.Achievements}
-                          </p>
+                          {relevant}
+                          {achievements}
                        </div>
                     </div>
                   )

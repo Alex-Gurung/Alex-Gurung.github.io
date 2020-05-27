@@ -7,7 +7,7 @@ export default class Porfolio extends Component {
       <div className="row">
         <div className="twelve columns collapsed">
           <h1 style={{fontSize: '3rem'}}>Here's My&nbsp;
-          <span><a target="_blank" href="static/Alexander_Gurung_resume_Sept2019.pdf" style={{textDecoration:'none'}}>Resume!</a></span>
+          <span><a target="_blank" href="static/Alexander_Gurung_resume_May2020.pdf" style={{textDecoration:'none'}}>Resume!</a></span>
           </h1>
           <div id="portfolio-wrapper" className="bgrid-quarters s-bgrid-thirds cf">
           {
