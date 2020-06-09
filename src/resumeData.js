@@ -54,6 +54,22 @@ let resumeData = {
     ],
     "work":[
       {
+        "CompanyName":"The Home Depot (Summer)",
+        "specialization":"Software Engineer Intern",
+        "MonthOfLeaving":"Jun",
+        "YearOfLeaving":"2020",
+        "MonthEnded": "August",
+        "Achievements":"I'm a full-stack developer for the Emergency Visualization team currently working on improving the current system for tracking key shipments in times of crisis using Machine Learning and data science techniques."
+      },
+      {
+        "CompanyName":"VitalEyes",
+        "specialization":"Cofounder",
+        "MonthOfLeaving":"Jun",
+        "YearOfLeaving":"2020",
+        "MonthEnded": "present",
+        "Achievements":"I'm a cofounder of a startup aimed at improving cleanliness and increasing the availability of health data in public spaces. We are currently going through Create-X's summer launch program and are in the process of bringing our product to market."
+      },
+      {
         "CompanyName":"The Home Depot",
         "specialization":"Software Engineer Intern",
         "MonthOfLeaving":"Feb",

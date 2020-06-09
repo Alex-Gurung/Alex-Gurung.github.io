@@ -19,7 +19,11 @@ export default class Footer extends Component {
               })
             }
           </ul>
-          
+          <li>
+            <a href="terrible.html">Terrible</a>
+            {/* <i className={item.className} /> */}
+            {/* </a> */}
+          </li>
         </div>
         <div id="go-top"><a className="smoothscroll" title="Back to Top" href="#home"><i className="icon-up-open" /></a></div>
       </div>
