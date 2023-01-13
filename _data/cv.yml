@@ -1,0 +1,116 @@
+- title: General Information
+  type: map
+  contents:
+    - name: Full Name
+      value: Alexander (Alex) Gurung
+    - name: Languages
+      value: English (native), French (intermediate)
+
+- title: Education
+  type: time_table
+  contents:
+    - title: Master of Science in Computer Science
+      institution: Georgia Institute of Technology, Atlanta, U.S.A
+      year: 2020-2022
+      description:
+        - Concentration in Machine Learning
+        # - Description 2.
+        # - title: Description 3.
+        #   contents:
+        #     - Sub-description 1.
+        #     - Sub-description 2.
+    - title: Bachelor of Science in Computer Science
+      institution: Georgia Institute of Technology, Atlanta, U.S.A
+      year: 2018-2020
+      description:
+        - Minor in Linguistics
+        # - Description 2.
+
+- title: Research Experience
+  type: time_table
+  contents:
+    - title: Graduate Researcher
+      research_group: Social and Language Technologies Group
+      institution: Georgia Institute of Technology
+      year: 2020-now
+      description: 
+        - Investigating the processes and distribution of radicalization on insular social medias
+        - Finetuned and domain-adapted language models to detect radical content and assess its distribution across multiple alt-tech platforms
+        - Investing dehumanization language as a gateway to further radicalization, and quantifying its spread amongst far-right recruiters
+        - Aiming to submit conference work in 2023
+
+    - title: AI Resident
+      research_group: ParlAI & LIGHT Teams
+      institution: Meta AI
+      year: 2021-2022
+      description: 
+        - Worked with the LIGHT team to improve commonsense understanding in text-adventure games
+        - Designed crowdsourcing tasks to collect a large dataset of game playthroughs, action-result pairs, and human evaluations
+        - Created novel grounding tasks to improve a model’s ability to reason about its environment
+        - Submitting conference work in 2023
+
+    - title: ML Graduate Research Assistant
+      research_group: Electro-Optical Systems Laboratory
+      institution: Georgia Tech Research Institute
+      year: 2021-2021
+      description: 
+        - Leveraged adversarial neural techniques for data augmentation to improve generalization performance
+        - Expanded Genetic Programming framework’s CV capabilities with image feature extraction techniques
+      
+    - title: Undergraduate Researcher
+      research_group: Automated Algorithm Design Lab
+      institution: Georgia Institute of Technology
+      year: 2019-2020
+      description: 
+        - Optimized cache invalidation for lab’s framework improving results by 213%
+        - Led new NLP team in adding core text embedding functionality to framework using Tensorflow and Word2Vec
+
+
+
+- title: Work Experience
+  type: time_table
+  contents:
+    - title: ML Engineer Intern
+      research_group: Trust & Safety Team
+      institution: TikTok
+      year: 2021 - 2021
+      description:
+        - Designed and evaluated neural architectures to improve region-specific auto-moderation performance
+        - Deployed new models to production and set up pipeline to evaluate changes in performance over time
+
+        
+    - title: Software Engineer Intern
+      research_group: Search Team
+      institution: The Home Depot
+      year: 2020-2021
+      description:
+        - Built new dynamic product recommendation system leveraging visual similarity embeddings
+        - Trained and deployed AutoML, BQML, and RNN models to GCP for predicting ”at-risk” shipments during emergencies
+
+# - title: Honors and Awards
+#   type: time_table
+#   contents:
+#     - year: 1921
+#       items: 
+#         - Nobel Prize in Physics 
+#         - Matteucci Medal
+#     - year: 2029
+#       items: 
+#         - Max Planck Medal
+
+# - title: Academic Interests
+#   type: nested_list
+#   contents:
+#     - title: Topic 1.
+#       items: 
+#         - Description 1.
+#         - Description 2.
+#     - title: Topic 2.
+#       items:
+#         - Description 1.
+#         - Description 2.
+
+# - title: Other Interests
+#   type: list
+#   contents:
+#     - <u>Hobbies:</u> Hobby 1, Hobby 2, etc.
