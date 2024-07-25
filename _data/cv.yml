@@ -9,6 +9,13 @@
 - title: Education
   type: time_table
   contents:
+    - title: PhD in Informatics @ ILCC
+      institution: University of Edinburgh, Edinburgh, U.K
+      year: 2023-2026
+      description:
+        - Supervised by Mirella Lapata
+        - (CHIRON) Rich Character Representations in Long-Form Narratives
+    
     - title: Master of Science in Computer Science
       institution: Georgia Institute of Technology, Atlanta, U.S.A
       year: 2020-2022
