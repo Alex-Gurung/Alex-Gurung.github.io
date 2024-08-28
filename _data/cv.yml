@@ -44,7 +44,7 @@
         - Investigating the processes and distribution of radicalization on insular social medias
         - Finetuned and domain-adapted language models to detect radical content and assess its distribution across multiple alt-tech platforms
         - Investing dehumanization language as a gateway to further radicalization, and quantifying its spread amongst far-right recruiters
-        - Aiming to submit conference work in 2023
+        # - Aiming to submit conference work in 2023
 
     - title: AI Resident
       research_group: ParlAI & LIGHT Teams
@@ -54,7 +54,8 @@
         - Worked with the LIGHT team to improve commonsense understanding in text-adventure games
         - Designed crowdsourcing tasks to collect a large dataset of game playthroughs, action-result pairs, and human evaluations
         - Created novel grounding tasks to improve a model’s ability to reason about its environment
-        - Submitting conference work in 2023
+        # - Submitting conference work in 2023
+        - Preprint available on <a href="https://arxiv.org/abs/2301.05746">arxiv</a>
 
     - title: ML Graduate Research Assistant
       research_group: Electro-Optical Systems Laboratory
