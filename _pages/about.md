@@ -21,10 +21,10 @@ profile:
 # social: true  # includes social icons at the bottom of the page
 ---
 
-I am a PhD Student (expected graduation 2026) at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a> supervised by Mirella Lapata. My research focuses on improving long-form text generation and analysis for narratives. My most recent work on character-representations, CHIRON, is now <a href="https://arxiv.org/abs/2406.10190">available on arxiv</a>!
+I am a PhD Student (expected graduation 2026) at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a> supervised by Mirella Lapata. My research focuses on improving long-form text generation and analysis. My most recent work on applying RL to next-chapter prediction is now <a href="https://arxiv.org/abs/2503.22828">available on arxiv</a>!
 
 
-I was previously a Master's student in Computer Science at Georgia Tech's <a href="https://www.ic.gatech.edu/"><strong>School of Interactive Computing</strong></a>, graduating in December 2022. I also did my undergad at Georgia Tech, receiving my BS in CS and minor in Linguistics in December of 2020.
+I was previously a Master's student in Computer Science at Georgia Tech's <a href="https://www.ic.gatech.edu/"><strong>School of Interactive Computing</strong></a>, graduating in December 2022. I also did my undergrad at Georgia Tech, receiving my BS in CS and minor in Linguistics in December of 2020.
 
 
 I was also as an AI resident at Meta AI where I <a href="https://arxiv.org/abs/2301.05746">worked</a> on imbuing LLMs with commonsense reasoning for use in <a href="https://parl.ai/projects/light/?fbclid=IwAR0BOI-zQ0zIjRM8HCbNB6Hnsipdjmh1KH1ELic3nhy6WAXbINJXwfPI_rU"><strong>LIGHT</strong></a>. I have also done work on online radicalization with the <strong>SALT</strong> Lab under Dr. Diyi Yang in combination with Dr. David Muchlinski at the Sam Nunn School of International Affairs. I was also a machine learning engineer intern at TikTok, and before that I was a software engineer.

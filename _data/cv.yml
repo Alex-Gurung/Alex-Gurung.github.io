@@ -14,6 +14,7 @@
       year: 2023-2026
       description:
         - Supervised by Mirella Lapata
+        - Learning to Reason for Long-Form Story Generation
         - (CHIRON) Rich Character Representations in Long-Form Narratives
     
     - title: Master of Science in Computer Science
@@ -78,6 +79,14 @@
 - title: Work Experience
   type: time_table
   contents:
+    - title: Teaching Assistant
+      research_group: Foundations of NLP
+      institution: University of Edinburgh
+      year: 2024 - 2025
+      description:
+        - Designing course materials for undergraduate NLP course
+        - Creating coding and theory assignments for sentiment analysis and translation
+
     - title: ML Engineer Intern
       research_group: Trust & Safety Team
       institution: TikTok
@@ -93,7 +102,7 @@
       year: 2020-2021
       description:
         - Built new dynamic product recommendation system leveraging visual similarity embeddings
-        - Trained and deployed AutoML, BQML, and RNN models to GCP for predicting ”at-risk” shipments during emergencies
+        - Trained and deployed AutoML, BQML, and RNN models to GCP for predicting ''at-risk” shipments during emergencies
 
 # - title: Honors and Awards
 #   type: time_table
