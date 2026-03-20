@@ -1,0 +1,77 @@
+---
+layout: default
+---
+<div class="project-page">
+  <section class="project-hero text-center">
+    <h1 class="project-title">{{ page.title }}</h1>
+
+    <div class="project-authors">
+      {% for author in page.authors %}
+        <span class="author-entry">
+          {%- if author.url -%}
+            <a href="{{ author.url }}">{{ author.name }}</a>
+          {%- else -%}
+            {{ author.name }}
+          {%- endif -%}
+          {%- if author.affiliation -%}<sup>{{ author.affiliation }}</sup>{%- endif -%}
+          {%- unless forloop.last -%}<span class="author-sep">,</span>{% endunless %}
+        </span>
+      {% endfor %}
+    </div>
+
+    {% if page.affiliations %}
+    <div class="project-affiliations">
+      {% for aff in page.affiliations %}
+        <span><sup>{{ aff.id }}</sup>&thinsp;{{ aff.name }}</span>{% unless forloop.last %}&emsp;{% endunless %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if page.venue %}
+    <div class="project-venue">
+      <span class="venue-badge">{{ page.venue }}</span>
+    </div>
+    {% endif %}
+
+    <div class="project-links">
+      {% for link in page.links %}
+        <a href="{{ link.url }}" class="project-btn" target="_blank" rel="noopener">
+          {% if link.icon %}<i class="{{ link.icon }}"></i> {% endif %}{{ link.text }}
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="project-content">
+    {{ content }}
+  </section>
+
+  {% if page.bibtex %}
+  <section class="project-bibtex" id="citation">
+    <h2>Citation</h2>
+    <div class="bibtex-wrapper">
+      <button class="bibtex-copy-btn" onclick="copyBibtex()" title="Copy to clipboard">
+        <i class="fas fa-copy"></i>
+      </button>
+      <pre><code id="bibtex-content">{{ page.bibtex | strip }}</code></pre>
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+<script>
+function copyBibtex() {
+  var text = document.getElementById('bibtex-content').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.querySelector('.bibtex-copy-btn');
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy"></i>';
+    }, 2000);
+  });
+}
+</script>
+
+{% if page.charts_js %}
+<script src="{{ page.charts_js | relative_url }}"></script>
+{% endif %}
