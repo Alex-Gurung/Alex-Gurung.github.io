@@ -23,7 +23,7 @@ profile:
 publications: true
 ---
 
-I am a PhD student at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a>, where I am supervised by Mirella Lapata and Nikolay Malkin. My research focuses on efficient reinforcement learning, long-form generation, and narrative reasoning. Recent work includes <a href="/litereason/">Lightweight Latent Reasoning for Narrative Tasks</a>, presented at LIT @ ICLR 2026 in Rio, and <a href="https://arxiv.org/abs/2503.22828">Learning to Reason for Long-Form Story Generation</a>, our COLM 2025 paper on next-chapter prediction and VR-CLI.
+I am a PhD student at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a>, where I am supervised by Mirella Lapata and Nikolay Malkin. My research focuses on efficient reinforcement learning, long-form generation, and narrative reasoning. Recent work includes <a href="https://arxiv.org/abs/2512.02240">Lightweight Latent Reasoning for Narrative Tasks</a>, presented at LIT @ ICLR 2026 in Rio, and <a href="https://arxiv.org/abs/2503.22828">Learning to Reason for Long-Form Story Generation</a>, our COLM 2025 paper on next-chapter prediction and VR-CLI.
 
 
 I previously completed my master's in computer science at Georgia Tech's <a href="https://www.ic.gatech.edu/"><strong>School of Interactive Computing</strong></a>, and before that earned my BS in computer science with a minor in linguistics there as well.
