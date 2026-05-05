@@ -4,3 +4,18 @@
 
 "PhysRev":
   url: https://journals.aps.org/
+
+"COLM":
+  url: https://openreview.net/forum?id=dr3eg5ehR2
+  color: "#1d6fd6"
+
+"EMNLP":
+  url: https://aclanthology.org/2024.findings-emnlp.499/
+  color: "#0e7c66"
+
+"LIT WS":
+  url: https://openreview.net/forum?id=6a3InGPoEG
+  color: "#8b5cf6"
+
+"Preprint":
+  color: "#5a6472"

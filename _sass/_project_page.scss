@@ -203,37 +203,101 @@ $pp-latent-color:   #E8913A;
   }
 }
 
+.chart-replay {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  border: 1px solid rgba(32, 38, 45, 0.1);
+  background: rgba(255, 255, 252, 0.9);
+  color: var(--global-text-color-light);
+  border-radius: 8px;
+  padding: 0.24rem 0.58rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgba(28, 38, 48, 0.05);
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.18s ease, border-color 0.18s ease;
+
+  &.is-ready {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--global-text-color);
+    border-color: rgba(32, 38, 45, 0.22);
+    outline: none;
+  }
+}
+
 .chart-tooltip {
   position: absolute;
   pointer-events: none;
-  background: var(--global-text-color);
-  color: var(--global-bg-color);
-  font-size: 0.82rem;
+  background: rgba(255, 255, 252, 0.98);
+  color: #16212b;
+  border: 1px solid rgba(27, 39, 51, 0.1);
+  box-shadow: 0 12px 28px rgba(28, 38, 48, 0.1);
+  backdrop-filter: blur(5px);
+  font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.35em 0.7em;
-  border-radius: 6px;
-  white-space: nowrap;
+  padding: 0.74rem 0.94rem;
+  border-radius: 12px;
+  white-space: normal;
+  max-width: 16.5rem;
+  line-height: 1.45;
+  text-align: left;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
   z-index: 10;
 
   &.visible {
     opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.chart-tooltip-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #15202a;
+}
+
+.chart-tooltip-detail {
+  margin-top: 0.2rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(21, 32, 42, 0.82);
+}
+
+.chart-tooltip-accent {
+  margin-top: 0.3rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #8b4513;
 }
 
 // ── Architecture diagram ────────────────────────────────────────────────────
 
 .arch-diagram {
-  margin: 2rem auto;
-  max-width: 100%;
+  margin: 2rem -4rem;
+  max-width: calc(100% + 8rem);
   overflow-x: auto;
 
   svg {
     display: block;
     margin: 0 auto;
-    max-width: 100%;
+    width: 100%;
     height: auto;
+    min-width: 700px;
   }
 }
 
@@ -443,7 +507,7 @@ $pp-latent-color:   #E8913A;
   justify-content: center;
   gap: 0.5rem 1.2rem;
   margin-top: 0.6rem;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   color: var(--global-text-color-light);
 
   .legend-item {

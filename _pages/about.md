@@ -1,9 +1,9 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
 # subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
-subtitle: 
+subtitle: Long-form generation, reasoning, and narrative modeling
 
 profile:
   align: right
@@ -17,17 +17,19 @@ profile:
     # <p>Your City, State 12345</p>
 
 # news: true  # includes a list of news items
+# publications: true # includes the full publication list at the bottom of the page
 # selected_papers: true # includes a list of papers marked as "selected={true}"
 # social: true  # includes social icons at the bottom of the page
+publications: true
 ---
 
-I am a PhD Student (expected graduation 2026) at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a> supervised by Mirella Lapata. My research focuses on improving long-form text generation and analysis. My most recent work on applying RL to next-chapter prediction is now <a href="https://arxiv.org/abs/2503.22828">available on arxiv</a>!
+I am a PhD student at the University of Edinburgh's <a href="https://web.inf.ed.ac.uk/ilcc"><strong>Institute for Language, Cognition and Communication</strong></a>, where I am supervised by Mirella Lapata. My research focuses on long-form text generation, narrative reasoning, and methods for making generated stories more coherent over long horizons. My recent work on reinforcement learning for next-chapter prediction is now <a href="https://arxiv.org/abs/2503.22828">available on arXiv</a>.
 
 
-I was previously a Master's student in Computer Science at Georgia Tech's <a href="https://www.ic.gatech.edu/"><strong>School of Interactive Computing</strong></a>, graduating in December 2022. I also did my undergrad at Georgia Tech, receiving my BS in CS and minor in Linguistics in December of 2020.
+I previously completed my master's in computer science at Georgia Tech's <a href="https://www.ic.gatech.edu/"><strong>School of Interactive Computing</strong></a>, and before that earned my BS in computer science with a minor in linguistics there as well.
 
 
-I was also as an AI resident at Meta AI where I <a href="https://arxiv.org/abs/2301.05746">worked</a> on imbuing LLMs with commonsense reasoning for use in <a href="https://parl.ai/projects/light/?fbclid=IwAR0BOI-zQ0zIjRM8HCbNB6Hnsipdjmh1KH1ELic3nhy6WAXbINJXwfPI_rU"><strong>LIGHT</strong></a>. I have also done work on online radicalization with the <strong>SALT</strong> Lab under Dr. Diyi Yang in combination with Dr. David Muchlinski at the Sam Nunn School of International Affairs. I was also a machine learning engineer intern at TikTok, and before that I was a software engineer.
+I was also an AI resident at Meta AI, where I <a href="https://arxiv.org/abs/2301.05746">worked</a> on commonsense reasoning for <a href="https://parl.ai/projects/light/?fbclid=IwAR0BOI-zQ0zIjRM8HCbNB6Hnsipdjmh1KH1ELic3nhy6WAXbINJXwfPI_rU"><strong>LIGHT</strong></a>. I have also worked on online radicalization with the <strong>SALT</strong> Lab under Diyi Yang in collaboration with David Muchlinski at Georgia Tech's Sam Nunn School of International Affairs. Outside academia, I have worked as a machine learning engineer at TikTok and previously as a software engineer.
 
 
 I'm always interested in talking about my research and learning more about what other people are doing, feel free to reach out!
