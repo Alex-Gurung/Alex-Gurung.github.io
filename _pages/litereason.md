@@ -18,7 +18,7 @@ affiliations:
     name: "University of Edinburgh"
   - id: "2"
     name: "Mila"
-venue: "ICLR 2026 &middot; Latent & Implicit Thinking Workshop"
+venue: "LIT @ ICLR 2026 &middot; Rio de Janeiro"
 links:
   - text: arXiv
     url: "https://arxiv.org/abs/2512.02240"

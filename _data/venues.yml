@@ -13,7 +13,19 @@
   url: https://aclanthology.org/2024.findings-emnlp.499/
   color: "#0e7c66"
 
+"EMNLP Findings":
+  url: https://aclanthology.org/2024.findings-emnlp.499/
+  color: "#0e7c66"
+
+"ACL":
+  url: https://openreview.net/forum?id=cTs65zxuxv
+  color: "#155e75"
+
 "LIT WS":
+  url: https://openreview.net/forum?id=6a3InGPoEG
+  color: "#8b5cf6"
+
+"LIT @ ICLR":
   url: https://openreview.net/forum?id=6a3InGPoEG
   color: "#8b5cf6"
 

@@ -2,132 +2,125 @@
   type: map
   contents:
     - name: Full Name
-      value: Alexander (Alex) Gurung
-    - name: Languages
-      value: English (native), French (intermediate)
+      value: Alexander Gurung
+    - name: Email
+      value: aag1234@gmail.com
+    - name: GitHub
+      value: <a href="https://github.com/alex-gurung">github.com/alex-gurung</a>
+    - name: Citizenship
+      value: US and UK dual citizen
 
 - title: Education
   type: time_table
   contents:
-    - title: PhD in Informatics @ ILCC
-      institution: University of Edinburgh, Edinburgh, U.K
-      year: 2023-2026
+    - title: "PhD in ILCC: Language Processing, Speech Technology, Information Retrieval, Cognition"
+      institution: University of Edinburgh, Edinburgh, UK
+      year: "Aug. 2023 - Present"
       description:
-        - Supervised by Mirella Lapata
-        - Learning to Reason for Long-Form Story Generation
-        - (CHIRON) Rich Character Representations in Long-Form Narratives
-    
+        - Supervised by Mirella Lapata and Nikolay Malkin
+        - Expected graduation December 2026
+
     - title: Master of Science in Computer Science
-      institution: Georgia Institute of Technology, Atlanta, U.S.A
-      year: 2020-2022
+      institution: Georgia Institute of Technology, Atlanta, GA
+      year: "Aug. 2020 - Dec. 2022"
       description:
         - Concentration in Machine Learning
-        # - Description 2.
-        # - title: Description 3.
-        #   contents:
-        #     - Sub-description 1.
-        #     - Sub-description 2.
+
     - title: Bachelor of Science in Computer Science
-      institution: Georgia Institute of Technology, Atlanta, U.S.A
-      year: 2018-2020
+      institution: Georgia Institute of Technology, Atlanta, GA
+      year: "Aug. 2018 - Dec. 2020"
       description:
         - Minor in Linguistics
-        # - Description 2.
+
+- title: Research Interests
+  type: list
+  contents:
+    - Efficient reinforcement learning for long-story generation and understanding
+    - Long-horizon and creative reasoning for complex many-agent domains
+    - Tasks that require long-term planning
 
 - title: Research Experience
   type: time_table
   contents:
-    - title: Graduate Researcher
+    - title: PhD Candidate
+      institution: University of Edinburgh, Edinburgh, UK
+      year: "Aug. 2023 - Present"
+      description:
+        - Working on efficient and creative reinforcement learning for long-narrative tasks, code, and deep research
+        - Designed a reinforcement learning paradigm for book-chapter generation, published at COLM 2025
+
+    - title: Visiting Researcher
+      research_group: RL for Agentic Reasoning (RLAR)
+      institution: ServiceNow, Atlanta, GA
+      year: "Dec. 2025 - Present"
+      description:
+        - Exploring privacy-augmented deep-research agents
+
+    - title: Researcher
       research_group: Social and Language Technologies Group
-      institution: Georgia Institute of Technology
-      year: 2020-now
-      description: 
-        - Investigating the processes and distribution of radicalization on insular social medias
-        - Finetuned and domain-adapted language models to detect radical content and assess its distribution across multiple alt-tech platforms
-        - Investing dehumanization language as a gateway to further radicalization, and quantifying its spread amongst far-right recruiters
-        # - Aiming to submit conference work in 2023
+      institution: Georgia Institute of Technology, Atlanta, GA
+      year: "Jan. 2020 - May 2023"
+      description:
+        - Investigated the processes and distribution of radicalization on insular social media
+        - Analyzed the prevalence of political frames using a dependency-parsing system
 
     - title: AI Resident
-      research_group: ParlAI & LIGHT Teams
-      institution: Meta AI
-      year: 2021-2022
-      description: 
-        - Worked with the LIGHT team to improve commonsense understanding in text-adventure games
-        - Designed crowdsourcing tasks to collect a large dataset of game playthroughs, action-result pairs, and human evaluations
-        - Created novel grounding tasks to improve a model’s ability to reason about its environment
-        # - Submitting conference work in 2023
-        - Preprint available on <a href="https://arxiv.org/abs/2301.05746">arxiv</a>
+      research_group: ParlAI Team
+      institution: Meta AI, New York City, NY
+      year: "Aug. 2021 - Sep. 2022"
+      description:
+        - Improved LLM generalization in predicting text-game world-state changes
 
-    - title: ML Graduate Research Assistant
+    - title: Machine Learning Graduate Research Assistant
       research_group: Electro-Optical Systems Laboratory
-      institution: Georgia Tech Research Institute
-      year: 2021-2021
-      description: 
-        - Leveraged adversarial neural techniques for data augmentation to improve generalization performance
-        - Expanded Genetic Programming framework’s CV capabilities with image feature extraction techniques
-      
-    - title: Undergraduate Researcher
-      research_group: Automated Algorithm Design Lab
-      institution: Georgia Institute of Technology
-      year: 2019-2020
-      description: 
-        - Optimized cache invalidation for lab’s framework improving results by 213%
-        - Led new NLP team in adding core text embedding functionality to framework using Tensorflow and Word2Vec
-
-
+      institution: Georgia Tech Research Institute, Atlanta, GA
+      year: "Jan. 2021 - May 2021"
+      description:
+        - Expanded a genetic programming framework's capabilities for images
 
 - title: Work Experience
   type: time_table
   contents:
     - title: Teaching Assistant
       research_group: Foundations of NLP
-      institution: University of Edinburgh
-      year: 2024 - 2025
+      institution: University of Edinburgh, Edinburgh, UK
+      year: "Dec. 2024 - May 2025"
       description:
-        - Designing course materials for undergraduate NLP course
-        - Creating coding and theory assignments for sentiment analysis and translation
+        - Designed course materials for an undergraduate NLP course
+        - Created coding and theory assignments for sentiment analysis and translation
 
-    - title: ML Engineer Intern
+    - title: Machine Learning Engineer Intern
       research_group: Trust & Safety Team
-      institution: TikTok
-      year: 2021 - 2021
+      institution: TikTok, Mountain View, CA
+      year: "Jun. 2021 - Aug. 2021"
       description:
-        - Designed and evaluated neural architectures to improve region-specific auto-moderation performance
-        - Deployed new models to production and set up pipeline to evaluate changes in performance over time
+        - Designed mixture-of-experts neural architectures to improve region-specific auto-moderation performance
+        - Researched multi-task learning loss functions and architectures
+        - Deployed models to production and measured performance improvements over time
 
-        
-    - title: Software Engineer Intern
-      research_group: Search Team
-      institution: The Home Depot
-      year: 2020-2021
-      description:
-        - Built new dynamic product recommendation system leveraging visual similarity embeddings
-        - Trained and deployed AutoML, BQML, and RNN models to GCP for predicting ''at-risk” shipments during emergencies
+- title: Publications
+  type: time_table
+  contents:
+    - title: Lightweight Latent Reasoning for Narrative Tasks
+      institution: Alexander Gurung, Nikolay Malkin, Mirella Lapata
+      year: "LIT @ ICLR 2026"
 
-# - title: Honors and Awards
-#   type: time_table
-#   contents:
-#     - year: 1921
-#       items: 
-#         - Nobel Prize in Physics 
-#         - Matteucci Medal
-#     - year: 2029
-#       items: 
-#         - Max Planck Medal
+    - title: Long-Context Reasoning Through Proxy-Based Chain-of-Thought Tuning
+      institution: Miao Li, Irina Saparina, Alexander Gurung, Mirella Lapata
+      year: "ACL 2026"
 
-# - title: Academic Interests
-#   type: nested_list
-#   contents:
-#     - title: Topic 1.
-#       items: 
-#         - Description 1.
-#         - Description 2.
-#     - title: Topic 2.
-#       items:
-#         - Description 1.
-#         - Description 2.
+    - title: Who Gets Cited Most? Benchmarking Long-Context Numerical Reasoning on Scientific Articles
+      institution: Miao Li, Alexander Gurung, Irina Saparina, Mirella Lapata
+      year: "2026"
 
-# - title: Other Interests
-#   type: list
-#   contents:
-#     - <u>Hobbies:</u> Hobby 1, Hobby 2, etc.
+    - title: Learning to Reason for Long-Form Story Generation
+      institution: Alexander Gurung, Mirella Lapata
+      year: "COLM 2025"
+
+    - title: "CHIRON: Rich Character Representations in Long-Form Narratives"
+      institution: Alexander Gurung, Mirella Lapata
+      year: "EMNLP Findings 2024"
+
+    - title: Infusing Commonsense World Models with Graph Knowledge
+      institution: Alexander Gurung, Mojtaba Komeili, Arthur Szlam, Jason Weston, Jack Urbanek
+      year: "2023"
