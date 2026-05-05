@@ -1869,12 +1869,11 @@
     drawBars('bar-human', {
       categories: ['Plot', 'Characters', 'Creativity', 'Development', 'Language', 'Overall'],
       methods: [
-        { name: 'Default',     values: [0.62, 0.58, 0.52, 0.55, 0.78, 0.58] },
-        { name: 'MoI',         values: [0.68, 0.62, 0.58, 0.60, 0.82, 0.62] },
-        { name: 'CoLaR',       values: [0.65, 0.60, 0.55, 0.58, 0.75, 0.60] },
-        { name: 'COCONUT',     values: [0.72, 0.65, 0.62, 0.64, 0.85, 0.68] },
-        { name: 'RL-Trained',  values: [1.90, 1.80, 1.72, 1.78, 1.85, 1.88] },
-        { name: 'LiteReason',  values: [1.58, 1.48, 1.42, 1.45, 1.62, 1.55] }
+        { name: 'Default',     values: [0.963, 0.893, 0.929, 1.053, 1.081, 0.877] },
+        { name: 'MoI',         values: [0.805, 0.859, 0.787, 0.628, 0.896, 0.832] },
+        { name: 'CoLaR',       values: [0.733, 0.787, 0.906, 0.752, 0.879, 0.753] },
+        { name: 'LiteReason',  values: [1.095, 1.342, 1.066, 1.071, 1.080, 1.233] },
+        { name: 'RL-Trained',  values: [1.608, 1.235, 1.415, 1.878, 1.086, 1.475] }
       ]
     }, {
       yLabel: 'Bradley-Terry Relative Strength',
