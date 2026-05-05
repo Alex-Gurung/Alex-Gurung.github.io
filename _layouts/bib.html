@@ -1,6 +1,12 @@
 ---
 ---
 <!-- _layouts/bib.html -->
+{% assign entrytype = "" %}
+{% assign venue_label = "" %}
+{% assign entrymonth = "" %}
+{% assign entryyear = "" %}
+{% assign title_link = "" %}
+{% assign periodical = "" %}
 {% assign proceedings = "inproceedings, incollection" | split: "," %}
 {% if entry.type == "article" -%}
   {%- capture entrytype -%}{{ entry.journal }}{%- endcapture -%}
