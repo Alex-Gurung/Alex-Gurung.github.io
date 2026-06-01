@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://Alex-Gurung.github.io/sitemap.xml
+Sitemap: https://alexgurung.me/sitemap.xml
