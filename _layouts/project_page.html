@@ -27,6 +27,14 @@ layout: default
     </div>
     {% endif %}
 
+    {% if page.author_notes %}
+    <div class="project-author-notes">
+      {% for note in page.author_notes %}
+        <span>{{ note }}</span>{% unless forloop.last %}&emsp;{% endunless %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
     {% if page.venue %}
     <div class="project-venue">
       <span class="venue-badge">{{ page.venue }}</span>

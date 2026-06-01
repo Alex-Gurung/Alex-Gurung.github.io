@@ -11,7 +11,7 @@ authors:
   - name: Spandana Gella
     affiliation: "1,4,*"
   - name: Alexandre Drouin
-    affiliation: "1,3,*"
+    affiliation: "1,3,6,*"
   - name: Issam H. Laradji
     affiliation: "1,5"
   - name: Perouz Taslakian
@@ -29,13 +29,15 @@ affiliations:
     name: "McGill University"
   - id: "5"
     name: "University of British Columbia"
+  - id: "6"
+    name: "Universit&eacute; Laval"
+author_notes:
+  - "&dagger; Work done at ServiceNow AI Research"
+  - "* Equal contribution"
 links:
   - text: arXiv
     url: "https://arxiv.org/abs/2605.30727"
     icon: "fas fa-file-alt"
-  - text: Paper
-    url: "/assets/pdf/Privacy_Aware_Deep_Research_Agents.pdf"
-    icon: "fas fa-file-pdf"
 bibtex: |
   @misc{gurung2026mosaicleaks,
     title  = {MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents},
