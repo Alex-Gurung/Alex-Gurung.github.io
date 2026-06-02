@@ -152,9 +152,6 @@ PA-DR adds a learned privacy reward on top of the situational task reward. For e
   <video muted playsinline preload="metadata" poster="/assets/img/mosaicleaks/training-tradeoff-poster.png" data-hold-final tabindex="0">
     <source src="/assets/video/mosaicleaks/training-tradeoff.mp4" type="video/mp4">
   </video>
-  <div class="mosaic-figure-caption">
-    Chain success and privacy leakage over MosaicLeaks RL training. Moving right is better task success; moving down is better privacy. Task-performance-only training worsens leakage early and only recovers slightly, while PA-DR makes more consistent progress toward the lower-right Pareto frontier.
-  </div>
 </div>
 
 <div class="mosaic-results" aria-label="Training result comparison">
@@ -209,9 +206,6 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
   <video muted playsinline preload="metadata" poster="/assets/img/mosaicleaks/situational-reward-poster.png" data-hold-final tabindex="0" aria-label="Animation explaining rollout-level outcome advantages, situation-specific reward groups, and PA-DR privacy penalties across MosaicLeaks rollouts.">
     <source src="/assets/video/mosaicleaks/situational-reward.mp4" type="video/mp4">
   </video>
-  <div class="mosaic-figure-caption">
-    The animation compares outcome-level advantages with situational advantages grouped by hop, stage, and input context, then shows how PA-DR shifts a leaking web Plan call with a privacy penalty.
-  </div>
 </div>
 
 <table class="mosaic-table">
