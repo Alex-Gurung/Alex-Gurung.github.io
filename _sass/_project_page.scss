@@ -560,10 +560,6 @@ $pp-latent-color:   #E8913A;
   video {
     aspect-ratio: 16 / 9;
   }
-
-  video[data-hold-final] {
-    cursor: pointer;
-  }
 }
 
 .mosaic-figure-caption {
@@ -827,13 +823,32 @@ $pp-latent-color:   #E8913A;
   }
 
   td {
-    color: var(--global-text-color-light);
+    color: var(--mosaic-ink);
+    font-weight: 500;
   }
+
+  td:first-child {
+    font-weight: 650;
+  }
+
+  strong {
+    color: var(--mosaic-ink);
+    font-weight: 800;
+  }
+}
+
+.mosaic-direction {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--global-text-color-light);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.25;
 }
 
 .mosaic-table-caption {
   margin: 0 0 2rem;
-  color: var(--global-text-color-light);
+  color: var(--mosaic-ink);
   font-size: 0.88rem;
   line-height: 1.55;
 }

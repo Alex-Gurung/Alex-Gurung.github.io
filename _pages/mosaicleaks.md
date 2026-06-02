@@ -149,7 +149,7 @@ To train long agent trajectories, we use <em>situational</em> rewards. Instead o
 PA-DR adds a learned privacy reward on top of the situational task reward. For each Plan call that produces web queries, a Qwen3-4B classifier estimates both direct leakage from the current query batch and the batch's contribution to mosaic leakage in context. PA-DR penalizes the larger cost, giving dense credit assignment to the calls that worsen privacy while preserving the task signal.
 
 <div class="mosaic-figure">
-  <video muted playsinline preload="metadata" poster="/assets/img/mosaicleaks/training-tradeoff-poster.png" data-hold-final tabindex="0">
+  <video controls playsinline preload="metadata" poster="/assets/img/mosaicleaks/training-tradeoff-poster.png">
     <source src="/assets/video/mosaicleaks/training-tradeoff.mp4" type="video/mp4">
   </video>
 </div>
@@ -203,7 +203,7 @@ Outcome-only RL scores each rollout once. After advantage normalization, every t
 Situational rewards avoid this by comparing matching calls. The reward depends on the stage and the information available in the input, without requiring a separate value model or aligned step indices across rollouts. We train Plan and Choose stages because their desired behavior can be verified directly: Plan should search the right source or stop searching when enough evidence is already available, and Choose should select the gold document when it is visible.
 
 <div class="mosaic-figure">
-  <video muted playsinline preload="metadata" poster="/assets/img/mosaicleaks/situational-reward-poster.png" data-hold-final tabindex="0" aria-label="Animation explaining rollout-level outcome advantages, situation-specific reward groups, and PA-DR privacy penalties across MosaicLeaks rollouts.">
+  <video controls playsinline preload="metadata" poster="/assets/img/mosaicleaks/situational-reward-poster.png" aria-label="Animation explaining rollout-level outcome advantages, situation-specific reward groups, and PA-DR privacy penalties across MosaicLeaks rollouts.">
     <source src="/assets/video/mosaicleaks/situational-reward.mp4" type="video/mp4">
   </video>
 </div>
@@ -212,10 +212,10 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
   <thead>
     <tr>
       <th>Training reward</th>
-      <th>Generated samples</th>
-      <th>Strict success</th>
-      <th>Privacy leakage</th>
-      <th>Samples to 55.4% success</th>
+      <th>Generated samples <span class="mosaic-direction">&darr; better</span></th>
+      <th>Strict success <span class="mosaic-direction">&uarr; better</span></th>
+      <th>Privacy leakage <span class="mosaic-direction">&darr; better</span></th>
+      <th>Samples to 55% success <span class="mosaic-direction">&darr; better</span></th>
     </tr>
   </thead>
   <tbody>
@@ -224,27 +224,27 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
       <td data-label="Generated samples">963k</td>
       <td data-label="Strict success">55.4%</td>
       <td data-label="Privacy leakage">49.0%</td>
-      <td data-label="Samples to 55.4%">963k</td>
+      <td data-label="Samples to 55% success">963k</td>
     </tr>
     <tr>
       <td data-label="Training reward">Situational task reward</td>
       <td data-label="Generated samples">842k</td>
-      <td data-label="Strict success">59.3%</td>
+      <td data-label="Strict success"><strong>59.3%</strong></td>
       <td data-label="Privacy leakage">51.7%</td>
-      <td data-label="Samples to 55.4%">146k</td>
+      <td data-label="Samples to 55% success"><strong>146k</strong></td>
     </tr>
     <tr>
       <td data-label="Training reward">Task + PA-DR reward</td>
-      <td data-label="Generated samples">706k</td>
+      <td data-label="Generated samples"><strong>706k</strong></td>
       <td data-label="Strict success">58.7%</td>
-      <td data-label="Privacy leakage">9.9%</td>
-      <td data-label="Samples to 55.4%">183k</td>
+      <td data-label="Privacy leakage"><strong>9.9%</strong></td>
+      <td data-label="Samples to 55% success">183k</td>
     </tr>
   </tbody>
 </table>
 
 <div class="mosaic-table-caption">
-  Training-efficiency summary. The final column reports how many generated samples each method needs to match the best strict chain success reached by outcome-reward training (55.4%). Lower values mean the method reaches the same task-performance target with fewer generated rollouts.
+  Training-efficiency summary. The final column reports how many generated samples each method needs to reach roughly 55% strict chain success. Lower values mean the method reaches the same task-performance target with fewer generated rollouts.
 </div>
 
 <div class="mosaic-figure">
