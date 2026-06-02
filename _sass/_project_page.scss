@@ -819,21 +819,21 @@ $pp-latent-color:   #E8913A;
 
   th {
     color: var(--mosaic-ink);
-    font-weight: 700;
+    font-weight: 650;
   }
 
   td {
     color: var(--mosaic-ink);
-    font-weight: 500;
+    font-weight: 400;
   }
 
   td:first-child {
-    font-weight: 650;
+    font-weight: 600;
   }
 
   strong {
     color: var(--mosaic-ink);
-    font-weight: 800;
+    font-weight: 700;
   }
 }
 
@@ -842,7 +842,7 @@ $pp-latent-color:   #E8913A;
   margin-top: 0.15rem;
   color: var(--global-text-color-light);
   font-size: 0.78rem;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.25;
 }
 
@@ -960,7 +960,17 @@ $pp-latent-color:   #E8913A;
       &::before {
         content: attr(data-label);
         color: var(--mosaic-ink);
-        font-weight: 700;
+        font-weight: 600;
+      }
+
+      &:first-child {
+        display: block;
+        font-size: 0.94rem;
+        font-weight: 600;
+
+        &::before {
+          content: none;
+        }
       }
 
       &:last-child {
