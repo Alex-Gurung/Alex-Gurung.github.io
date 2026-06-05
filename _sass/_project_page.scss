@@ -174,9 +174,111 @@ $pp-latent-color:   #E8913A;
   }
 
   .stat-label {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--global-text-color);
     margin-top: 0.35rem;
+    line-height: 1.45;
+  }
+}
+
+// -- LiteReason project details ---------------------------------------------
+
+.litereason-project {
+  .stat-card {
+    border-radius: 8px;
+  }
+
+  .figure-caption {
+    font-size: 1rem;
+    color: var(--global-text-color);
+    line-height: 1.55;
+  }
+}
+
+.litereason-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.4rem 0 1.2rem;
+}
+
+.litereason-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  background: var(--global-card-bg-color);
+  border: 1px solid var(--global-divider-color);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 1rem;
+
+  th,
+  td {
+    padding: 0.85rem 0.9rem;
+    border-bottom: 1px solid var(--global-divider-color);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  th {
+    color: var(--global-text-color);
+    background: rgba(38, 152, 186, 0.07);
+    font-weight: 700;
+    text-align: left;
+  }
+
+  td {
+    color: var(--global-text-color);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.litereason-table.is-wide {
+  min-width: 760px;
+}
+
+.litereason-table.is-extra-wide {
+  min-width: 960px;
+}
+
+.litereason-table.is-compact {
+  font-size: 0.95rem;
+
+  th,
+  td {
+    padding: 0.48rem 0.6rem;
+    line-height: 1.32;
+  }
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.4rem 0 1.4rem;
+}
+
+.result-card {
+  min-height: 7rem;
+  padding: 1rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 8px;
+  background: var(--global-card-bg-color);
+
+  strong {
+    display: block;
+    color: var(--global-theme-color);
+    font-size: 1.7rem;
+    line-height: 1.15;
+  }
+
+  span {
+    display: block;
+    margin-top: 0.45rem;
+    color: var(--global-text-color);
+    font-size: 0.98rem;
     line-height: 1.45;
   }
 }
@@ -188,7 +290,7 @@ $pp-latent-color:   #E8913A;
   text-align: center;
 
   .figure-caption {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     color: var(--global-text-color-light);
     margin-top: 0.6rem;
     line-height: 1.5;
@@ -299,12 +401,30 @@ $pp-latent-color:   #E8913A;
   max-width: calc(100% + 8rem);
   overflow-x: auto;
 
-  svg {
+  svg,
+  video,
+  noscript img {
     display: block;
     margin: 0 auto;
     width: 100%;
     height: auto;
+  }
+
+  svg {
     min-width: 700px;
+  }
+
+  video,
+  noscript img {
+    min-width: 700px;
+    border: 1px solid var(--global-divider-color);
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  video {
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
   }
 }
 
@@ -1029,7 +1149,7 @@ $pp-latent-color:   #E8913A;
   justify-content: center;
   gap: 0.5rem 1.2rem;
   margin-top: 0.6rem;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--global-text-color-light);
 
   .legend-item {
@@ -1066,6 +1186,21 @@ $pp-latent-color:   #E8913A;
     font-size: 1.6rem;
   }
 
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arch-diagram {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+
+    video,
+    noscript img {
+      min-width: 0;
+    }
+  }
+
   .gen-animation-container {
     font-size: 0.85rem;
     padding: 1.2rem 1rem 2.2rem;
@@ -1087,5 +1222,70 @@ $pp-latent-color:   #E8913A;
 
   .chart-wrapper {
     padding: 0.6rem;
+  }
+
+  .litereason-table {
+    display: block;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font-size: 0.95rem;
+
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    tbody,
+    tr,
+    td {
+      display: block;
+    }
+
+    tr {
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--global-divider-color);
+      border-radius: 8px;
+      background: var(--global-card-bg-color);
+      overflow: hidden;
+    }
+
+    td {
+      display: grid;
+      grid-template-columns: minmax(7.5rem, 42%) 1fr;
+      gap: 0.6rem;
+      padding: 0.72rem 0.8rem;
+      border-bottom: 1px solid var(--global-divider-color);
+      line-height: 1.45;
+
+      &::before {
+        content: attr(data-label);
+        color: var(--global-text-color);
+        font-weight: 700;
+      }
+
+      &:first-child {
+        display: block;
+        background: rgba(38, 152, 186, 0.07);
+        font-weight: 700;
+
+        &::before {
+          content: none;
+        }
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  .litereason-table.is-wide,
+  .litereason-table.is-extra-wide {
+    min-width: 0;
   }
 }

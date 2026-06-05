@@ -305,13 +305,13 @@
       });
     }
 
-    pushWrappedLines(note.title, '600 13.5px -apple-system, BlinkMacSystemFont, sans-serif', '#16212b', note.alpha, 0);
+    pushWrappedLines(note.title, '600 14.5px -apple-system, BlinkMacSystemFont, sans-serif', '#16212b', note.alpha, 0);
     if (note.detail) {
       var detailProgress = clamp(note.detailProgress == null ? 1 : note.detailProgress, 0, 1);
       if (rows.length) rows.push({ spacer: true, size: blockGap });
       pushWrappedLines(
         note.detail,
-        '12px -apple-system, BlinkMacSystemFont, sans-serif',
+        '13px -apple-system, BlinkMacSystemFont, sans-serif',
         'rgba(22, 33, 43, 0.78)',
         note.alpha * detailProgress,
         6 * (1 - detailProgress)
@@ -323,7 +323,7 @@
       if (rows.length) rows.push({ spacer: true, size: blockGap });
       pushWrappedLines(
         note.accent,
-        '700 12px -apple-system, BlinkMacSystemFont, sans-serif',
+        '700 13px -apple-system, BlinkMacSystemFont, sans-serif',
         note.accentColor || '#8B4513',
         note.alpha * accentProgress,
         6 * (1 - accentProgress)
@@ -464,7 +464,7 @@
       var midX = (start.px + endPoint.px) / 2 + (guide.labelDx || 0);
       var midY = (start.py + endPoint.py) / 2 + (guide.labelDy || 0);
       ctx.globalAlpha = labelAlpha;
-      ctx.font = '700 10.5px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.font = '700 11.5px -apple-system, BlinkMacSystemFont, sans-serif';
       var labelWidth = ctx.measureText(guide.label).width;
       ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
       ctx.beginPath();
@@ -513,7 +513,7 @@
       ctx.lineTo(W - pad.r, p);
       ctx.stroke();
       ctx.fillStyle = '#888';
-      ctx.font = '12.5px -apple-system, sans-serif';
+      ctx.font = '13.5px -apple-system, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(Math.round(v), pad.l - 8, p + 4);
     }
@@ -525,7 +525,7 @@
       ctx.lineTo(p, H - pad.b);
       ctx.stroke();
       ctx.fillStyle = '#888';
-      ctx.font = '12.5px -apple-system, sans-serif';
+      ctx.font = '13.5px -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(opts.xFmt ? opts.xFmt(v) : v.toFixed(1), p, H - pad.b + 18);
     }
@@ -539,7 +539,7 @@
     ctx.stroke();
 
     ctx.fillStyle = '#555';
-    ctx.font = '14.5px -apple-system, sans-serif';
+    ctx.font = '15.5px -apple-system, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(opts.xLabel, pad.l + dw / 2, H - 8);
     ctx.save();
@@ -633,7 +633,7 @@
       if (pointState.showLabel) {
         ctx.globalAlpha = pointState.labelAlpha;
         ctx.fillStyle = '#333';
-        ctx.font = (d.hl ? 'bold ' : '') + '12.5px -apple-system, sans-serif';
+        ctx.font = (d.hl ? 'bold ' : '') + '13.5px -apple-system, sans-serif';
         ctx.textAlign = d.ta || 'center';
         ctx.fillText(d.label, pointState.px + (d.ox || 0), pointState.py + (d.oy || -14));
       }
@@ -686,7 +686,7 @@
 
     ctx.save();
     ctx.fillStyle = '#999';
-    ctx.font = 'italic 12px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = 'italic 13px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText('better \u2192', W - pad.r, H - pad.b + 36);
     ctx.textAlign = 'left';
@@ -1192,7 +1192,7 @@
       v = yMin + (yMax - yMin) * i / ticks; p = pad.t + dh - (v - yMin) / (yMax - yMin) * dh;
       ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(pad.l, p); ctx.lineTo(W - pad.r, p); ctx.stroke();
-      ctx.fillStyle = '#888'; ctx.font = '12px -apple-system, sans-serif';
+      ctx.fillStyle = '#888'; ctx.font = '13px -apple-system, sans-serif';
       ctx.textAlign = 'right'; ctx.fillText(v.toFixed(1), pad.l - 8, p + 4);
     }
 
@@ -1217,11 +1217,11 @@
     });
 
     // category labels
-    ctx.fillStyle = '#555'; ctx.font = '12px -apple-system, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#555'; ctx.font = '13px -apple-system, sans-serif'; ctx.textAlign = 'center';
     cats.forEach(function (c, ci) { ctx.fillText(c, pad.l + ci * gw + gw / 2, H - pad.b + 18); });
 
     // y label
-    ctx.fillStyle = '#555'; ctx.font = '14.5px -apple-system, sans-serif';
+    ctx.fillStyle = '#555'; ctx.font = '15.5px -apple-system, sans-serif';
     ctx.save(); ctx.translate(14, pad.t + dh / 2); ctx.rotate(-Math.PI / 2);
     ctx.fillText(opts.yLabel || '', 0, 0); ctx.restore();
 
@@ -1457,280 +1457,6 @@
     run();
   }
 
-
-  /* ── Architecture diagram animation ─────────────────────────────────────── */
-
-  function initArchAnimation() {
-    var glow = document.getElementById('arch-glow');
-    if (!glow) return;
-
-    // Gather all interactive SVG elements
-    var lmBar   = document.getElementById('lm-bar');
-    var answer  = document.getElementById('answer-box');
-    var heads   = [
-      document.getElementById('lmhead1'), document.getElementById('proj1'),
-      document.getElementById('lmhead2'), document.getElementById('proj2'),
-      document.getElementById('lmhead3')
-    ];
-    var embeds = [], hiddens = [];
-    for (var i = 0; i <= 12; i++) {
-      embeds[i]  = document.getElementById('embed-' + i);
-      hiddens[i] = document.getElementById('hidden-' + i);
-    }
-
-    // Column -> head/projector mapping
-    // 0,1->lmhead1(0) | 2,3->proj1(1) | 4,5->lmhead2(2) | 6,7,8->proj2(3) | 9+->lmhead3(4)
-    var colHead = [0, 0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
-    var isProj  = [false, false, true, true, false, false, true, true, true, false, false, false, false];
-
-    // Colors
-    var FILLS = {
-      lmDef: '#93A4BD',   lmLit: '#D0E0F8',
-      pjDef: '#E88080',   pjLit: '#FF6060',
-      anDef: '#F0F4FF',   anLit: '#90B8FF',
-      hdDef: '#DDD4EA',   hdLit: '#C8B8E8',
-      disDef: '#F5E6A3',  disLit: '#FFEC80',
-      conDef: '#F5A3B5',  conLit: '#FF90A8',
-      barDef: '#93A4BD',  barLit: '#D0E0F8',
-      lmFlash: '#FFFFFF', pjFlash: '#FFAAAA'
-    };
-    var colDiscrete = [true, true, true, false, false, true, true, false, false, false, true, true, true];
-
-    function light(el, fill) {
-      if (el) { el.setAttribute('fill', fill); el.setAttribute('filter', 'url(#glow)'); }
-    }
-    function dim(el, fill) {
-      if (el) { el.setAttribute('fill', fill); el.setAttribute('filter', 'none'); }
-    }
-    function flash(el, flashFill, settleFill) {
-      if (!el) return;
-      el.style.transition = 'none';
-      el.setAttribute('fill', flashFill);
-      el.setAttribute('filter', 'url(#glow)');
-      el.getBoundingClientRect();
-      el.style.transition = 'fill 0.3s ease, filter 0.3s ease';
-      el.setAttribute('fill', settleFill);
-    }
-    function headDef(col) { return isProj[col] ? FILLS.pjDef : FILLS.lmDef; }
-    function headLit(col) { return isProj[col] ? FILLS.pjLit : FILLS.lmLit; }
-    function headFlash(col) { return isProj[col] ? FILLS.pjFlash : FILLS.lmFlash; }
-    function embedDef(col) { return colDiscrete[col] ? FILLS.disDef : FILLS.conDef; }
-    function embedLit(col) { return colDiscrete[col] ? FILLS.disLit : FILLS.conLit; }
-
-    // Column geometry
-    var cols = [74, 134, 194, 254, 314, 374, 434, 494, 554, 614];
-    var outY = [30, 30, 38, 38, 30, 30, 38, 38, 38];
-    var topY = [4, 1, 46, 46, -2, -5, 46, 46, 46];
-
-    var gen = 0; // generation counter for cancellation
-
-    function dimAll() {
-      dim(lmBar, FILLS.barDef);
-      dim(answer, FILLS.anDef);
-      heads.forEach(function (h, i) { dim(h, i === 1 || i === 3 ? FILLS.pjDef : FILLS.lmDef); });
-      embeds.forEach(function (e, i) { dim(e, embedDef(i)); });
-      hiddens.forEach(function (h) { dim(h, FILLS.hdDef); });
-      glow.setAttribute('opacity', '0');
-    }
-
-    // Smooth animation between two points
-    function glide(x0, y0, x1, y1, dur, thisGen, cb) {
-      var start = null;
-      function step(ts) {
-        if (gen !== thisGen) return;
-        if (!start) start = ts;
-        var t = Math.min(1, (ts - start) / dur);
-        var et = easeOutCubic(t);
-        glow.setAttribute('cx', x0 + (x1 - x0) * et);
-        glow.setAttribute('cy', y0 + (y1 - y0) * et);
-        if (t < 1) requestAnimationFrame(step);
-        else cb();
-      }
-      requestAnimationFrame(step);
-    }
-
-    // Animate along a polyline path
-    function glidePath(pts, speed, thisGen, cb) {
-      var segs = [], total = 0;
-      for (var i = 0; i < pts.length - 1; i++) {
-        var dx = pts[i+1][0] - pts[i][0], dy = pts[i+1][1] - pts[i][1];
-        var len = Math.sqrt(dx * dx + dy * dy);
-        segs.push(len); total += len;
-      }
-      var dur = total / speed * 1000;
-      var start = null;
-      function step(ts) {
-        if (gen !== thisGen) return;
-        if (!start) start = ts;
-        var elapsed = ts - start;
-        var rawT = Math.min(1, elapsed / dur);
-        var dist = easeInOutCubic(rawT) * total;
-        if (rawT >= 1) {
-          glow.setAttribute('cx', pts[pts.length-1][0]);
-          glow.setAttribute('cy', pts[pts.length-1][1]);
-          cb(); return;
-        }
-        var acc = 0;
-        for (var j = 0; j < segs.length; j++) {
-          if (acc + segs[j] >= dist) {
-            var t = (dist - acc) / segs[j];
-            glow.setAttribute('cx', pts[j][0] + (pts[j+1][0] - pts[j][0]) * t);
-            glow.setAttribute('cy', pts[j][1] + (pts[j+1][1] - pts[j][1]) * t);
-            break;
-          }
-          acc += segs[j];
-        }
-        requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    function wait(ms, thisGen, cb) {
-      setTimeout(function () { if (gen === thisGen) cb(); }, ms);
-    }
-
-    // Animate one column traversal, then call onDone
-    function doColumn(col, thisGen, onDone) {
-      var cx = cols[col];
-      var head = heads[colHead[col]];
-
-      // 1. Glow appears at input embedding bottom
-      glow.setAttribute('cx', cx);
-      glow.setAttribute('cy', 212);
-      glow.setAttribute('opacity', '1');
-      light(embeds[col], embedLit(col));
-
-      // 2. Glide up through embed toward LM bar
-      wait(200, thisGen, function () {
-        glide(cx, 212, cx, 176, 300, thisGen, function () {
-          // Glow reaches LM bar
-          light(lmBar, FILLS.barLit);
-          glide(cx, 176, cx, 130, 320, thisGen, function () {
-            // 3. At hidden state
-            light(hiddens[col], FILLS.hdLit);
-            dim(embeds[col], embedDef(col));
-            dim(lmBar, FILLS.barDef);
-
-            wait(200, thisGen, function () {
-              // 4. Glide up to head/projector entrance (y=96)
-              glide(cx, 130, cx, 96, 400, thisGen, function () {
-                // 5. Glow disappears into the module
-                glow.setAttribute('opacity', '0');
-                dim(hiddens[col], FILLS.hdDef);
-
-                // 6. Head flashes (instant) then settles via CSS transition
-                flash(head, headFlash(col), headLit(col));
-
-                // Wait for CSS transition to settle, then glow emerges
-                wait(450, thisGen, function () {
-                  // 7. Glow emerges from head top and glides to output
-                  glow.setAttribute('cx', cx);
-                  glow.setAttribute('cy', 60);
-                  glow.setAttribute('opacity', '1');
-                  glide(cx, 60, cx, outY[col], 300, thisGen, function () {
-                    dim(head, headDef(col));
-                    wait(120, thisGen, function () {
-                      onDone();
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    }
-
-    // Animate one feedback arrow (from col output to col+1 input)
-    function doArrow(col, thisGen, onDone) {
-      var cx = cols[col], nx = cols[col + 1];
-      var mid = (cx + nx) / 2;
-      var ty = topY[col];
-      var pts = [
-        [cx, outY[col]], [cx, ty], [mid, ty], [mid, 220], [nx - 10, 220], [nx, 220], [nx, 212]
-      ];
-      glidePath(pts, 180, thisGen, onDone);
-    }
-
-    // Animate the final approach to Answer
-    function doFinal(thisGen) {
-      var cx = 614;
-      var head = heads[4]; // lmhead3
-
-      glow.setAttribute('cx', cx);
-      glow.setAttribute('cy', 212);
-      glow.setAttribute('opacity', '1');
-      light(embeds[9], embedLit(9));
-
-      wait(200, thisGen, function () {
-        glide(cx, 212, cx, 176, 300, thisGen, function () {
-          light(lmBar, FILLS.barLit);
-          glide(cx, 176, cx, 130, 320, thisGen, function () {
-            light(hiddens[9], FILLS.hdLit);
-            dim(embeds[9], embedDef(9));
-            dim(lmBar, FILLS.barDef);
-
-            wait(200, thisGen, function () {
-              glide(cx, 130, cx, 96, 400, thisGen, function () {
-                glow.setAttribute('opacity', '0');
-                dim(hiddens[9], FILLS.hdDef);
-
-                flash(head, headFlash(9), headLit(9));
-
-                wait(450, thisGen, function () {
-                  // Emerge and travel to answer
-                  glow.setAttribute('cx', 704);
-                  glow.setAttribute('cy', 60);
-                  glow.setAttribute('opacity', '1');
-
-                  glide(704, 60, 704, 24, 350, thisGen, function () {
-                    dim(head, headDef(9));
-                    light(answer, FILLS.anLit);
-
-                    // Hold answer lit
-                    wait(2000, thisGen, function () {
-                      glow.setAttribute('opacity', '0');
-                      dimAll();
-                      wait(1500, thisGen, function () {
-                        runCycle();
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    }
-
-    function runCycle() {
-      var thisGen = ++gen;
-      dimAll();
-      var col = 0;
-
-      function nextCol() {
-        if (gen !== thisGen) return;
-        if (col >= 9) {
-          doFinal(thisGen);
-          return;
-        }
-        doColumn(col, thisGen, function () {
-          if (gen !== thisGen) return;
-          doArrow(col, thisGen, function () {
-            if (gen !== thisGen) return;
-            col++;
-            nextCol();
-          });
-        });
-      }
-
-      nextCol();
-    }
-
-    runCycle();
-  }
-
   /* ── Chart draw functions ────────────────────────────────────────────────── */
 
   function drawFF() {
@@ -1865,24 +1591,6 @@
     hoverScatter('scatter-ncp', 'tooltip-ncp');
   }
 
-  function drawHuman() {
-    drawBars('bar-human', {
-      categories: ['Plot', 'Characters', 'Creativity', 'Development', 'Language', 'Overall'],
-      methods: [
-        { name: 'Default',     values: [0.963, 0.893, 0.929, 1.053, 1.081, 0.877] },
-        { name: 'MoI',         values: [0.805, 0.859, 0.787, 0.628, 0.896, 0.832] },
-        { name: 'CoLaR',       values: [0.733, 0.787, 0.906, 0.752, 0.879, 0.753] },
-        { name: 'LiteReason',  values: [1.095, 1.342, 1.066, 1.071, 1.080, 1.233] },
-        { name: 'RL-Trained',  values: [1.608, 1.235, 1.415, 1.878, 1.086, 1.475] }
-      ]
-    }, {
-      yLabel: 'Bradley-Terry Relative Strength',
-      yMin: 0, yMax: 2.2,
-      legendId: 'legend-human'
-    });
-    hoverBars('bar-human', 'tooltip-human');
-  }
-
   /* ── Scroll-triggered init ───────────────────────────────────────────────── */
 
   var drawn = {};
@@ -1891,9 +1599,7 @@
     var handler = {
       'scatter-ff':     drawFF,
       'scatter-ncp':    drawNCP,
-      'bar-human':      drawHuman,
-      'gen-animation':  initGenAnimation,
-      'arch-svg':       initArchAnimation
+      'gen-animation':  initGenAnimation
     };
 
     var obs = new IntersectionObserver(function (entries) {
@@ -1927,7 +1633,6 @@
       });
       if (drawn['scatter-ff'])  drawFF();
       if (drawn['scatter-ncp']) drawNCP();
-      if (drawn['bar-human'])   drawHuman();
     }, 200);
   });
 

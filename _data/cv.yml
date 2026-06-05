@@ -17,7 +17,7 @@
       institution: University of Edinburgh, Edinburgh, UK
       year: "Aug. 2023 - Present"
       description:
-        - Supervised by Mirella Lapata and Nikolay Malkin
+        - Supervised by Mirella Lapata and Esmeralda S. Whitammer
         - Expected graduation December 2026
 
     - title: Master of Science in Computer Science
@@ -102,8 +102,8 @@
   type: time_table
   contents:
     - title: Lightweight Latent Reasoning for Narrative Tasks
-      institution: Alexander Gurung, Nikolay Malkin, Mirella Lapata
-      year: "LIT @ ICLR 2026"
+      institution: Alexander Gurung, Esmeralda S. Whitammer, Mirella Lapata
+      year: "TACL 2026"
 
     - title: Long-Context Reasoning Through Proxy-Based Chain-of-Thought Tuning
       institution: Miao Li, Irina Saparina, Alexander Gurung, Mirella Lapata

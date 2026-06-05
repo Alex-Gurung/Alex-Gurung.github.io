@@ -1,249 +1,67 @@
 ---
 layout: project_page
+project_class: litereason-project
 title: "Lightweight Latent Reasoning for Narrative Tasks"
 permalink: /litereason/
 sitemap: false
 authors:
   - name: Alexander Gurung
     affiliation: "1"
-    url: "https://Alex-Gurung.github.io"
-  - name: Nikolay Malkin
+  - name: Esmeralda S. Whitammer
     affiliation: "1,2"
-    url: "https://malkin1729.github.io"
   - name: Mirella Lapata
     affiliation: "1"
-    url: "https://homepages.inf.ed.ac.uk/mlap/"
 affiliations:
   - id: "1"
     name: "University of Edinburgh"
   - id: "2"
-    name: "Mila"
-venue: "LIT @ ICLR 2026 &middot; Rio de Janeiro"
+    name: "CIFAR Fellow"
+venue: "TACL 2026"
 links:
   - text: arXiv
     url: "https://arxiv.org/abs/2512.02240"
     icon: "fas fa-file-alt"
+  - text: Code
+    url: "https://github.com/Alex-Gurung/LiteReason"
+    icon: "fab fa-github"
 charts_js: "/assets/js/litereason-charts.js"
 bibtex: |
-  @inproceedings{gurung2026lightweightlatentreasoning,
+  @article{gurung2026lightweightlatentreasoning,
     title     = {Lightweight Latent Reasoning for Narrative Tasks},
-    author    = {Alexander Gurung and Nikolay Malkin and Mirella Lapata},
-    booktitle = {Latent \& Implicit Thinking Workshop at ICLR},
+    author    = {Alexander Gurung and Esmeralda S. Whitammer and Mirella Lapata},
+    journal   = {Transactions of the Association for Computational Linguistics},
     year      = {2026},
     url       = {https://arxiv.org/abs/2512.02240}
   }
 ---
 
+## Abstract
+
+Large language models (LLMs) tackle complex tasks by generating long chains of thought or "reasoning traces" that act as latent variables in the generation of an output given a query. A model's ability to generate such traces can be optimized with reinforcement learning (RL) to improve their utility in predicting an answer. This optimization comes at a high computational cost, especially for narrative-related tasks that involve retrieving and processing many tokens.
+
+To this end, we propose LiteReason, a latent reasoning method that can be interleaved with standard token sampling and easily combined with RL techniques. LiteReason employs a lightweight Reasoning Projector module, trained to produce continuous latent tokens that help the model "skip" reasoning steps. During RL, the policy model decides when to activate the projector, switching between latent and discrete reasoning as needed. Experimental results on plot hole detection and book chapter generation show that our method outperforms latent reasoning baselines and comes close to matching non-latent RL training, while reducing final reasoning length by 77-92%. Overall, LiteReason guides RL training to a more efficient part of the performance-computation tradeoff curve.
+
 ## TL;DR
 
 <div class="tldr">
-<strong>LiteReason</strong> adds a lightweight <em>Reasoning Projector</em> to an LLM, enabling it to switch between discrete token generation and continuous latent reasoning during RL training. This reduces reasoning tokens by 77-92% while retaining most performance.
+<strong>LiteReason</strong> adds a lightweight <em>Reasoning Projector</em> to an LLM, letting RL-trained models interleave normal token generation with continuous latent reasoning. On narrative tasks, it reaches 69-96% of the gains from non-latent RL while using 50-53% fewer training tokens and much shorter inference traces.
 </div>
 
-<div class="arch-diagram">
-<svg id="arch-svg" viewBox="0 -8 960 330" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Architecture diagram showing the dual-path reasoning approach of LiteReason">
-  <defs>
-    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,1 L7,4 L0,7" fill="none" stroke="#888" stroke-width="1.3"/></marker>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-
-  <!-- ============================================================ -->
-  <!-- BACKGROUND: Vertical connectors + feedback arrows             -->
-  <!-- (rendered first = behind modules)                             -->
-  <!-- 13 columns at 60px spacing: c0=74..c12=794                  -->
-  <!-- ============================================================ -->
-  <!-- Vertical connectors: input embed top (y=182) → output tokens (with arrowheads) -->
-  <g stroke="#999" stroke-width="1.4" opacity="0.85">
-    <line x1="74"  y1="182" x2="74"  y2="30" marker-end="url(#arr)"/>
-    <line x1="134" y1="182" x2="134" y2="30" marker-end="url(#arr)"/>
-    <line x1="194" y1="182" x2="194" y2="38" marker-end="url(#arr)"/>
-    <line x1="254" y1="182" x2="254" y2="38" marker-end="url(#arr)"/>
-    <line x1="314" y1="182" x2="314" y2="30" marker-end="url(#arr)"/>
-    <line x1="374" y1="182" x2="374" y2="30" marker-end="url(#arr)"/>
-    <line x1="434" y1="182" x2="434" y2="38" marker-end="url(#arr)"/>
-    <line x1="494" y1="182" x2="494" y2="38" marker-end="url(#arr)"/>
-    <line x1="554" y1="182" x2="554" y2="38" marker-end="url(#arr)"/>
-    <line x1="614" y1="182" x2="614" y2="96"/>
-    <line x1="674" y1="182" x2="674" y2="96"/>
-    <line x1="734" y1="182" x2="734" y2="96"/>
-    <line x1="794" y1="182" x2="794" y2="96"/>
-  </g>
-  <!-- Feedback arrows -->
-  <g opacity="0.55">
-    <!-- Arrow 1: I0(74)→I1(134), mid=104 -->
-    <path d="M74,30 L74,4 L104,4 L104,220 L124,220 L134,220 L134,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 2: I1(134)→I2(194), mid=164 -->
-    <path d="M134,30 L134,1 L164,1 L164,220 L184,220 L194,220 L194,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 3: I2(194)→I3(254), mid=224 -->
-    <path d="M194,38 L194,46 L224,46 L224,220 L244,220 L254,220 L254,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 4: I3(254)→I4(314), mid=284 -->
-    <path d="M254,38 L254,46 L284,46 L284,220 L304,220 L314,220 L314,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 5: I4(314)→I5(374), mid=344 -->
-    <path d="M314,30 L314,-2 L344,-2 L344,220 L364,220 L374,220 L374,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 6: I5(374)→I6(434), mid=404 -->
-    <path d="M374,30 L374,-5 L404,-5 L404,220 L424,220 L434,220 L434,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 7: I6(434)→I7(494), mid=464 -->
-    <path d="M434,38 L434,46 L464,46 L464,220 L484,220 L494,220 L494,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 8: I7(494)→I8(554), mid=524 -->
-    <path d="M494,38 L494,46 L524,46 L524,220 L544,220 L554,220 L554,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-    <!-- Arrow 9: I8(554)→I9(614), mid=584 -->
-    <path d="M554,38 L554,46 L584,46 L584,220 L604,220 L614,220 L614,212" fill="none" stroke="#999" stroke-width="1" marker-end="url(#arr)"/>
-  </g>
-
-  <!-- ============================================================ -->
-  <!-- Left annotations                                              -->
-  <!-- ============================================================ -->
-  <text x="48" y="24" text-anchor="end" font-size="9" fill="#888">output token /</text>
-  <text x="48" y="33" text-anchor="end" font-size="9" fill="#888">embedding</text>
-  <line x1="50" y1="28" x2="62" y2="28" stroke="#bbb" stroke-dasharray="3,2" stroke-width="0.8"/>
-  <text x="48" y="80" text-anchor="end" font-size="9" fill="#888">head / projector</text>
-  <line x1="50" y1="78" x2="62" y2="78" stroke="#bbb" stroke-dasharray="3,2" stroke-width="0.8"/>
-  <text x="48" y="134" text-anchor="end" font-size="9" fill="#888">last hidden state</text>
-  <line x1="50" y1="130" x2="62" y2="130" stroke="#bbb" stroke-dasharray="3,2" stroke-width="0.8"/>
-  <text x="48" y="200" text-anchor="end" font-size="9" fill="#888">input embedding</text>
-  <line x1="50" y1="197" x2="62" y2="197" stroke="#bbb" stroke-dasharray="3,2" stroke-width="0.8"/>
-  <text x="48" y="246" text-anchor="end" font-size="9" fill="#888">input token</text>
-  <line x1="50" y1="243" x2="62" y2="243" stroke="#bbb" stroke-dasharray="3,2" stroke-width="0.8"/>
-
-  <!-- ============================================================ -->
-  <!-- Input token labels (bottom row)                               -->
-  <!-- ============================================================ -->
-  <text x="74" y="247" text-anchor="middle" font-size="10" fill="#555">x&#x2080;</text>
-  <text x="134" y="247" text-anchor="middle" font-size="10" fill="#555">x&#x2081;</text>
-  <text x="194" y="247" text-anchor="middle" font-size="9" fill="#555">&#x27E8;bot&#x27E9;</text>
-  <text x="374" y="247" text-anchor="middle" font-size="10" fill="#555">x&#x2096;</text>
-  <text x="434" y="247" text-anchor="middle" font-size="9" fill="#555">&#x27E8;bot&#x27E9;</text>
-  <text x="734" y="247" text-anchor="middle" font-size="9" fill="#555">[Answer]</text>
-
-  <!-- ============================================================ -->
-  <!-- Input embeddings (y=182, h=30, w=42)                         -->
-  <!-- ============================================================ -->
-  <!-- Discrete (yellow) - IDs embed-{col} for JS animation -->
-  <rect id="embed-0" x="53" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-1" x="113" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-2" x="173" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-5" x="353" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-6" x="413" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-10" x="653" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-11" x="713" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="embed-12" x="773" y="182" width="42" height="30" rx="4" fill="#F5E6A3" stroke="#D4C463" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <!-- Continuous (pink) -->
-  <rect id="embed-3" x="233" y="182" width="42" height="30" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="254" y="201" text-anchor="middle" font-size="10" fill="#555">e&#x2080;</text>
-  <rect id="embed-4" x="293" y="182" width="42" height="30" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="314" y="201" text-anchor="middle" font-size="10" fill="#555">e&#x2081;</text>
-  <rect id="embed-7" x="473" y="182" width="42" height="30" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="494" y="201" text-anchor="middle" font-size="10" fill="#555">e&#x2082;</text>
-  <rect id="embed-8" x="533" y="182" width="42" height="30" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="554" y="201" text-anchor="middle" font-size="10" fill="#555">e&#x2083;</text>
-  <rect id="embed-9" x="593" y="182" width="42" height="30" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="614" y="201" text-anchor="middle" font-size="10" fill="#555">e&#x2084;</text>
-
-  <!-- ============================================================ -->
-  <!-- Language Model bar (y=148, h=28)                              -->
-  <!-- ============================================================ -->
-  <rect id="lm-bar" x="53" y="148" width="762" height="28" rx="5" fill="#93A4BD" stroke="#7B8FA8" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="434" y="166" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Language Model</text>
-
-  <!-- ============================================================ -->
-  <!-- Hidden states (y=118, h=24, w=42)                             -->
-  <!-- ============================================================ -->
-  <rect id="hidden-0" x="53" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-1" x="113" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-2" x="173" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="194" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#555">h&#x2080;</text>
-  <rect id="hidden-3" x="233" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="254" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#555">h&#x2081;</text>
-  <rect id="hidden-4" x="293" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-5" x="353" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-6" x="413" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="434" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#555">h&#x2082;</text>
-  <rect id="hidden-7" x="473" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="494" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#555">h&#x2083;</text>
-  <rect id="hidden-8" x="533" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <text x="554" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#555">h&#x2084;</text>
-  <rect id="hidden-9" x="593" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-10" x="653" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-11" x="713" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-  <rect id="hidden-12" x="773" y="118" width="42" height="24" rx="4" fill="#DDD4EA" stroke="#B09ED4" stroke-width="1" style="transition: fill 0.25s ease, filter 0.25s ease;"/>
-
-  <!-- ============================================================ -->
-  <!-- Heads and Projectors (y=60, h=36) - IDs for JS animation     -->
-  <!-- ============================================================ -->
-  <rect id="lmhead1" x="53" y="60" width="102" height="36" rx="6" fill="#93A4BD" stroke="#7B8FA8" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="104" y="82" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">LM Head</text>
-  <rect id="proj1" x="173" y="60" width="102" height="36" rx="6" fill="#E88080" stroke="#C85555" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="224" y="74" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Reasoning</text>
-  <text x="224" y="86" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Projector</text>
-  <rect id="lmhead2" x="293" y="60" width="102" height="36" rx="6" fill="#93A4BD" stroke="#7B8FA8" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="344" y="82" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">LM Head</text>
-  <rect id="proj2" x="413" y="60" width="162" height="36" rx="6" fill="#E88080" stroke="#C85555" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="494" y="74" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Reasoning</text>
-  <text x="494" y="86" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Projector</text>
-  <rect id="lmhead3" x="593" y="60" width="222" height="36" rx="6" fill="#93A4BD" stroke="#7B8FA8" stroke-width="1.2" style="transition: fill 0.3s ease, filter 0.3s ease;"/>
-  <text x="704" y="82" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">LM Head</text>
-
-  <!-- ============================================================ -->
-  <!-- Outputs (top row)                                             -->
-  <!-- ============================================================ -->
-  <text x="74" y="28" text-anchor="middle" font-size="10" fill="#555">x&#x2081;</text>
-  <text x="134" y="28" text-anchor="middle" font-size="9" fill="#555">&#x27E8;bot&#x27E9;</text>
-  <rect x="177" y="14" width="34" height="24" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1"/>
-  <text x="194" y="30" text-anchor="middle" font-size="9" fill="#555">e&#x2080;</text>
-  <rect x="237" y="14" width="34" height="24" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1"/>
-  <text x="254" y="30" text-anchor="middle" font-size="9" fill="#555">e&#x2081;</text>
-  <text x="314" y="28" text-anchor="middle" font-size="10" fill="#555">x&#x2096;</text>
-  <text x="374" y="28" text-anchor="middle" font-size="9" fill="#555">&#x27E8;bot&#x27E9;</text>
-  <rect x="417" y="14" width="34" height="24" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1"/>
-  <text x="434" y="30" text-anchor="middle" font-size="9" fill="#555">e&#x2082;</text>
-  <rect x="477" y="14" width="34" height="24" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1"/>
-  <text x="494" y="30" text-anchor="middle" font-size="9" fill="#555">e&#x2083;</text>
-  <rect x="537" y="14" width="34" height="24" rx="4" fill="#F5A3B5" stroke="#D48393" stroke-width="1"/>
-  <text x="554" y="30" text-anchor="middle" font-size="9" fill="#555">e&#x2084;</text>
-  <!-- Answer box -->
-  <rect id="answer-box" x="673" y="10" width="62" height="28" rx="5" fill="#F0F4FF" stroke="#B8C8E0" stroke-width="1.2" style="transition: fill 0.4s ease, filter 0.4s ease;"/>
-  <text x="704" y="28" text-anchor="middle" font-size="10" font-weight="600" fill="#555">Answer</text>
-  <line x1="704" y1="60" x2="704" y2="40" stroke="#888" stroke-width="1.2" marker-end="url(#arr)"/>
-
-  <!-- ============================================================ -->
-  <!-- Glow dot (positioned by JS animation)                         -->
-  <!-- ============================================================ -->
-  <circle id="arch-glow" r="5" cx="74" cy="212" fill="rgba(40,160,240,0.95)" filter="url(#glow)" opacity="0"/>
-
-  <!-- ============================================================ -->
-  <!-- Legend                                                         -->
-  <!-- ============================================================ -->
-  <rect x="838" y="60" width="14" height="10" rx="2" fill="#F0F4FF" stroke="#B8C8E0" stroke-width="0.8"/>
-  <text x="858" y="69" font-size="8.5" fill="#555">Answer</text>
-  <rect x="838" y="78" width="14" height="10" rx="2" fill="#DDD4EA" stroke="#B09ED4" stroke-width="0.8"/>
-  <text x="858" y="87" font-size="8.5" fill="#555">Hidden state</text>
-  <rect x="838" y="96" width="14" height="10" rx="2" fill="#93A4BD" stroke="#7B8FA8" stroke-width="0.8"/>
-  <text x="858" y="105" font-size="8.5" fill="#555">LM / LM Head</text>
-  <rect x="838" y="114" width="14" height="10" rx="2" fill="#E88080" stroke="#C85555" stroke-width="0.8"/>
-  <text x="858" y="123" font-size="8.5" fill="#555">Reasoning Proj.</text>
-  <rect x="838" y="138" width="14" height="10" rx="2" fill="#F5E6A3" stroke="#D4C463" stroke-width="0.8"/>
-  <text x="858" y="147" font-size="8.5" fill="#555">Discrete embed.</text>
-  <rect x="838" y="156" width="14" height="10" rx="2" fill="#F5A3B5" stroke="#D48393" stroke-width="0.8"/>
-  <text x="858" y="165" font-size="8.5" fill="#555">Continuous embed.</text>
-
-</svg>
-<p class="figure-caption"><strong>Figure 1.</strong> High-level diagram of LiteReason. Discrete sampling (via the LM Head) proceeds as normal until we encounter implicit-thought tags (&#x27E8;bot&#x27E9;). We then switch to latent reasoning mode, using the Reasoning Projector to directly predict continuous token embeddings for a number of forward passes before switching back to discrete sampling.</p>
+<div class="arch-diagram arch-video">
+  <video controls playsinline preload="metadata" poster="/assets/img/litereason/architecture-poster.png" aria-label="Animation explaining how LiteReason switches between LM Head sampling and Reasoning Projector latent embeddings.">
+    <source src="/assets/video/litereason/architecture.mp4" type="video/mp4">
+  </video>
+  <noscript>
+    <img src="/assets/img/litereason/architecture-poster.png" alt="High-level diagram showing LiteReason switching between discrete LM Head sampling and latent Reasoning Projector embeddings.">
+  </noscript>
+  <p class="figure-caption"><strong>Figure 1.</strong> LiteReason samples tokens normally until an implicit-thought tag and thought budget trigger latent reasoning, then returns to discrete generation.</p>
 </div>
 
-## Abstract
+## The LiteReason Framework
 
-Large language models (LLMs) tackle complex tasks by generating long chains of thought or "reasoning traces" that act as latent variables in the generation of an output given a query. A model's ability to generate such traces can be optimized with reinforcement learning (RL) to improve their utility in predicting an answer. This optimization comes at a high computational cost, especially for narrative-related tasks that involve retrieving and processing many tokens. To this end, we propose LiteReason, a latent reasoning method that can be interleaved with standard token sampling and easily combined with RL techniques. LiteReason employs a lightweight Reasoning Projector module, trained to produce continuous latent tokens that help the model "skip" reasoning steps. During RL, the policy model decides when to activate the projector, switching between latent and discrete reasoning as needed. Experimental results on plot hole detection and book chapter generation show that our method outperforms latent reasoning baselines and comes close to matching non-latent RL training, while reducing final reasoning length by 77-92%. Overall, LiteReason guides RL training to a more efficient part of the performance-computation tradeoff curve.
+LiteReason keeps ordinary LM Head sampling but adds a Reasoning Projector. When the model emits an implicit-thought tag with a step budget, the projector predicts continuous token embeddings directly from the final hidden state before generation returns to text.
 
-## Method
-
-LiteReason introduces a dual-path generation mechanism. Discrete sampling via the LM Head is performed as normal, selecting a token and passing its corresponding discrete token embedding, until the model generates **implicit thought tags** with the structure `<implicit_thought>#</implicit_thought>`, where `#` is an integer representing the number of steps to take in latent reasoning mode. At each latent step, we pass the final hidden state to the **Reasoning Projector**, a small MLP that directly predicts continuous token embeddings. We can switch between discrete and latent reasoning mode multiple times before producing the final answer with discrete sampling.
-
-After pretraining the Reasoning Projector via SFT (freezing the base LLM), we perform RL fine-tuning of the base model. During RL, only the discrete token sampling steps are considered "actions"; the Reasoning Projector is not updated by policy gradients, though its predictions may change because the discrete token and latent thought predictors share the model body.
-
-Below is a stylized visualization of interleaved discrete and latent generation. Discrete tokens appear as readable text, while `<implicit_thought>` tags trigger latent reasoning steps shown as pulsing dots:
+Training follows the paper's three-stage recipe: collect useful traces, initialize the projector with SFT, then run RL while treating only discrete token sampling as policy actions. After each RL epoch, LiteReason refreshes the projector on trajectories from the current policy. See the paper's "The LiteReason Framework" section for the full training recipe and inference procedure.
 
 <div class="gen-animation-container" id="gen-animation">
   <span class="gen-label">Generation Preview</span>
@@ -253,12 +71,14 @@ Below is a stylized visualization of interleaved discrete and latent generation.
   </div>
 </div>
 
-## Key Results
+## Application to Narrative Tasks
+
+We evaluate on two narrative tasks: Flawed Fictions, a 414-example plot-hole detection benchmark, and Next Chapter Prediction (NCP), a 1,347-example book-planning task. The plots below show the main performance-compute tradeoff: better methods move right, and cheaper methods move down. LiteReason is the only latent-reasoning method that moves close to non-latent RL performance while staying far below it in generated-token cost.
 
 <div class="stat-cards">
   <div class="stat-card">
     <div class="stat-number">77-92%</div>
-    <div class="stat-label">fewer inference tokens</div>
+    <div class="stat-label">fewer inference tokens vs. base</div>
   </div>
   <div class="stat-card">
     <div class="stat-number">50-53%</div>
@@ -266,41 +86,319 @@ Below is a stylized visualization of interleaved discrete and latent generation.
   </div>
   <div class="stat-card">
     <div class="stat-number">96%</div>
-    <div class="stat-label">of RL performance (Flawed Fictions)</div>
+    <div class="stat-label">of RL gain on Flawed Fictions</div>
   </div>
   <div class="stat-card">
-    <div class="stat-number">72%</div>
-    <div class="stat-label">of RL performance (NCP)</div>
+    <div class="stat-number">69%</div>
+    <div class="stat-label">of RL gain on NCP</div>
   </div>
 </div>
 
 ### Flawed Fictions
+
+Flawed Fictions asks whether a story contains a plot hole. RL improves Qwen2.5-7B from 57.26% to 88.71% accuracy, but still generates 114.53 tokens on average. LiteReason reaches 87.42% accuracy with 34.01 tokens, while prior latent baselines remain much closer to the base model.
 
 <div class="figure-container">
   <div class="chart-wrapper">
     <canvas id="scatter-ff"></canvas>
     <div class="chart-tooltip" id="tooltip-ff"></div>
   </div>
-  <p class="figure-caption"><strong>Figure 2.</strong> Accuracy vs. generated tokens on Flawed Fictions. LiteReason achieves near-RL accuracy with dramatically fewer tokens.</p>
+  <p class="figure-caption"><strong>Figure 2.</strong> Accuracy vs. generated tokens on Flawed Fictions. Aside from RL-Trained, LiteReason is separated from the next-best method by roughly 20 accuracy points and about 100 generated tokens.</p>
 </div>
 
 ### Next Chapter Prediction
+
+NCP evaluates a generated plan for the next chapter in a book. We define a contrastive version of the <a href="https://arxiv.org/abs/2503.22828">VR-CLI objective</a> that measures how much a plan increases the likelihood of the true next chapter while decreasing the likelihood of other chapters, which we call Contrastive Improvement. The RL-trained model obtains the highest score (0.666) but uses 721.33 tokens on average. LiteReason obtains 0.478 with 193.11 tokens, landing on the same performance-cost frontier; CoLaR is similarly short but much weaker at 0.118.
 
 <div class="figure-container">
   <div class="chart-wrapper">
     <canvas id="scatter-ncp"></canvas>
     <div class="chart-tooltip" id="tooltip-ncp"></div>
   </div>
-  <p class="figure-caption"><strong>Figure 3.</strong> Contrastive improvement vs. generated tokens on NCP. LiteReason is Pareto-optimal: no other method achieves better performance with fewer tokens.</p>
+  <p class="figure-caption"><strong>Figure 3.</strong> Contrastive Improvement vs. generated tokens on NCP. LiteReason is far cheaper than RL-Trained while substantially outperforming the other latent-reasoning baselines.</p>
 </div>
 
-### Human Evaluation
+## What Is the Best LiteReason Design?
 
-<div class="figure-container">
-  <div class="chart-wrapper">
-    <canvas id="bar-human"></canvas>
-    <div class="chart-tooltip" id="tooltip-human"></div>
-  </div>
-  <div class="chart-legend" id="legend-human"></div>
-  <p class="figure-caption"><strong>Figure 4.</strong> Bradley-Terry relative strength across six narrative quality dimensions. LiteReason closely tracks RL-Trained while using far fewer reasoning tokens.</p>
+The full method best balances high performance with large token reductions. Without projector refresh, traces can over-compress on Flawed Fictions and lengthen on NCP; without the latent projector, outputs stay long. The paper's "What is the Best LiteReason Design?" section gives the full ablation setup.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-wide is-compact">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>FF Acc. (%) &uarr;</th>
+        <th>FF Tokens &darr;</th>
+        <th>NCP CI &uarr;</th>
+        <th>NCP Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Setting"><strong>Full LiteReason</strong></td>
+        <td data-label="FF Acc. (%) &uarr;">87.42</td>
+        <td data-label="FF Tokens &darr;">34.01</td>
+        <td data-label="NCP CI &uarr;">0.478</td>
+        <td data-label="NCP Tokens &darr;"><strong>193.11</strong></td>
+      </tr>
+      <tr>
+        <td data-label="Setting"><strong>No projector refresh</strong></td>
+        <td data-label="FF Acc. (%) &uarr;">85.48</td>
+        <td data-label="FF Tokens &darr;"><strong>8.26</strong></td>
+        <td data-label="NCP CI &uarr;"><strong>0.560</strong></td>
+        <td data-label="NCP Tokens &darr;">622.23</td>
+      </tr>
+      <tr>
+        <td data-label="Setting"><strong>No latent projector</strong></td>
+        <td data-label="FF Acc. (%) &uarr;"><strong>87.58</strong></td>
+        <td data-label="FF Tokens &darr;">260.81</td>
+        <td data-label="NCP CI &uarr;">0.449</td>
+        <td data-label="NCP Tokens &darr;">983.49</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Does LiteReason Improve RL Efficiency?
+
+With the same RL steps and samples, LiteReason uses about half as many generated training tokens and is faster in wall-clock inference.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-compact">
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>FF Training Tokens &darr;</th>
+        <th>NCP Training Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Method"><strong>RL</strong></td>
+        <td data-label="FF Training Tokens &darr;">61.4M</td>
+        <td data-label="NCP Training Tokens &darr;">108.8M</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>RL + LiteReason</strong></td>
+        <td data-label="FF Training Tokens &darr;"><strong>29.0M</strong> (-52.8%)</td>
+        <td data-label="NCP Training Tokens &darr;"><strong>54.9M</strong> (-49.5%)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-compact">
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Model</th>
+        <th>Latent</th>
+        <th>b=1 (s) &darr;</th>
+        <th>b=all (s) &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Task"><strong>FF</strong></td>
+        <td data-label="Model">Base</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">3.10</td>
+        <td data-label="b=all (s) &darr;">0.13</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>FF</strong></td>
+        <td data-label="Model">RL-Trained</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">0.97</td>
+        <td data-label="b=all (s) &darr;">0.06</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>FF</strong></td>
+        <td data-label="Model">LiteReason</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">0.83</td>
+        <td data-label="b=all (s) &darr;">0.20</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>FF</strong></td>
+        <td data-label="Model">LiteReason</td>
+        <td data-label="Latent">&#10003;</td>
+        <td data-label="b=1 (s) &darr;"><strong>0.31</strong></td>
+        <td data-label="b=all (s) &darr;"><strong>0.03</strong></td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>NCP</strong></td>
+        <td data-label="Model">Base</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">8.02</td>
+        <td data-label="b=all (s) &darr;">0.43</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>NCP</strong></td>
+        <td data-label="Model">RL-Trained</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">6.46</td>
+        <td data-label="b=all (s) &darr;">0.42</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>NCP</strong></td>
+        <td data-label="Model">LiteReason</td>
+        <td data-label="Latent">&times;</td>
+        <td data-label="b=1 (s) &darr;">2.21</td>
+        <td data-label="b=all (s) &darr;">0.26</td>
+      </tr>
+      <tr>
+        <td data-label="Task"><strong>NCP</strong></td>
+        <td data-label="Model">LiteReason</td>
+        <td data-label="Latent">&#10003;</td>
+        <td data-label="b=1 (s) &darr;"><strong>1.84</strong></td>
+        <td data-label="b=all (s) &darr;"><strong>0.23</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Compared with RL-Trained, LiteReason produces traces 73% smaller on Flawed Fictions and 70% smaller on NCP while still achieving 96% and 69% of the respective RL performance gains.
+
+## Does LiteReason Retain General Model Capabilities?
+
+On GSM-Hard, AIME25, and MMLU-Redux, LiteReason and the RL-Trained baseline largely retain the abilities of Qwen2.5-7B. LiteReason models also reason more concisely, consistently producing fewer tokens than the base model and RL-Trained variants. The full paper table also compares latent-inference modes and non-LiteReason latent baselines.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-extra-wide is-compact">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>GSM Acc. &uarr;</th>
+        <th>GSM Tokens &darr;</th>
+        <th>AIME Acc. &uarr;</th>
+        <th>AIME Tokens &darr;</th>
+        <th>MMLU Acc. &uarr;</th>
+        <th>MMLU Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Setting"><strong>No finetuning</strong></td>
+        <td data-label="GSM Acc. &uarr;"><strong>27.3</strong></td>
+        <td data-label="GSM Tokens &darr;">371.4</td>
+        <td data-label="AIME Acc. &uarr;"><strong>11.3</strong></td>
+        <td data-label="AIME Tokens &darr;">891.1</td>
+        <td data-label="MMLU Acc. &uarr;">78.7</td>
+        <td data-label="MMLU Tokens &darr;">317.0</td>
+      </tr>
+      <tr>
+        <td data-label="Setting"><strong>FF RL-Trained</strong></td>
+        <td data-label="GSM Acc. &uarr;">27.2</td>
+        <td data-label="GSM Tokens &darr;">359.1</td>
+        <td data-label="AIME Acc. &uarr;">10.0</td>
+        <td data-label="AIME Tokens &darr;">857.3</td>
+        <td data-label="MMLU Acc. &uarr;"><strong>79.0</strong></td>
+        <td data-label="MMLU Tokens &darr;">300.5</td>
+      </tr>
+      <tr>
+        <td data-label="Setting"><strong>FF LiteReason</strong></td>
+        <td data-label="GSM Acc. &uarr;"><strong>27.3</strong></td>
+        <td data-label="GSM Tokens &darr;"><strong>349.7</strong></td>
+        <td data-label="AIME Acc. &uarr;">10.7</td>
+        <td data-label="AIME Tokens &darr;"><strong>834.7</strong></td>
+        <td data-label="MMLU Acc. &uarr;">78.8</td>
+        <td data-label="MMLU Tokens &darr;"><strong>283.4</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Does LiteReason Work Across Model Size and Family?
+
+On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy from 33.23% to 57.42% while reducing output length from 1709.86 to 995.38 tokens. On GSM-Hard with Gemma-3-1B-IT, LiteReason largely matches the base model while producing about 10% fewer tokens.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-wide is-compact">
+    <thead>
+      <tr>
+        <th>Task / Model</th>
+        <th>Method</th>
+        <th>Accuracy (%) &uarr;</th>
+        <th>Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Task / Model"><strong>FF / Qwen3-4B</strong></td>
+        <td data-label="Method">Base</td>
+        <td data-label="Accuracy (%) &uarr;">33.23</td>
+        <td data-label="Tokens &darr;">1709.86</td>
+      </tr>
+      <tr>
+        <td data-label="Task / Model"><strong>FF / Qwen3-4B</strong></td>
+        <td data-label="Method">RL-Trained</td>
+        <td data-label="Accuracy (%) &uarr;"><strong>64.84</strong></td>
+        <td data-label="Tokens &darr;">1078.57</td>
+      </tr>
+      <tr>
+        <td data-label="Task / Model"><strong>FF / Qwen3-4B</strong></td>
+        <td data-label="Method">LiteReason</td>
+        <td data-label="Accuracy (%) &uarr;">57.42</td>
+        <td data-label="Tokens &darr;"><strong>995.38</strong></td>
+      </tr>
+      <tr>
+        <td data-label="Task / Model"><strong>GSM-Hard / Gemma3-1B</strong></td>
+        <td data-label="Method">Base</td>
+        <td data-label="Accuracy (%) &uarr;">14.70</td>
+        <td data-label="Tokens &darr;">932.82</td>
+      </tr>
+      <tr>
+        <td data-label="Task / Model"><strong>GSM-Hard / Gemma3-1B</strong></td>
+        <td data-label="Method">RL-Trained</td>
+        <td data-label="Accuracy (%) &uarr;"><strong>15.91</strong></td>
+        <td data-label="Tokens &darr;">941.13</td>
+      </tr>
+      <tr>
+        <td data-label="Task / Model"><strong>GSM-Hard / Gemma3-1B</strong></td>
+        <td data-label="Method">LiteReason</td>
+        <td data-label="Accuracy (%) &uarr;">15.76</td>
+        <td data-label="Tokens &darr;"><strong>849.92</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## LiteReason Combines with Length-Penalty Rewards
+
+Adding a simple length penalty improves both standard RL and LiteReason on Flawed Fictions. LiteReason plus the length penalty reaches 93.55% accuracy with 6.00 generated tokens on average, suggesting the method can combine cleanly with other RL reward shaping.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-compact">
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Accuracy (%) &uarr;</th>
+        <th>Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Method"><strong>RL-Trained</strong></td>
+        <td data-label="Accuracy (%) &uarr;">88.71</td>
+        <td data-label="Tokens &darr;">114.53</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>RL-Trained + LP</strong></td>
+        <td data-label="Accuracy (%) &uarr;">91.94</td>
+        <td data-label="Tokens &darr;">16.65</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>LiteReason</strong></td>
+        <td data-label="Accuracy (%) &uarr;">87.42</td>
+        <td data-label="Tokens &darr;">34.01</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>LiteReason + LP</strong></td>
+        <td data-label="Accuracy (%) &uarr;"><strong>93.55</strong></td>
+        <td data-label="Tokens &darr;"><strong>6.00</strong></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
