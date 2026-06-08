@@ -178,6 +178,7 @@ class LiteReasonArchitecture(Scene):
             return mob
 
         caption_size = 28
+        caption_max_width = 16.2
 
         def outline_rect(mob, color, buff=0.075, stroke_width=3.2, opacity=0.9):
             target = mob
@@ -233,7 +234,7 @@ class LiteReasonArchitecture(Scene):
             )
             if render_size != caption_size:
                 line.scale(caption_size / render_size)
-            fit_text(line, 15.6)
+            fit_text(line, caption_max_width)
             return line
 
         def caption(content, highlights=None):
@@ -261,9 +262,9 @@ class LiteReasonArchitecture(Scene):
         title = txt("Generation with LiteReason", 32, c["ink"], BOLD)
         title.move_to([0, 4.05, 0])
 
-        x_start = -5.55
-        x_step = 0.94
-        xs = [x_start + i * x_step for i in range(14)]
+        x_start = -5.85
+        x_step = 0.975
+        xs = [x_start + i * x_step for i in range(13)]
 
         y_output = 2.72
         y_head = 1.48
@@ -319,7 +320,7 @@ class LiteReasonArchitecture(Scene):
                 Line([x, y_input + 0.38, 0], [x, y_output - 0.38, 0], color=c["line_soft"], stroke_width=1)
             )
 
-        token_labels = ["x0", "x1", "<bot>", "", "", "x2", "<bot>", "", "", "", "a1", "a2", "a3", "a4"]
+        token_labels = ["x0", "x1", "<bot>", "", "", "x2", "<bot>", "", "", "", "a1", "a2", "a3"]
         input_kinds = [
             "discrete",
             "discrete",
@@ -334,9 +335,8 @@ class LiteReasonArchitecture(Scene):
             "answer",
             "answer",
             "answer",
-            "answer",
         ]
-        input_labels = ["", "", "", "e0", "e1", "", "", "e2", "e3", "e4", "", "", "", ""]
+        input_labels = ["", "", "", "e0", "e1", "", "", "e2", "e3", "e4", "", "", ""]
 
         input_boxes = []
         input_strokes = []
@@ -372,7 +372,7 @@ class LiteReasonArchitecture(Scene):
         lm = box("Language Model", lm_width, lm_h, c["lm"], c["lm_dark"], c["white"], 30, BOLD, radius=0.07)
         lm.move_to([(xs[0] + xs[-1]) / 2, y_lm, 0])
 
-        hidden_labels = ["", "", "h0", "h1", "", "", "h2", "h3", "h4", "", "", "", "", ""]
+        hidden_labels = ["", "", "h0", "h1", "", "", "h2", "h3", "h4", "", "", "", ""]
         hidden_boxes = []
         for i, x in enumerate(xs):
             h = box(hidden_labels[i], hidden_w, hidden_h, c["hidden"], c["hidden_dark"], c["ink"], 20, BOLD)
@@ -389,7 +389,7 @@ class LiteReasonArchitecture(Scene):
             ("Reasoning\nProjector", 2, 3, c["proj"], c["proj_dark"]),
             ("LM Head", 4, 5, c["lm"], c["lm_dark"]),
             ("Reasoning\nProjector", 6, 8, c["proj"], c["proj_dark"]),
-            ("LM Head", 9, 13, c["lm"], c["lm_dark"]),
+            ("LM Head", 9, 12, c["lm"], c["lm_dark"]),
         ]
         module_groups = VGroup()
         for label, a, b, fill, stroke in module_specs:
@@ -401,8 +401,8 @@ class LiteReasonArchitecture(Scene):
             module_strokes.append(stroke)
             module_groups.add(m)
 
-        col_to_module = [0, 0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4]
-        col_is_latent = [False, False, True, True, False, False, True, True, True, False, False, False, False, False]
+        col_to_module = [0, 0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+        col_is_latent = [False, False, True, True, False, False, True, True, True, False, False, False, False]
 
         output_labels = [
             ("x1", "text"),
@@ -455,7 +455,7 @@ class LiteReasonArchitecture(Scene):
             )
 
         feedbacks = []
-        for i in range(len(outputs)):
+        for i in range(len(outputs) - 1):
             target = input_boxes[i + 1]
             p = feedback_path(outputs[i], target)
             feedbacks.append(p)
@@ -579,22 +579,22 @@ class LiteReasonArchitecture(Scene):
                 "feedback": feedback_color,
             }
 
-        def active_route_lines(col, colors):
-            lines = VGroup(
-                *[
-                    line_path(segment, color, width=2.8, opacity=0.32)
-                    for segment, color in zip(
-                        route_segments(col),
-                        [
-                            colors["input_to_lm"],
-                            colors["lm_to_hidden"],
-                            colors["hidden_to_module"],
-                            colors["module_to_output"],
-                        ],
-                    )
-                ],
-                feedbacks[col].copy().set_stroke(color=colors["feedback"], width=2.8, opacity=0.32),
-            )
+        def active_route_lines(col, colors, include_feedback=True):
+            active = [
+                line_path(segment, color, width=2.8, opacity=0.32)
+                for segment, color in zip(
+                    route_segments(col),
+                    [
+                        colors["input_to_lm"],
+                        colors["lm_to_hidden"],
+                        colors["hidden_to_module"],
+                        colors["module_to_output"],
+                    ],
+                )
+            ]
+            if include_feedback and col < len(feedbacks):
+                active.append(feedbacks[col].copy().set_stroke(color=colors["feedback"], width=2.8, opacity=0.32))
+            lines = VGroup(*active)
             lines.set_z_index(3)
             return lines
 
@@ -611,7 +611,7 @@ class LiteReasonArchitecture(Scene):
         feedback_run_time = 1.62
         feedback_lag = 0.76
 
-        def do_step(col, stroke_override=None, band_override=None):
+        def do_step(col, stroke_override=None, band_override=None, stop_after_output=False):
             color = band_override or (c["band_latent"] if col_is_latent[col] else c["band"])
             stroke = stroke_override or (c["flow_latent"] if col_is_latent[col] else c["flow"])
             module = modules[col_to_module[col]]
@@ -620,7 +620,7 @@ class LiteReasonArchitecture(Scene):
             if stroke_override:
                 colors["module_to_output"] = stroke_override
                 colors["feedback"] = stroke_override
-            active_lines = active_route_lines(col, colors)
+            active_lines = active_route_lines(col, colors, include_feedback=not stop_after_output)
             self.play(
                 FadeIn(active_lines),
                 bands[col].animate.set_fill(color, opacity=0.15),
@@ -652,6 +652,10 @@ class LiteReasonArchitecture(Scene):
                 run_time=0.48,
                 rate_func=linear,
             )
+            if stop_after_output:
+                self.play(*reset_column_anims(col), run_time=0.5, rate_func=linear)
+                self.play(FadeOut(active_lines), run_time=0.12)
+                return
             target = col + 1
             animations = reveal_box(input_boxes[target])
             target_label = token_label_for_input(target)
@@ -671,8 +675,9 @@ class LiteReasonArchitecture(Scene):
             self.play(FadeOut(active_lines), run_time=0.12)
 
         def do_final():
-            for col in (9, 10, 11, 12):
+            for col in (9, 10, 11):
                 do_step(col, stroke_override=c["flow_answer"], band_override=c["answer"])
+            do_step(12, stroke_override=c["flow_answer"], band_override=c["answer"], stop_after_output=True)
 
         do_step(0)
 
@@ -685,8 +690,6 @@ class LiteReasonArchitecture(Scene):
                 [
                     normal("we switch to"),
                     key("Latent Mode", c["latent_dark"]),
-                ],
-                [
                     normal("with the sequence's"),
                     key("budget", c["latent_dark"]),
                 ],
@@ -701,8 +704,6 @@ class LiteReasonArchitecture(Scene):
                     normal("During"),
                     key("Latent Mode", c["latent_dark"]),
                     normal("we pass"),
-                ],
-                [
                     normal("the last hidden state"),
                     key(sub("h0"), c["hidden_dark"]),
                 ],
@@ -720,14 +721,11 @@ class LiteReasonArchitecture(Scene):
                 [
                     normal("The"),
                     key("Reasoning Projector", c["proj_dark"]),
-                ],
-                [
                     normal("predicts"),
                     key(sub("e0"), c["latent_dark"]),
-                    normal("and feeds it back"),
                 ],
                 [
-                    normal("as the next"),
+                    normal("which is passed as the next"),
                     key("token embedding", c["latent_dark"]),
                 ],
             ],
@@ -738,13 +736,14 @@ class LiteReasonArchitecture(Scene):
         new_caption(
             [
                 [
-                    normal("When the latent budget ends"),
+                    normal("When the latent budget ends, we switch to"),
+                    key("Discrete Mode", c["lm_dark"]),
                 ],
                 [
-                    normal("the"),
+                    normal("and the"),
                     key("LM Head", c["lm_dark"]),
-                    normal("samples"),
-                    key(sub("x2"), c["lm_dark"]),
+                    normal("samples a token"),
+                    key(f"({sub('x2')})", c["lm_dark"]),
                 ],
             ],
             highlights=[(input_boxes[4], c["latent_dark"]), (modules[2], c["lm_dark"]), (outputs[4], c["lm_dark"])],
@@ -770,15 +769,12 @@ class LiteReasonArchitecture(Scene):
         new_caption(
             [
                 [
-                    normal("The second"),
+                    normal("In this case, the second"),
                     key("<bot> tag", c["discrete_dark"]),
-                    normal("starts a longer"),
                 ],
                 [
-                    key("latent segment", c["latent_dark"]),
-                    key(sub("h2"), c["hidden_dark"]),
-                    normal("to"),
-                    key(sub("e2"), c["latent_dark"]),
+                    normal("starts a longer"),
+                    key("Latent Mode", c["latent_dark"]),
                 ],
             ],
             highlights=[(input_boxes[6], c["discrete_dark"]), (hidden_boxes[6], c["hidden_dark"]), (modules[3], c["proj_dark"]), (outputs[6], c["latent_dark"])],
@@ -788,33 +784,18 @@ class LiteReasonArchitecture(Scene):
         new_caption(
             [
                 [
-                    key(sub("e2"), c["latent_dark"]),
-                    normal("is fed back"),
+                    key("Latent Mode", c["latent_dark"]),
+                    normal("repeats the"),
+                    key("Reasoning Projector", c["proj_dark"]),
+                    normal("step"),
                 ],
                 [
-                    key(sub("h3"), c["hidden_dark"]),
-                    normal("is projected to"),
-                    key(sub("e3"), c["latent_dark"]),
+                    normal("until the budget is used"),
                 ],
             ],
-            highlights=[(input_boxes[7], c["latent_dark"]), (hidden_boxes[7], c["hidden_dark"]), (modules[3], c["proj_dark"]), (outputs[7], c["latent_dark"])],
+            highlights=[(input_boxes[7], c["latent_dark"]), (modules[3], c["proj_dark"]), (outputs[7], c["latent_dark"])],
         )
         do_step(7)
-
-        new_caption(
-            [
-                [
-                    key(sub("e3"), c["latent_dark"]),
-                    normal("is fed back"),
-                ],
-                [
-                    key(sub("h4"), c["hidden_dark"]),
-                    normal("is projected to"),
-                    key(sub("e4"), c["latent_dark"]),
-                ],
-            ],
-            highlights=[(input_boxes[8], c["latent_dark"]), (hidden_boxes[8], c["hidden_dark"]), (modules[3], c["proj_dark"]), (outputs[8], c["latent_dark"])],
-        )
         do_step(8)
 
         new_caption(
@@ -823,13 +804,11 @@ class LiteReasonArchitecture(Scene):
                     normal("Finally the"),
                     key("LM Head", c["lm_dark"]),
                     normal("samples"),
-                ],
-                [
                     key("answer tokens", c["answer_dark"]),
                     normal("like normal"),
                 ],
                 [
-                    normal("one at a time"),
+                    normal("one token at a time"),
                 ],
             ],
             highlights=[(answer_outputs, c["answer_dark"]), (modules[4], c["lm_dark"])],

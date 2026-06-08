@@ -48,13 +48,13 @@ To this end, we propose LiteReason, a latent reasoning method that can be interl
 </div>
 
 <div class="arch-diagram arch-video">
-  <video controls playsinline preload="metadata" poster="/assets/img/litereason/architecture-poster.png" aria-label="Animation explaining how LiteReason switches between LM Head sampling and Reasoning Projector latent embeddings.">
-    <source src="/assets/video/litereason/architecture.mp4" type="video/mp4">
+  <video controls playsinline preload="auto" poster="/assets/img/litereason/architecture-poster.png" aria-label="Animation explaining how LiteReason switches between LM Head sampling and Reasoning Projector latent embeddings.">
+    <source src="/assets/video/litereason/architecture.mp4?v=20260608b" type="video/mp4">
   </video>
   <noscript>
     <img src="/assets/img/litereason/architecture-poster.png" alt="High-level diagram showing LiteReason switching between discrete LM Head sampling and latent Reasoning Projector embeddings.">
   </noscript>
-  <p class="figure-caption"><strong>Figure 1.</strong> LiteReason samples tokens normally until an implicit-thought tag and thought budget trigger latent reasoning, then returns to discrete generation.</p>
+  <p class="figure-caption"><strong>Figure 1.</strong> LiteReason alternates between the model's normal discrete sampling and latent reasoning. In discrete mode, the LM Head samples a token and its embedding is fed back as the next input. If the sampled token is an implicit-thought tag such as <code>&lt;bot&gt;</code> with a thought budget, generation switches to latent mode: the Reasoning Projector maps the last hidden state to a continuous embedding, feeds that embedding back for the budgeted number of steps, and then returns to discrete sampling. The model can switch between these modes multiple times before producing the final answer.</p>
 </div>
 
 ## The LiteReason Framework
@@ -65,7 +65,7 @@ Training follows the paper's three-stage recipe: collect useful traces, initiali
 
 <div class="gen-animation-container" id="gen-animation">
   <span class="gen-label">Generation Preview</span>
-  <div class="gen-output" id="gen-output"></div><span class="gen-cursor" id="gen-cursor"></span>
+  <div class="gen-output" id="gen-output"><span class="gen-cursor" id="gen-cursor"></span></div>
   <div class="gen-controls">
     <button id="gen-play-pause" onclick="toggleAnimation()" title="Play/Pause">&#x23F8;</button>
   </div>
@@ -118,50 +118,13 @@ NCP evaluates a generated plan for the next chapter in a book. We define a contr
   <p class="figure-caption"><strong>Figure 3.</strong> Contrastive Improvement vs. generated tokens on NCP. LiteReason is far cheaper than RL-Trained while substantially outperforming the other latent-reasoning baselines.</p>
 </div>
 
-## What Is the Best LiteReason Design?
-
-The full method best balances high performance with large token reductions. Without projector refresh, traces can over-compress on Flawed Fictions and lengthen on NCP; without the latent projector, outputs stay long. The paper's "What is the Best LiteReason Design?" section gives the full ablation setup.
-
-<div class="litereason-table-wrap">
-  <table class="litereason-table is-wide is-compact">
-    <thead>
-      <tr>
-        <th>Setting</th>
-        <th>FF Acc. (%) &uarr;</th>
-        <th>FF Tokens &darr;</th>
-        <th>NCP CI &uarr;</th>
-        <th>NCP Tokens &darr;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td data-label="Setting"><strong>Full LiteReason</strong></td>
-        <td data-label="FF Acc. (%) &uarr;">87.42</td>
-        <td data-label="FF Tokens &darr;">34.01</td>
-        <td data-label="NCP CI &uarr;">0.478</td>
-        <td data-label="NCP Tokens &darr;"><strong>193.11</strong></td>
-      </tr>
-      <tr>
-        <td data-label="Setting"><strong>No projector refresh</strong></td>
-        <td data-label="FF Acc. (%) &uarr;">85.48</td>
-        <td data-label="FF Tokens &darr;"><strong>8.26</strong></td>
-        <td data-label="NCP CI &uarr;"><strong>0.560</strong></td>
-        <td data-label="NCP Tokens &darr;">622.23</td>
-      </tr>
-      <tr>
-        <td data-label="Setting"><strong>No latent projector</strong></td>
-        <td data-label="FF Acc. (%) &uarr;"><strong>87.58</strong></td>
-        <td data-label="FF Tokens &darr;">260.81</td>
-        <td data-label="NCP CI &uarr;">0.449</td>
-        <td data-label="NCP Tokens &darr;">983.49</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-## Does LiteReason Improve RL Efficiency?
+## LiteReason Improves RL Efficiency: Fewer Tokens, Faster Inference
 
 With the same RL steps and samples, LiteReason uses about half as many generated training tokens and is faster in wall-clock inference.
+
+<p class="litereason-table-caption">
+  <strong>RL training tokens.</strong> The RL and RL + LiteReason runs use the same RL epochs, steps, and samples; LiteReason generates 52.8% fewer tokens on Flawed Fictions and 49.5% fewer on NCP during training.
+</p>
 
 <div class="litereason-table-wrap">
   <table class="litereason-table is-compact">
@@ -186,6 +149,10 @@ With the same RL steps and samples, LiteReason uses about half as many generated
     </tbody>
   </table>
 </div>
+
+<p class="litereason-table-caption">
+  <strong>Inference wall-clock time.</strong> Mean seconds per example, averaged over three sequential repetitions, for Qwen2.5-7B models using vLLM on one H100. <code>b=1</code> runs one example at a time; <code>b=all</code> passes the full test set for parallel computation. The Latent column indicates whether LiteReason uses the latent-reasoning prompt at inference.
+</p>
 
 <div class="litereason-table-wrap">
   <table class="litereason-table is-compact">
@@ -260,6 +227,44 @@ With the same RL steps and samples, LiteReason uses about half as many generated
 </div>
 
 Compared with RL-Trained, LiteReason produces traces 73% smaller on Flawed Fictions and 70% smaller on NCP while still achieving 96% and 69% of the respective RL performance gains.
+
+## LiteReason Combines with a DAPO-Style Length Penalty
+
+A DAPO-style length penalty improves both standard RL and LiteReason on Flawed Fictions. LiteReason plus the penalty reaches 93.55% accuracy with 6.00 generated tokens on average, suggesting the method can combine cleanly with other RL reward shaping.
+
+<div class="litereason-table-wrap">
+  <table class="litereason-table is-compact">
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Accuracy (%) &uarr;</th>
+        <th>Tokens &darr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Method"><strong>RL-Trained</strong></td>
+        <td data-label="Accuracy (%) &uarr;">88.71</td>
+        <td data-label="Tokens &darr;">114.53</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>RL-Trained + LP</strong></td>
+        <td data-label="Accuracy (%) &uarr;">91.94</td>
+        <td data-label="Tokens &darr;">16.65</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>LiteReason</strong></td>
+        <td data-label="Accuracy (%) &uarr;">87.42</td>
+        <td data-label="Tokens &darr;">34.01</td>
+      </tr>
+      <tr>
+        <td data-label="Method"><strong>LiteReason + LP</strong></td>
+        <td data-label="Accuracy (%) &uarr;"><strong>93.55</strong></td>
+        <td data-label="Tokens &darr;"><strong>6.00</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ## Does LiteReason Retain General Model Capabilities?
 
@@ -360,44 +365,6 @@ On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy fro
         <td data-label="Method">LiteReason</td>
         <td data-label="Accuracy (%) &uarr;">15.76</td>
         <td data-label="Tokens &darr;"><strong>849.92</strong></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-## LiteReason Combines with Length-Penalty Rewards
-
-Adding a simple length penalty improves both standard RL and LiteReason on Flawed Fictions. LiteReason plus the length penalty reaches 93.55% accuracy with 6.00 generated tokens on average, suggesting the method can combine cleanly with other RL reward shaping.
-
-<div class="litereason-table-wrap">
-  <table class="litereason-table is-compact">
-    <thead>
-      <tr>
-        <th>Method</th>
-        <th>Accuracy (%) &uarr;</th>
-        <th>Tokens &darr;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td data-label="Method"><strong>RL-Trained</strong></td>
-        <td data-label="Accuracy (%) &uarr;">88.71</td>
-        <td data-label="Tokens &darr;">114.53</td>
-      </tr>
-      <tr>
-        <td data-label="Method"><strong>RL-Trained + LP</strong></td>
-        <td data-label="Accuracy (%) &uarr;">91.94</td>
-        <td data-label="Tokens &darr;">16.65</td>
-      </tr>
-      <tr>
-        <td data-label="Method"><strong>LiteReason</strong></td>
-        <td data-label="Accuracy (%) &uarr;">87.42</td>
-        <td data-label="Tokens &darr;">34.01</td>
-      </tr>
-      <tr>
-        <td data-label="Method"><strong>LiteReason + LP</strong></td>
-        <td data-label="Accuracy (%) &uarr;"><strong>93.55</strong></td>
-        <td data-label="Tokens &darr;"><strong>6.00</strong></td>
       </tr>
     </tbody>
   </table>

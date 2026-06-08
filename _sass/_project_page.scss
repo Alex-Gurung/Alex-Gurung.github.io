@@ -192,6 +192,31 @@ $pp-latent-color:   #E8913A;
     font-size: 1rem;
     color: var(--global-text-color);
     line-height: 1.55;
+
+    code {
+      color: var(--global-text-color);
+      background: rgba(38, 152, 186, 0.08);
+      border-radius: 4px;
+      padding: 0.06rem 0.22rem;
+    }
+  }
+
+  .litereason-table-caption {
+    margin: 1.85rem 0 0.55rem;
+    color: var(--global-text-color);
+    font-size: 0.98rem;
+    line-height: 1.55;
+
+    strong {
+      font-weight: 700;
+    }
+
+    code {
+      color: var(--global-text-color);
+      background: rgba(38, 152, 186, 0.08);
+      border-radius: 4px;
+      padding: 0.05rem 0.2rem;
+    }
   }
 }
 
@@ -199,6 +224,14 @@ $pp-latent-color:   #E8913A;
   width: 100%;
   overflow-x: auto;
   margin: 1.4rem 0 1.2rem;
+}
+
+.litereason-project .litereason-table-caption + .litereason-table-wrap {
+  margin-top: 0.55rem;
+}
+
+.litereason-project .litereason-table-wrap + .litereason-table-caption {
+  margin-top: 2rem;
 }
 
 .litereason-table {
@@ -530,6 +563,11 @@ $pp-latent-color:   #E8913A;
   background: #cdd6f4;
   vertical-align: text-bottom;
   animation: cursor-blink 0.8s step-end infinite;
+
+  &.is-hidden {
+    opacity: 0;
+    animation: none;
+  }
 }
 
 @keyframes cursor-blink {

@@ -1343,6 +1343,7 @@
   function initGenAnimation() {
     var output = document.getElementById('gen-output');
     if (!output) return;
+    var cursor = document.getElementById('gen-cursor');
 
     // Flawed Fictions-style reasoning trace with <implicit_thought> tags
     var seq = [
@@ -1355,13 +1356,30 @@
       { t: 'a', text: '\\boxed{Yes}' }
     ];
 
+    function resetOutput() {
+      output.innerHTML = '';
+      cursor = document.createElement('span');
+      cursor.id = 'gen-cursor';
+      cursor.className = 'gen-cursor';
+      output.appendChild(cursor);
+    }
+
+    function appendBeforeCursor(node) {
+      output.insertBefore(node, cursor);
+    }
+
+    function hasGeneratedText() {
+      return output.textContent.length > 0;
+    }
+
     function run() {
       var thisGen = ++animGen;
-      output.innerHTML = '';
+      resetOutput();
       var delay = 0;
-      var TOKEN_MS = 90;
-      var TAG_MS = 60;
-      var LATENT_STEP_MS = 400;
+      var SPEED_SCALE = 1.1;
+      var TOKEN_MS = 90 * SPEED_SCALE;
+      var TAG_MS = 60 * SPEED_SCALE;
+      var LATENT_STEP_MS = 400 * SPEED_SCALE;
 
       function schedule(ms, fn) {
         delay += ms;
@@ -1377,18 +1395,19 @@
             schedule(TOKEN_MS, function () {
               var s = document.createElement('span');
               s.className = 'gen-token discrete';
-              s.textContent = (output.childNodes.length ? ' ' : '') + word;
-              output.appendChild(s);
+              s.textContent = (hasGeneratedText() ? ' ' : '') + word;
+              appendBeforeCursor(s);
               requestAnimationFrame(function () { s.classList.add('visible'); });
             });
           });
         } else if (seg.t === 'l') {
+          var latentIndicator = null;
           // Render the <implicit_thought> opening tag
           schedule(TOKEN_MS, function () {
             var tag = document.createElement('span');
             tag.className = 'gen-thought-tag';
             tag.textContent = ' <implicit_thought>';
-            output.appendChild(tag);
+            appendBeforeCursor(tag);
             requestAnimationFrame(function () { tag.classList.add('visible'); });
           });
           // Render the number
@@ -1396,7 +1415,7 @@
             var num = document.createElement('span');
             num.className = 'gen-thought-tag';
             num.textContent = String(seg.n);
-            output.appendChild(num);
+            appendBeforeCursor(num);
             requestAnimationFrame(function () { num.classList.add('visible'); });
           });
           // Render closing tag
@@ -1404,11 +1423,11 @@
             var ctag = document.createElement('span');
             ctag.className = 'gen-thought-tag';
             ctag.textContent = '</implicit_thought>';
-            output.appendChild(ctag);
+            appendBeforeCursor(ctag);
             requestAnimationFrame(function () { ctag.classList.add('visible'); });
           });
           // Show pulsing latent dots
-          schedule(100, function () {
+          schedule(100 * SPEED_SCALE, function () {
             var indicator = document.createElement('span');
             indicator.className = 'gen-latent-indicator';
             for (var i = 0; i < seg.n; i++) {
@@ -1416,14 +1435,14 @@
               dot.className = 'gen-latent-dot';
               indicator.appendChild(dot);
             }
-            output.appendChild(indicator);
+            latentIndicator = indicator;
+            appendBeforeCursor(indicator);
           });
           // Wait for latent steps to "complete"
           delay += seg.n * LATENT_STEP_MS;
           schedule(0, function () {
             // Remove the pulsing dots after latent reasoning completes
-            var dots = output.querySelector('.gen-latent-indicator:last-of-type');
-            if (dots) dots.remove();
+            if (latentIndicator && latentIndicator.parentNode) latentIndicator.remove();
           });
         } else if (seg.t === 'a') {
           schedule(TOKEN_MS * 2, function () {
@@ -1431,14 +1450,17 @@
             s.className = 'gen-token discrete';
             s.textContent = ' ' + seg.text;
             s.style.fontWeight = 'bold';
-            output.appendChild(s);
+            appendBeforeCursor(s);
             requestAnimationFrame(function () { s.classList.add('visible'); });
           });
         }
       });
 
       // Replay after pause
-      schedule(3500, function () { run(); });
+      schedule(900 * SPEED_SCALE, function () {
+        cursor.classList.add('is-hidden');
+      });
+      schedule(2600 * SPEED_SCALE, function () { run(); });
     }
 
     window.toggleAnimation = function () {
@@ -1451,6 +1473,7 @@
         btn.dataset.paused = '1';
         btn.textContent = '\u25B6';
         animGen++; // invalidate all pending callbacks
+        if (cursor) cursor.classList.add('is-hidden');
       }
     };
 
