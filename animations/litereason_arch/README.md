@@ -18,8 +18,9 @@ Downsample and compress it for the site:
 
 ```bash
 ffmpeg -i .manim_review/litereason_arch/videos/litereason_arch/4320p60/LiteReasonArchitecture.mp4 \
-  -vf scale=1920:1080 \
-  -c:v libx264 -preset slow -crf 22 -pix_fmt yuv420p -movflags +faststart -an \
+  -vf "scale=1920:1080:flags=lanczos,fps=30" \
+  -c:v libx264 -preset slow -crf 21 -profile:v high -level:v 4.1 -pix_fmt yuv420p \
+  -g 15 -keyint_min 15 -sc_threshold 0 -movflags +faststart -an \
   assets/video/litereason/architecture.mp4
 ```
 
