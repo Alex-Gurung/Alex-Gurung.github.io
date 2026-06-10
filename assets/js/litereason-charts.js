@@ -1372,6 +1372,35 @@
       return output.textContent.length > 0;
     }
 
+    function setButtonPaused(paused) {
+      var btn = document.getElementById('gen-play-pause');
+      if (!btn) return;
+      btn.dataset.paused = paused ? '1' : '0';
+      btn.textContent = paused ? '▶' : '⏸';
+    }
+
+    // Static render of the full trace for prefers-reduced-motion.
+    function renderStatic() {
+      animGen++;
+      resetOutput();
+      seq.forEach(function (seg) {
+        var s = document.createElement('span');
+        if (seg.t === 'd') {
+          s.className = 'gen-token discrete visible';
+          s.textContent = (hasGeneratedText() ? ' ' : '') + seg.w.join(' ');
+        } else if (seg.t === 'l') {
+          s.className = 'gen-thought-tag visible';
+          s.textContent = ' <implicit_thought>' + seg.n + '</implicit_thought>';
+        } else {
+          s.className = 'gen-token discrete visible';
+          s.textContent = ' ' + seg.text;
+          s.style.fontWeight = 'bold';
+        }
+        appendBeforeCursor(s);
+      });
+      cursor.classList.add('is-hidden');
+    }
+
     function run() {
       var thisGen = ++animGen;
       resetOutput();
@@ -1456,28 +1485,31 @@
         }
       });
 
-      // Replay after pause
+      // Finish: hide the cursor and offer replay instead of looping forever.
       schedule(900 * SPEED_SCALE, function () {
         cursor.classList.add('is-hidden');
+        setButtonPaused(true);
       });
-      schedule(2600 * SPEED_SCALE, function () { run(); });
     }
 
     window.toggleAnimation = function () {
       var btn = document.getElementById('gen-play-pause');
       if (btn.dataset.paused === '1') {
-        btn.dataset.paused = '0';
-        btn.textContent = '\u23F8';
+        setButtonPaused(false);
         run();
       } else {
-        btn.dataset.paused = '1';
-        btn.textContent = '\u25B6';
+        setButtonPaused(true);
         animGen++; // invalidate all pending callbacks
         if (cursor) cursor.classList.add('is-hidden');
       }
     };
 
-    run();
+    if (prefersReducedMotion) {
+      renderStatic();
+      setButtonPaused(true);
+    } else {
+      run();
+    }
   }
 
   /* ── Chart draw functions ────────────────────────────────────────────────── */
