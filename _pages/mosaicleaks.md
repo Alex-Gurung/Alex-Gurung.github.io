@@ -4,6 +4,7 @@ project_class: mosaic-project
 title: "MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents"
 permalink: /mosaicleaks/
 sitemap: false
+navbar_fixed: false
 authors:
   - name: Alexander Gurung
     affiliation: "2,&dagger;"
