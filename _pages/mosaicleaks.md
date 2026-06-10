@@ -4,7 +4,6 @@ project_class: mosaic-project
 title: "MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents"
 permalink: /mosaicleaks/
 sitemap: false
-navbar_fixed: false
 authors:
   - name: Alexander Gurung
     affiliation: "2,&dagger;"
@@ -55,7 +54,7 @@ bibtex: |
 ## TL;DR
 
 <div class="tldr">
-<strong>MosaicLeaks</strong> studies a core privacy risk in deep research agents: external web queries can leak information from private local documents, especially when individually harmless queries become revealing in aggregate. <strong>Privacy-Aware Deep Research (PA-DR)</strong> trains the agent with situational task rewards plus a learned privacy reward, improving strict chain success from 48.7% to 58.7% while reducing answer/full-information leakage from 34.0% to 9.9%.
+<strong>MosaicLeaks</strong> studies a core privacy risk in deep research agents: external web queries can leak information from private local documents, especially when individually harmless queries become revealing in aggregate. <strong>Privacy Aware-Deep Research (PA-DR)</strong> trains the agent with situational task rewards plus a learned privacy reward, improving strict chain success from 48.7% to 58.7% while reducing privacy leakage from 34.0% to 9.9%.
 </div>
 
 ## Privacy Leakage in Deep-Research Agents
@@ -64,7 +63,7 @@ Deep research agents increasingly combine sensitive enterprise data with externa
 
 This risk is compounded by the <em>mosaic effect</em>, where individually harmless fragments become revealing in aggregate. MosaicLeaks treats web queries as the leakage channel: an adversary observes only the cumulative web queries and tries to infer private enterprise information.
 
-We measure leakage in three ways. <strong>Intent leakage</strong> asks whether the adversary can predict the research questions. <strong>Answer leakage</strong> asks whether it can answer supplied private questions about enterprise documents. <strong>Full-information leakage</strong> asks whether it can independently state true private claims without seeing those questions.
+We measure leakage in three ways. <strong>Intent leakage</strong> asks whether the adversary can predict the research questions. <strong>Answer leakage</strong> asks whether it can answer supplied private questions about enterprise documents. <strong>Full-information leakage</strong> asks whether it can independently state true private claims without seeing those questions. As a single headline metric, we say a rollout exhibits <strong>privacy leakage</strong> if it shows either answer or full-information leakage.
 
 <div class="mosaic-figure mosaic-narrow mosaic-compact-figure">
   <img src="/assets/img/mosaicleaks/mosaic-effect.png" alt="Diagram showing how three visible web queries can let an adversary infer intent leakage, answer leakage, and full-information leakage." loading="lazy">
@@ -132,7 +131,7 @@ At each iteration, the model can use four tools. <strong>Plan</strong> produces 
 
 Previous work often proposes a naive intervention: simply add privacy-aware instructions to the Plan prompt. We test a prompt that discourages web queries that may leak local information, and evaluate its effect on performance, leakage, and query behavior.
 
-The prompt helps slightly for some models, but its effect is inconsistent and significant leakage remains. It also often has a negative effect on task performance. For Qwen3-4B, the prompt lowers answer/full-information leakage from 34.0% to 25.5%, but strict chain success drops from 48.7% to 44.5%. The primary behavioral change appears to be fewer web queries, not consistently safer query construction.
+The prompt helps slightly for some models, but its effect is inconsistent and significant leakage remains. It also often has a negative effect on task performance. For Qwen3-4B, the prompt lowers privacy leakage from 34.0% to 25.5%, but strict chain success drops from 48.7% to 44.5%. The primary behavioral change appears to be fewer web queries, not consistently safer query construction.
 
 <div class="mosaic-figure">
   <img src="/assets/img/mosaicleaks/privacy-prompt-accuracy-leakage.png" alt="Bar charts comparing strict chain success and privacy leakage with and without privacy prompting across evaluated models." loading="lazy">
@@ -143,16 +142,19 @@ The prompt helps slightly for some models, but its effect is inconsistent and si
 
 ## Privacy Aware-Deep Research (PA-DR) via _Situational_ Reinforcement Learning
 
-We also investigate training exclusively for task performance. This improves strict chain success from 48.7% to 59.3%, but worsens answer/full-information leakage from 34.0% to 51.7%, as the model learns to include more information in its web queries.
+We also investigate training exclusively for task performance. This improves strict chain success from 48.7% to 59.3%, but worsens privacy leakage from 34.0% to 51.7%, as the model learns to include more information in its web queries.
 
 To train long agent trajectories, we use <em>situational</em> rewards. Instead of giving every trainable call in a rollout the same outcome-level advantage, we group calls by hop, stage, and situation, then reward the behavior that is locally well defined. For example, a Plan call is rewarded for searching the correct source and retrieving the gold document; if the gold document is already available, not searching receives the maximum reward. This improves both outcome-based performance and training efficiency.
 
 PA-DR adds a learned privacy reward on top of the situational task reward. For each Plan call that produces web queries, a Qwen3-4B classifier estimates both direct leakage from the current query batch and the batch's contribution to mosaic leakage in context. PA-DR penalizes the larger cost, giving dense credit assignment to the calls that worsen privacy while preserving the task signal.
 
 <div class="mosaic-figure">
-  <video controls playsinline preload="metadata" poster="/assets/img/mosaicleaks/training-tradeoff-poster.png">
+  <video controls playsinline preload="metadata" poster="/assets/img/mosaicleaks/training-tradeoff-poster.png" aria-label="Animation showing how task-only training improves chain success but worsens privacy leakage, while PA-DR keeps the success gains and sharply reduces leakage.">
     <source src="/assets/video/mosaicleaks/training-tradeoff.mp4" type="video/mp4">
   </video>
+  <noscript>
+    <img src="/assets/img/mosaicleaks/training-tradeoff-poster.png" alt="Chart comparing strict chain success and privacy leakage for the base model, task-reward training, and PA-DR training.">
+  </noscript>
 </div>
 
 <div class="mosaic-results" aria-label="Training result comparison">
@@ -197,6 +199,8 @@ PA-DR adds a learned privacy reward on top of the situational task reward. For e
   </div>
 </div>
 
+The privacy prompt also stacks with training: PA-DR plus the prompt reaches 59.3% strict chain success with just 7.6% privacy leakage, matching the task-only model's success rate at a fraction of its leakage.
+
 ## Situational Rewards Provide Dense Credit
 
 Outcome-only RL scores each rollout once. After advantage normalization, every trainable call in that rollout receives the same advantage, so a successful rollout can reinforce a leaky or locally wrong call while a failed rollout can penalize a locally useful call.
@@ -207,6 +211,9 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
   <video controls playsinline preload="metadata" poster="/assets/img/mosaicleaks/situational-reward-poster.png" aria-label="Animation explaining rollout-level outcome advantages, situation-specific reward groups, and PA-DR privacy penalties across MosaicLeaks rollouts.">
     <source src="/assets/video/mosaicleaks/situational-reward.mp4" type="video/mp4">
   </video>
+  <noscript>
+    <img src="/assets/img/mosaicleaks/situational-reward-poster.png" alt="Diagram comparing rollout-level outcome advantages with situation-specific reward groups and PA-DR privacy penalties.">
+  </noscript>
 </div>
 
 <table class="mosaic-table">
@@ -251,7 +258,7 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
 <div class="mosaic-figure">
   <img src="/assets/img/mosaicleaks/training-sample-efficiency.png" alt="Plots showing strict chain success and privacy leakage over generated training samples for outcome, task, and PA-DR rewards." loading="lazy">
   <div class="mosaic-figure-caption">
-    Situational rewards reach outcome-reward-level task success using roughly 5-6x fewer generated samples. PA-DR keeps the sample-efficiency benefit while sharply reducing leakage.
+    Situational rewards reach outcome-reward-level task success using up to 6.6x fewer generated samples. PA-DR keeps most of the sample-efficiency benefit (5.2x fewer) while sharply reducing leakage.
   </div>
 </div>
 
