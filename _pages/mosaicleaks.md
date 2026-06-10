@@ -3,7 +3,8 @@ layout: project_page
 project_class: mosaic-project
 title: "MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents"
 permalink: /mosaicleaks/
-sitemap: false
+description: "MosaicLeaks measures how deep research agents leak private enterprise information through web queries, and PA-DR trains agents with situational task rewards plus a learned privacy reward to prevent it."
+og_image: https://alexgurung.me/assets/img/mosaicleaks/mosaic-effect.png
 authors:
   - name: Alexander Gurung
     affiliation: "2,&dagger;"
@@ -35,7 +36,7 @@ author_notes:
   - "&dagger; Work done at ServiceNow AI Research"
   - "* Equal contribution"
 links:
-  - text: arXiv
+  - text: arxiv
     url: "https://arxiv.org/abs/2605.30727"
     icon: "fas fa-file-alt"
 bibtex: |

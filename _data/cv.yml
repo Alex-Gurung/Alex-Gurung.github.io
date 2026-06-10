@@ -1,15 +1,3 @@
-- title: General Information
-  type: map
-  contents:
-    - name: Full Name
-      value: Alexander Gurung
-    - name: Email
-      value: aag1234@gmail.com
-    - name: GitHub
-      value: <a href="https://github.com/alex-gurung">github.com/alex-gurung</a>
-    - name: Citizenship
-      value: US and UK dual citizen
-
 - title: Education
   type: time_table
   contents:
@@ -35,9 +23,8 @@
 - title: Research Interests
   type: list
   contents:
-    - Efficient reinforcement learning for long-story generation and understanding
-    - Long-horizon and creative reasoning for complex many-agent domains
-    - Tasks that require long-term planning
+    - Efficient reinforcement learning for long-horizon, unverifiable tasks like long-story generation
+    - Credit assignment and reward design for complex agent orchestration
 
 - title: Research Experience
   type: time_table
@@ -97,30 +84,3 @@
         - Designed mixture-of-experts neural architectures to improve region-specific auto-moderation performance
         - Researched multi-task learning loss functions and architectures
         - Deployed models to production and measured performance improvements over time
-
-- title: Publications
-  type: time_table
-  contents:
-    - title: Lightweight Latent Reasoning for Narrative Tasks
-      institution: Alexander Gurung, Esmeralda S. Whitammer, Mirella Lapata
-      year: "TACL 2026"
-
-    - title: Long-Context Reasoning Through Proxy-Based Chain-of-Thought Tuning
-      institution: Miao Li, Irina Saparina, Alexander Gurung, Mirella Lapata
-      year: "ACL 2026"
-
-    - title: Who Gets Cited Most? Benchmarking Long-Context Numerical Reasoning on Scientific Articles
-      institution: Miao Li, Alexander Gurung, Irina Saparina, Mirella Lapata
-      year: "2026"
-
-    - title: Learning to Reason for Long-Form Story Generation
-      institution: Alexander Gurung, Mirella Lapata
-      year: "COLM 2025"
-
-    - title: "CHIRON: Rich Character Representations in Long-Form Narratives"
-      institution: Alexander Gurung, Mirella Lapata
-      year: "EMNLP Findings 2024"
-
-    - title: Infusing Commonsense World Models with Graph Knowledge
-      institution: Alexander Gurung, Mojtaba Komeili, Arthur Szlam, Jason Weston, Jack Urbanek
-      year: "2023"

@@ -3,7 +3,8 @@ layout: project_page
 project_class: litereason-project
 title: "Lightweight Latent Reasoning for Narrative Tasks"
 permalink: /litereason/
-sitemap: false
+description: "LiteReason adds a lightweight Reasoning Projector so RL-trained LLMs can interleave latent and discrete reasoning, cutting reasoning traces by 70-92% on narrative tasks (TACL 2026)."
+og_image: https://alexgurung.me/assets/img/litereason/architecture-poster.png
 authors:
   - name: Alexander Gurung
     affiliation: "1"
@@ -18,7 +19,7 @@ affiliations:
     name: "CIFAR Fellow"
 venue: "TACL 2026"
 links:
-  - text: arXiv
+  - text: arxiv
     url: "https://arxiv.org/abs/2512.02240"
     icon: "fas fa-file-alt"
   - text: Code
@@ -38,7 +39,7 @@ bibtex: |
 ## TL;DR
 
 <div class="tldr">
-<strong>LiteReason</strong> adds a lightweight <em>Reasoning Projector</em> to an LLM, letting RL-trained models interleave normal token generation with continuous latent reasoning. On narrative tasks, it reaches 69-96% of the gains from non-latent RL while cutting final reasoning traces by 70-73% and RL training tokens by about half. The savings come without hurting general capabilities (GSM-Hard, AIME25, MMLU-Redux), and stack with length-penalty reward shaping &mdash; producing the shortest <em>and</em> most performant model.
+<strong>LiteReason</strong> adds a lightweight <em>Reasoning Projector</em> to an LLM, letting RL-trained models interleave normal token generation with continuous latent reasoning. On narrative tasks, it reaches 69-96% of the gains from non-latent RL while cutting final reasoning traces by 70-73% and RL training tokens by about half. The savings come without hurting general capabilities (GSM-Hard, AIME25, MMLU-Redux), and stack with length-penalty reward shaping, producing the shortest <em>and</em> most performant model.
 </div>
 
 <div class="arch-diagram arch-video">
