@@ -10,9 +10,7 @@
   </head>
 
   <!-- Body -->
-  {%- assign navbar_fixed = site.navbar_fixed -%}
-  {%- if page.navbar_fixed != nil -%}{%- assign navbar_fixed = page.navbar_fixed -%}{%- endif %}
-  <body class="{% if navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
+  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
 
     <!-- Header -->
     {%- include header.html %}

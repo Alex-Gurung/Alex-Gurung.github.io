@@ -4,7 +4,6 @@ project_class: litereason-project
 title: "Lightweight Latent Reasoning for Narrative Tasks"
 permalink: /litereason/
 sitemap: false
-navbar_fixed: false
 authors:
   - name: Alexander Gurung
     affiliation: "1"
