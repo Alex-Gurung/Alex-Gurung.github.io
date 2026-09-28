@@ -73,11 +73,23 @@ body:has(.cd-project) { background: #ffffff; }
 .cd-hero-tree .lf.t4, .cd-vine .lf.t4 { fill: #7fa23f; }
 .cd-hero-tree .lf.t5, .cd-vine .lf.t5 { fill: #e0b43c; }
 .cd-hero-tree .rib { stroke: var(--cd-orn); fill: none; opacity: 0.75; }
+.cd-hero-tree.is-grown .lf.m-iid { fill: var(--cd-iid); stroke: #004f7c; }
+.cd-hero-tree.is-grown .lf.m-groot { fill: var(--cd-groot); stroke: #a34700; }
+.cd-hero-tree.is-grown .lf.m-vs { fill: var(--cd-vs); stroke: #006b4e; }
 .cd-hero-tree .path { fill: none; stroke-width: 1.9; stroke-linecap: round; opacity: 0.95; transition-property: stroke-dashoffset, opacity; }
+.cd-hero-tree .p-iid { stroke: var(--cd-iid); }
+.cd-hero-tree .p-groot { stroke: var(--cd-groot); }
+.cd-hero-tree .p-vs { stroke: var(--cd-vs); }
 .cd-hero-tree[data-focus] .path { opacity: 0.1; }
 .cd-hero-tree.is-grown[data-focus] .lf[class*="m-"] { fill: #cbd67a; stroke: var(--cd-orn); }
+.cd-hero-tree.is-grown[data-focus="iid"] .lf.m-iid { fill: var(--cd-iid); stroke: #004f7c; }
+.cd-hero-tree.is-grown[data-focus="groot"] .lf.m-groot { fill: var(--cd-groot); stroke: #a34700; }
+.cd-hero-tree.is-grown[data-focus="vs"] .lf.m-vs { fill: var(--cd-vs); stroke: #006b4e; }
 .cd-hero-tree .lf[class*="m-"] + .rib { transition: stroke 0.4s ease; }
+.cd-hero-tree.is-grown .lf.m-iid + .rib, .cd-hero-tree.is-grown .lf.m-groot + .rib, .cd-hero-tree.is-grown .lf.m-vs + .rib { stroke: #fff; }
 .cd-hero-tree.is-grown[data-focus] .lf[class*="m-"] + .rib { stroke: var(--cd-orn); }
+.cd-hero-tree.is-grown[data-focus="iid"] .lf.m-iid + .rib, .cd-hero-tree.is-grown[data-focus="groot"] .lf.m-groot + .rib, .cd-hero-tree.is-grown[data-focus="vs"] .lf.m-vs + .rib { stroke: #fff; }
+.cd-hero-tree[data-focus="iid"] .p-iid, .cd-hero-tree[data-focus="groot"] .p-groot, .cd-hero-tree[data-focus="vs"] .p-vs { opacity: 1; }
 .cd-hero-tree .dot { fill: var(--cd-orn); }
 .cd-hero-tree .ground { stroke: var(--cd-orn); stroke-width: 1.2; }
 .cd-hero-tree .legend { pointer-events: auto; font-family: var(--cd-tex); }
@@ -86,6 +98,7 @@ body:has(.cd-project) { background: #ffffff; }
 .cd-hero-tree .legend .lchip { fill: #fff; stroke: #cfcfcf; stroke-width: 1; transition: stroke 0.15s, fill 0.15s; }
 .cd-hero-tree .legend .item:hover .lchip, .cd-hero-tree .legend .item:focus .lchip { stroke: var(--cd-ink); fill: #f4f4f4; }
 .cd-hero-tree .legend .item:focus { outline: none; }
+.cd-hero-tree .legend .hint { font-size: 11px; font-style: italic; fill: var(--cd-muted); }
 
 /* Wind: drawn strokes that blow across the tree during a gust */
 .cd-tree-wind { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
