@@ -9,7 +9,6 @@
   if (!boxes.length) return;
 
   var NS = 'http://www.w3.org/2000/svg';
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var INK = { d: '#3b2a20', r: '#962c2f', c: '#f6ecd6', m: '#c49a3a' };
   var ROWS = 9;          // cells across the band
   var TILE = 8;          // cells along the band per repeat
@@ -79,7 +78,6 @@
 
   function Frame(box) {
     this.box = box;
-    this.revealed = reduce;
     this.svg = el('svg', { class: 'dkb-frame', 'aria-hidden': 'true', 'shape-rendering': 'crispEdges' });
     box.insertBefore(this.svg, box.firstChild);
     box.classList.add('dkb');
@@ -102,9 +100,7 @@
     svg.setAttribute('height', H);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
 
-    var clipId = 'dkb-clip-' + Math.random().toString(36).slice(2, 8);
-    var cp = el('clipPath', { id: clipId }, el('defs', null, svg));
-    var g = el('g', { 'clip-path': 'url(#' + clipId + ')' }, svg);
+    var g = el('g', null, svg);
 
     // A band from a to b along one side. Tiles are centred, so both ends
     // meet the corners symmetrically; any remainder is plain ground.
@@ -124,7 +120,7 @@
       paint(el('g', { transform: 'translate(' + x + ',' + y + ')' }, g), ROWS, ROWS, corner, cell);
     }
 
-    var innerW = W - 2 * F, innerH = H - 2 * F, right = W - F, bottom = H - F, mid = W / 2;
+    var innerW = W - 2 * F, innerH = H - 2 * F, right = W - F, bottom = H - F;
     var sideW = narrow ? 1.5 : F;     // width of the side run (a thread on phones)
     if (narrow) {
       run(true, 0, 0, W);
@@ -142,57 +138,6 @@
       cornerAt(0, bottom);
       run(false, 0, F, innerH);
     }
-
-    // Weave-in: two threads leave the title at the top centre, run out along
-    // the top band, down the left and right sides together, and meet in the
-    // middle of the bottom band. Each piece grows along one axis from `from`.
-    var pieces = [];
-    [-1, 1].forEach(function (side) {
-      var left = side < 0;
-      // top band: from the centre out to the edge (corner included)
-      pieces.push({ x: left ? 0 : mid, y: 0, w: mid, h: F, axis: 'x', from: left ? 'end' : 'start', len: mid });
-      // side: down from under the top band to the bottom band
-      pieces.push({ x: left ? 0 : W - sideW, y: F, w: sideW, h: innerH, axis: 'y', from: 'start', len: innerH });
-      // bottom band: from the edge (corner included) in to the centre
-      pieces.push({ x: left ? 0 : mid, y: H - F, w: mid, h: F, axis: 'x', from: left ? 'start' : 'end', len: mid });
-    });
-    var perSide = mid + innerH + mid;
-    pieces.forEach(function (pc, i) {
-      var k = i % 3;
-      pc.at = k === 0 ? 0 : k === 1 ? mid : mid + innerH;   // distance along the thread where it starts
-      pc.r = el('rect', { x: pc.x, y: pc.y, width: 0, height: 0 }, cp);
-    });
-    function set(p) {
-      var dist = p * perSide;
-      pieces.forEach(function (pc) {
-        var l = Math.max(0, Math.min(pc.len, dist - pc.at));
-        l = p >= 1 ? pc.len : Math.round(l / cell) * cell;   // advance a cell at a time
-        if (pc.axis === 'x') {
-          pc.r.setAttribute('y', pc.y); pc.r.setAttribute('height', pc.h);
-          pc.r.setAttribute('width', l);
-          pc.r.setAttribute('x', pc.from === 'start' ? pc.x : pc.x + pc.w - l);
-        } else {
-          pc.r.setAttribute('x', pc.x); pc.r.setAttribute('width', pc.w);
-          pc.r.setAttribute('height', l);
-          pc.r.setAttribute('y', pc.from === 'start' ? pc.y : pc.y + pc.h - l);
-        }
-      });
-    }
-    this.set = set;
-    set(this.revealed ? 1 : 0);
-  };
-
-  Frame.prototype.reveal = function () {
-    if (this.revealed) return;
-    this.revealed = true;
-    var self = this, t0 = null, DUR = 1600;
-    function tick(t) {
-      if (t0 === null) t0 = t;
-      var p = Math.min(1, (t - t0) / DUR);
-      self.set(1 - Math.pow(1 - p, 2));
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
   };
 
   var frames = Array.prototype.map.call(boxes, function (b) { return new Frame(b); });
@@ -203,17 +148,4 @@
   if ('ResizeObserver' in window) frames.forEach(function (f) { new ResizeObserver(rebuild).observe(f.box); });
   window.addEventListener('resize', rebuild);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(rebuild);
-
-  if (reduce || !('IntersectionObserver' in window)) {
-    frames.forEach(function (f) { f.revealed = true; f.set(1); });
-    return;
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      frames.forEach(function (f) { if (f.box === e.target) f.reveal(); });
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.35 });
-  frames.forEach(function (f) { io.observe(f.box); });
 })();
