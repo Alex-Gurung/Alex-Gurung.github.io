@@ -101,7 +101,7 @@
   <figcaption><b>Figure 5.</b> Frontier pass@<i>k</i> after training. Dotted lines are models trained only on strategic samples that <em>failed</em> the tests; they still sit well above every IID-trained model. Held-out is the mean of LiveCodeBench (LCB) and OJBench. Values come from the raw samples and can differ from the paper's table by 0.1 due to rounding.</figcaption>
 </figure>
 
-<h2 id="teacher" data-nav="Teacher">Self-generated diversity beats IID sampling from a large teacher</h2>
+<h2 id="teacher" data-nav="Teacher Distillation">Self-generated diversity beats IID sampling from a large teacher</h2>
 
 <p>Sampling IID from Qwen3-235B-A22B instead of the student raises held-out pass@64 from 5.8 to 13.4. The student's own GROOT and VS samples reach 20.1 and 22.8. Running GROOT or VS with the teacher does worse than running them with the student, possibly because the teacher's traces are further from the student's distribution. With Nemotron3-Nano-4B and a Nemotron3-Super-120B teacher, the teacher improves every method, including GROOT and VS, but the student's own GROOT and VS data (19.9 and 20.8) still beat IID data from the teacher (13.8).</p>
 
@@ -158,7 +158,7 @@
   <figcaption><b>Figure 9.</b> Frontier pass@1 of the initial population (&#9675;) and after 10 aggregation rounds (&#9679;), mean of three runs.</figcaption>
 </figure>
 
-<h2 id="ncp" data-nav="Stories">Strategic sampling for diversity also helps story planning</h2>
+<h2 id="ncp" data-nav="Narrative Task">Strategic sampling for diversity also helps story planning</h2>
 
 <p>Next-Chapter Prediction (<a href="https://arxiv.org/abs/2503.22828">Gurung &amp; Lapata, 2025</a>) asks the model to plan the next ~200 words of a novel. A plan's score is how much it lowers the perplexity of the real passage. This task has a much larger approach space and a continuous reward (i.e., no binary correctness), making it a useful test of whether diversity transfers beyond traditional tasks. To get a pass/fail signal, we say a plan clears the <em>bar</em> if it improves perplexity by at least a threshold (e.g., 15%). Figure&nbsp;10 shows 32 plans from each sampler for one section.</p>
 
