@@ -885,12 +885,12 @@
         var y = top + i * rowH + rowH / 2 + 4, c = COLOR[r.s], a = sx(r.self[2]), b = sx(r.teach[2]);
         svg('text', { x: L - 10, y: y + 5, 'text-anchor': 'end', class: 'cd-lab' }, root, r.name);
         var ln = svg('line', { x1: Math.min(a, b), x2: Math.max(a, b), y1: y, y2: y, stroke: c, 'stroke-width': 2, opacity: 0.45 }, root);
-        svg('circle', { cx: b, cy: y, r: 6.5, fill: '#fff', stroke: c, 'stroke-width': 2 }, root);
-        var dot = svg('circle', { cx: a, cy: y, r: 6.5, fill: c }, root);
+        svg('circle', { cx: a, cy: y, r: 6.5, fill: c }, root);
+        var ring = svg('circle', { cx: b, cy: y, r: 6.5, fill: '#fff', stroke: c, 'stroke-width': 2 }, root);
         var close = Math.abs(a - b) < 44;
-        var sv = svg('text', { x: a, y: y - 12, 'text-anchor': 'middle', class: 'cd-val' }, root, r.self[2].toFixed(1));
-        moves.push({ ln: ln, dot: dot, sv: sv, a: a, b: b, i: i });
-        svg('text', { x: b, y: close ? y + 23 : y - 12, 'text-anchor': 'middle', class: 'cd-lab-muted' }, root, r.teach[2].toFixed(1));
+        svg('text', { x: a, y: y - 12, 'text-anchor': 'middle', class: 'cd-val' }, root, r.self[2].toFixed(1));
+        var tv = svg('text', { x: b, y: close ? y + 23 : y - 12, 'text-anchor': 'middle', class: 'cd-lab-muted' }, root, r.teach[2].toFixed(1));
+        moves.push({ ln: ln, ring: ring, tv: tv, a: a, b: b, i: i });
         var hit = svg('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }, root);
         hover(hit, function () {
           return sw(c) + '<b>' + r.name + '</b> (pass@1 / 8 / 64)<br>self: ' + r.self.join(' / ') + '<br>teacher: ' + r.teach.join(' / ');
@@ -898,17 +898,19 @@
       });
       if ((!drawn6 || replay6) && !REDUCED) {
         moves.forEach(function (m) {
-          m.dot.setAttribute('cx', m.b); m.ln.setAttribute('x1', m.b); m.ln.setAttribute('x2', m.b); m.sv.style.opacity = 0;
+          m.ring.setAttribute('cx', m.a); m.ring.style.opacity = 0; m.ln.setAttribute('x1', m.a); m.ln.setAttribute('x2', m.a); m.tv.style.opacity = 0;
         });
         (replay6 ? function (f) { f(); } : function (f) { whenSeen(host, f); })(function () {
           moves.forEach(function (m) {
             var delay = (replay6 ? 0 : 300) + m.i * 350;
+            // the teacher's point leaves the student's and slides to where teacher data lands
             tween(800, delay, function (t) {
-              var x = m.b + (m.a - m.b) * t;
-              m.dot.setAttribute('cx', x);
-              m.ln.setAttribute('x1', Math.min(x, m.b)); m.ln.setAttribute('x2', Math.max(x, m.b));
+              var x = m.a + (m.b - m.a) * t;
+              m.ring.setAttribute('cx', x);
+              m.ring.style.opacity = Math.min(1, t * 5);
+              m.ln.setAttribute('x1', Math.min(x, m.a)); m.ln.setAttribute('x2', Math.max(x, m.a));
             });
-            fadeIn(m.sv, delay + 700);
+            fadeIn(m.tv, delay + 700);
           });
         });
       }
@@ -1051,9 +1053,9 @@
     }
 
     var rerender = responsive(host, function (W) {
-      legend(host, [{ label: 'before RL', color: COLOR.ink2, kind: 'dash' }, { label: 'after RL', color: COLOR.ink2, kind: 'line' }, { label: '± 1 s.e. across RL seeds', color: '#bdbdbd', kind: 'dot' }]);
+      legend(host, [{ label: 'before RL', color: COLOR.ink2, kind: 'dash' }, { label: 'after RL', color: COLOR.ink2, kind: 'line' }]);
       var cols = W < 600 ? 2 : 4, rows = Math.ceil(ARMS.length / cols);
-      var gapX = 22, padL = 34, padR = 12, pw = (W - padL - padR - gapX * (cols - 1)) / cols, ph = 170, titleH = 34, axH = 22;
+      var gapX = 22, padL = 34, padR = 12, pw = (W - padL - padR - gapX * (cols - 1)) / cols, ph = 170, titleH = 34, axH = 40;
       var H = rows * (titleH + ph + axH) + (rows - 1) * 14;
       var YMAX = { qwen: { macro: 20, lcb: 25, ojbench: 15, cobalt: 45 }, n3n: { macro: 40, lcb: 45, ojbench: 35, cobalt: 60 } };
       var ymax = YMAX[model][bench], yStep = ymax >= 40 ? 20 : ymax > 15 ? 10 : 5, yTicks = [];
@@ -1079,6 +1081,7 @@
         });
         (KSCALE === 'log' ? [1, 2, 4, 8, 16, 32, 64] : [1, 16, 32, 48, 64]).forEach(function (k) { svg('text', { x: sx(k), y: y0 + ph + 16, 'text-anchor': 'middle', class: 'cd-lab-muted' }, g, k); });
         svg('line', { x1: x0, x2: x0 + pw, y1: y0 + ph, y2: y0 + ph, stroke: '#bbbbbb' }, g);
+        if (col === 0) svg('text', { x: padL + (W - padL - padR) / 2, y: y0 + ph + 36, 'text-anchor': 'middle' }, svg('g', { class: 'cd-ax' }, g), KSCALE === 'log' ? 'samples k (log scale)' : 'samples k');
         // Gain area between the curves (sampled at the post-RL ks), then the two lines
         function lineD(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' '); }
         function interp(pts, k) {
@@ -1203,8 +1206,10 @@
       { name: 'GROOT-4', s: 'groot', v: [[3.5, 10.4], [2.1, 7.0], [1.5, 4.5]] },
       { name: 'VS-4', s: 'vs', v: [[4.2, 10.6], [2.3, 7.9], [1.5, 5.3]] }
     ];
+    // Held-out is the mean of LCB and OJBench, as elsewhere on the page
+    rows.forEach(function (r) { r.v[3] = [0, 1].map(function (j) { return (r.v[1][j] + r.v[2][j]) / 2; }); });
     var rerender = responsive(host, function (W) {
-      var xmax = [12, 10, 6][bench], step = [2, 2, 1][bench], ticks = [];
+      var xmax = [12, 10, 6, 8][bench], step = [2, 2, 1, 2][bench], ticks = [];
       for (var t = 0; t <= xmax; t += step) ticks.push(t);
       var L = W < 600 ? 100 : 120, R = 70, rowH = 38, top = 4, H = top + rows.length * rowH + 30;
       var sx = function (v) { return L + v / xmax * (W - L - R); };
@@ -1228,7 +1233,7 @@
         }
         var hit = svg('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }, root);
         hover(hit, function () {
-          return sw(c) + '<b>' + r.name + '</b><br>' + ['Cobalt', 'LiveCodeBench', 'OJBench'][bench] + ' frontier pass@1<br>' + v[0] + ' → ' + v[1];
+          return sw(c) + '<b>' + r.name + '</b><br>' + ['Cobalt', 'LiveCodeBench', 'OJBench', 'Held-out'][bench] + ' frontier pass@1<br>' + v[0].toFixed(2).replace(/0$/, '') + ' → ' + v[1].toFixed(2).replace(/0$/, '');
         });
       });
     });

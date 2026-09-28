@@ -144,7 +144,7 @@
     </div>
     <div class="cd-chart"></div>
   </div>
-  <figcaption><b>Figure 8.</b> Frontier pass@<i>k</i> before RL (dashed) and after RL (solid, mean of three runs &plusmn; one standard error). Below: RL steps until validation pass@8 first reaches the chosen value. Nemotron is scored on its own frontier, so its numbers aren't comparable to Qwen's.</figcaption>
+  <figcaption><b>Figure 8.</b> Frontier pass@<i>k</i> before RL (dashed) and after RL (solid, mean of three RL seeds; the shaded band is &plusmn; one standard error across seeds). Below: RL steps until validation pass@8 first reaches the chosen value. Nemotron is scored on its own frontier, so its numbers aren't comparable to Qwen's.</figcaption>
 </figure>
 
 <p>We also run Recursive Self-Aggregation (RSA; <a href="https://arxiv.org/abs/2509.26626">Venkatraman et al., 2025</a>), which refines a population of 16 solutions for 10 rounds by merging 4 at a time. The strategic models start higher and improve more. On the Cobalt frontier VS-4 goes from 4.2 to 10.6 pass@1, and IID-4 from 0.9 to 3.8.</p>
@@ -152,10 +152,10 @@
 <figure class="cd-fig" id="fig-rsa">
   <div class="cd-fig-head">
     <div class="cd-fig-title">Test-time scaling with RSA</div><span class="cd-model-tag">Qwen3-4B-Instruct</span>
-    <div class="cd-toggle cd-bench" role="group" aria-label="Benchmark"><button class="is-on" data-bench="0">Cobalt</button><span class="cd-bench-lab">Held-out</span><span class="cd-paren-o">(</span><button data-bench="1">LCB</button><span class="cd-sep">,</span><button data-bench="2">OJBench</button><span class="cd-paren-c">)</span></div>
+    <div class="cd-toggle cd-bench" role="group" aria-label="Benchmark"><button class="is-on" data-bench="0">Cobalt</button><button data-bench="3">Held-out</button><span class="cd-paren-o">(</span><button data-bench="1">LCB</button><span class="cd-sep">,</span><button data-bench="2">OJBench</button><span class="cd-paren-c">)</span></div>
   </div>
   <div class="cd-chart"></div>
-  <figcaption><b>Figure 9.</b> Frontier pass@1 of the initial population (&#9675;) and after 10 aggregation rounds (&#9679;), mean of three runs.</figcaption>
+  <figcaption><b>Figure 9.</b> Frontier pass@1 of the initial population (&#9675;) and after 10 aggregation rounds (&#9679;), mean of three runs. Held-out is the mean of LCB and OJBench.</figcaption>
 </figure>
 
 <h2 id="ncp" data-nav="Narrative Task">Strategic sampling for diversity also helps story planning</h2>
@@ -193,6 +193,6 @@
 <script src="/assets/js/diversity/figdata.js?v=20260928"></script>
 <script src="/assets/js/diversity/passk.js?v=20260928"></script>
 <script src="/assets/js/diversity/rlcurves.js?v=20260928"></script>
-<script src="/assets/js/diversity/page.js?v=20260928"></script>
-<script src="/assets/js/diversity/dhaka-box.js"></script>
+<script src="/assets/js/diversity/page.js?v=20260928f"></script>
+<script src="/assets/js/diversity/dhaka-box.js?v=20260928f"></script>
 <script src="/assets/js/diversity/vines.js?v=20260928e"></script>
