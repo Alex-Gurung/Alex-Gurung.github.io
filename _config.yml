@@ -209,7 +209,9 @@ defaults:
 # -----------------------------------------------------------------------------
 
 jekyll-minifier:
-  exclude: ['robots.txt']
+  # The diversity page's CSS/JS use modern syntax (CSS variables inside calc(), etc.)
+  # that the minifier mangles, so serve them as written.
+  exclude: ['robots.txt', 'assets/css/diversity*.css', 'assets/js/diversity/*.js']
   uglifier_args:
     harmony: true
 
