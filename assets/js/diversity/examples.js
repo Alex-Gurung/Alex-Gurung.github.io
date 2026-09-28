@@ -1,0 +1,190 @@
+// Generated from the paper's appendix example records (paper/examples/*.json).
+// NCP scores are in the paper's units: 100 * (1 - PPL_plan / PPL_no_plan).
+window.CD_EXAMPLES = {
+ "code": {
+  "id": "cobalt:14164",
+  "statement": "In Takahashi Kingdom, there is a east-west railroad and N cities along it, numbered 1, 2, 3, ..., N from west to east.\nA company called AtCoder Express possesses M trains, and the train i runs from City L_i to City R_i (it is possible that L_i = R_i).\nTakahashi the king is interested in the following Q matters:\n - The number of the trains that runs strictly within the section from City p_i to City q_i, that is, the number of trains j such that p_i \\leq L_j and R_j \\leq q_i.\nAlthough he is genius, this is too much data to process by himself. Find the answer for each of these Q queries to help him.",
+  "constraints": "- N is an integer between 1 and 500 (inclusive).\n - M is an integer between 1 and 200 \\ 000 (inclusive).\n - Q is an integer between 1 and 100 \\ 000 (inclusive).\n - 1 \\leq L_i \\leq R_i \\leq N (1 \\leq i \\leq M)\n - 1 \\leq p_i \\leq q_i \\leq N (1 \\leq i \\leq Q)",
+  "tree": "A. Direct query processing with precomputation\n   A1. Precompute all train intervals and store in a list\n   A2. For each query, iterate over all trains and check if L_j >= p_i and R_j <= q_i\nB. Coordinate compression with 2D range queries\n   B1. Map city coordinates to compressed indices\n   B2. Use offline queries with sweep line and segment trees\nC. Offline processing with sorting and event-based queries\n   C1. Sort trains by left endpoint and queries by right endpoint\n   C2. Process events in order using a data structure to count valid trains\nD. Binary search on answer with feasibility checking\n   D1. For each query, binary search on number of trains\n   D2. Check feasibility by counting trains within [p_i, q_i] using interval overlap",
+  "groot": [
+   {
+    "path": "A → A1",
+    "text": "Directly process each query by iterating through all trains and checking whether each train's interval [L_j, R_j] lies entirely within the query interval [p_i, q_i]. Since the constraints allow up to 200,000 trains and 100,000 queries, and each train check is O(1), the total complexity is O(M * Q), which may be too slow for worst-case inputs. However, given the small value of N (≤ 500), and that each train interval is bounded by cities, this straightforward approach is feasible only if M and Q are small. But in worst-case M=200,000 and Q=100,000, this would result in 20 billion operations, which is too slow. Thus, this approach is only viable if optimized or if constraints were tighter. However, the sample input (small M and Q) suggests it might work in practice, but it fails in worst-case scalability.",
+    "passed": true
+   },
+   {
+    "path": "C → C1",
+    "text": "Sort all trains by their left endpoint L_i. For each query, sort queries by their right endpoint q_i. Then process queries in increasing order of q_i, and for each query, add all trains whose left endpoint is ≤ current query's q_i and whose right endpoint is ≥ current query's p_i. Use a data structure (like a balanced BST or sorted list) to maintain active trains and efficiently count those with R_j ≤ q_i. This approach uses offline processing and event-based filtering, reducing the complexity to O((M + Q) log M) with proper implementation. The key insight is that as we process queries in order of increasing q_i, we can add trains incrementally and maintain only those that are relevant, reducing redundant checks.",
+    "passed": true
+   },
+   {
+    "path": "B → B1",
+    "text": "Apply coordinate compression to map city positions to a smaller index space, then use a 2D range query structure (like a segment tree with coordinate compression) to answer each query. Each train is represented as a range [L_i, R_i], and each query [p_i, q_i] asks for the number of trains fully contained in that range. The feasibility of this approach relies on the fact that N is small (≤ 500), so coordinate compression is trivial. However, building a 2D segment tree for up to 200,000 intervals and 100,000 queries is overkill and complex. Moreover, the range queries here are not standard 2D range sum queries; they are \"count of intervals fully inside a query interval\". This approach is overly complex for the given constraints and does not offer a clear advantage over simpler methods.",
+    "passed": false
+   },
+   {
+    "path": "D → D2",
+    "text": "For each query, use binary search on the number of trains that lie within [p_i, q_i], but this is not directly applicable because the answer is not a value to be searched over. Instead, feasibility checking would involve counting how many trains satisfy p_i ≤ L_j and R_j ≤ q_i. This is a direct count, not a search. Thus, binary searching over the answer does not make sense here. The feasibility function would be trivial: for a given candidate count, check if that many trains satisfy the condition. But since the count is not a continuous variable and the condition is monotonic in no meaningful way, this approach is invalid and misapplies binary search. Therefore, it fails to produce a correct solution.",
+    "passed": true
+   }
+  ],
+  "vs": [
+   {
+    "p": 0.95,
+    "text": "The problem requires counting the number of trains that run entirely within a given interval [p_i, q_i], meaning each train j must satisfy p_i ≤ L_j and R_j ≤ q_i. A straightforward approach is to iterate over each query and, for each train, check whether it lies completely within the query interval. Given that Q can be up to 100,000 and M up to 200,000, a naive O(Q×M) solution would be too slow in the worst case. However, since N is only up to 500, we can consider preprocessing the trains by their left and right endpoints. For each possible left endpoint, we can store all trains with that left endpoint and their right endpoints. Then, for each query [p_i, q_i], we can iterate through all left endpoints from p_i to q_i and count how many trains with that left endpoint have right endpoints ≤ q_i. This reduces the number of checks per query to at most O(N), and with preprocessing, the total complexity becomes O(M×N + Q×N), which is acceptable given the small value of N. The key insight is that instead of checking every train for every query, we group trains by their left endpoint and use the bounded range of N to limit the number of endpoints we need to consider. This approach efficiently handles the constraints due to the small value of N.",
+    "passed": false
+   },
+   {
+    "p": 0.1,
+    "text": "We can use coordinate compression and offline queries with a sweep line technique. The idea is to treat each train as a segment [L_i, R_i] and each query as a range [p_i, q_i]. We want to count how many segments are fully contained within each query. Instead of checking each train per query, we can process all queries and all segments together. We create events: for each train, we add a \"start\" event at L_i and an \"end\" event at R_i + 1. For each query, we want to count the number of segments that start at or after p_i and end at or before q_i. We can process all events in sorted order and maintain a data structure that tracks active segments. However, since we need to answer queries for specific intervals, we can use a sweep line that goes from left to right and maintains a list of active segments. For each query, we can determine the count by checking the state of the sweep line at position p_i and then advancing to q_i, counting how many segments are active throughout that interval. The challenge is that segments that start before p_i and end after q_i are irrelevant. This method requires sorting events and processing them in order, then using a Fenwick tree or segment tree to maintain counts. However, due to the small value of N, a simpler method is preferred. This approach is more complex and overkill for the constraints, so it is less likely to succeed in practice.",
+    "passed": true
+   },
+   {
+    "p": 0.2,
+    "text": "We can precompute for each possible interval [l, r] (where 1 ≤ l ≤ r ≤ N) the number of trains that run entirely within it. Since N is at most 500, the total number of intervals is O(N²) = about 125,000, which is manageable. For each interval [l, r], we iterate over all M trains and check if L_i ≥ l and R_i ≤ r. We store the count in a 2D array `count[l][r]`. Then, for each query [p_i, q_i], we simply look up `count[p_i][q_i]`. This approach has a preprocessing time of O(M×N²), which is O(200,000 × 250,000) ≈ 50 billion operations — far too slow. Even though N is small, the square of N leads to a large number of intervals, and M is large, making this approach infeasible. The key flaw is the O(N²) loop over intervals, which scales poorly with N. This method is computationally expensive and not suitable for the given constraints, so it is dismissed.",
+    "passed": false
+   },
+   {
+    "p": 0.15,
+    "text": "We can use Mo's algorithm to process queries offline by sorting them in a specific order and sweeping through the array. Mo's algorithm is typically used for range queries with updates, but here we are not updating the data — we are counting segments. The idea is to group queries by blocks of the array and process them in a way that minimizes the number of operations. However, the condition for a train to be fully contained in [p_i, q_i] is not additive or monotonic in a way that fits Mo's framework. Additionally, the queries are not over a single array but over segments of trains, and the condition depends on both endpoints. Mo's algorithm would require maintaining a data structure that tracks the number of trains fully inside the current window, and when expanding or contracting the window, we would need to update this count. While possible, the transitions between queries would be complex, and the time complexity would still be O(Q√N), which might be acceptable. However, the structure of the problem — checking full containment — does not naturally lend itself to Mo's algorithm, and there is no clear way to update the count efficiently when moving the window. This approach is not well-suited to the problem and is less likely to succeed than simpler methods.",
+    "passed": false
+   }
+  ],
+  "iid_flags": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "iid_code": "# Read input\nN, M, Q = map(int, input().split())\n\n# Read train segments\ntrains = []\nfor _ in range(M):\n    l, r = map(int, input().split())\n    trains.append((l, r))\n\n# Process queries\nfor _ in range(Q):\n    p, q = map(int, input().split())\n    count = 0\n    for l, r in trains:\n        if p <= l and r <= q:\n            count += 1\n    print(count)",
+  "groot_code": "import bisect\n\n# Read input\nN, M, Q = map(int, input().split())\n\ntrains = []\nfor _ in range(M):\n    l, r = map(int, input().split())\n    trains.append((l, r))\n\nqueries = []\nfor i in range(Q):\n    p, q = map(int, input().split())\n    queries.append((p, q, i))\n\n# Sort trains by right endpoint\ntrains.sort(key=lambda x: x[1])\n\n# Sort queries by right endpoint\nqueries.sort(key=lambda x: x[1])\n\n# Initialize active list for L values\nactive_L = []\ntrain_idx = 0\nresults = [0] * Q\n\n# Process queries in increasing order of q\nfor p, q, orig_idx in queries:\n    # Add all trains with R <= q that haven't been added yet\n    while train_idx < M and trains[train_idx][1] <= q:\n        l_val = trains[train_idx][0]\n        bisect.insort(active_L, l_val)\n        train_idx += 1\n    \n    # Count how many in active_L have L >= p\n    pos = bisect.bisect_left(active_L, p)\n    count = len(active_L) - pos\n    results[orig_idx] = count\n\n# Output results in original order\nfor res in results:\n    print(res)"
+ },
+ "ncp": {
+  "id": "funny__chapter_0003__part_5_of_7",
+  "true_passage": "Miles stops outside our front door, laughter gurgling out of him. “Gingersnaps?”\nThat’s what he smells like. Sweet and a little spicy. A natural earthy smell folded into a sugary baked good. I wave him off rather than answer, and try to get my key into our door’s lock. Unfortunately, it seems the door has grown three extra locks and I can’t seem to line the key up to the right one.\nThrough laughter, he bumps me aside, clumsily swiping the key from my hand to make his own attempt. “Shit!” he says as it glances off the lock.\nWe keep fighting for control of the doorknob, knocking each other out of the way in increasingly dramatic fashion, until he almost knocks me over and just barely manages to catch me by pinning me to the wall with his hips.\nWe’re both laughing so hard we’re crying when our elderly neighbor pops his head into the hallway to hiss, “Some of us are trying to sleep around here!”\n“Sorry, Mr. Dorner,” Miles says like a chastened schoolboy.\nMr. Dorner retreats.\nI squint after him, confused. “Doesn’t he usually have hair?”\nMiles bursts into not-at-all-quiet laughter. I smush my hands over his mouth to shut him up. “You thought that hair was real?” he asks. “You have to be the most gullible person on the planet.”\n“I mean,” I say, “despite my innate cynicism, I think the last six weeks have already proven that both of us are way, way too trusting.”\nA couple of hours ago, this might’ve tripped the start crying ASAP wire in my brain. Instead we’re just back to cackling.\nMr. Dorner’s lock rattles again. Miles spins away to get our door unlocked, yanking me inside before we have to face another scolding.\nWe slam ourselves against the door to shut it, catching our breath. “I feel like we’re in Jurassic Park,” he says, which makes me laugh harder.\n“What,” I gasp.\n“Like we just slammed the door against a bunch of raptors,” he explains.\n“I don’t think Dorner’s teeth pose that kind of threat, Miles,” I say. “I’m fairly sure he wasn’t even wearing them.”",
+  "tree": "A. The flirtation is a natural, unforced reaction to their shared intoxication  \n   A1. Daphne’s flirtation is hesitant, reactive to Miles’s physical proximity  \n      A1a. She leans into his arm, her breath catching  \n      A1b. She touches his hand briefly, then pulls back  \n   A2. Miles’s response is immediate and physical, showing attraction  \n      A2a. He guides her toward the door, keeping her close  \n      A2b. He gently presses her against the wall when they reach the threshold  \nB. The flirtation is a deliberate, performance-driven act by Miles to impress Daphne  \n   B1. Miles initiates and controls the dynamic  \n      B1a. He uses the door lock as a point of physical contact, guiding her hand  \n      B1b. He verbally teases her about her “boring” sex life  \n   B2. Daphne resists but is subtly drawn in  \n      B2a. She makes a sharp, unsmiling retort  \n      B2b. She still allows her body to respond to his touch  \nC. The flirtation is a mutual, unconscious reaction to the emotional undercurrent  \n   C1. Both characters are emotionally vulnerable, the moment is tender and unscripted  \n      C1a. Daphne’s hand trembles slightly on his shoulder  \n      C1b. Miles’s eyes soften when she hesitates  \n   C2. The physical contact is brief and avoids overt sexuality  \n      C2a. They press foreheads together before the door opens  \n      C2b. They don’t lock eyes or touch beyond proximity  \nD. The flirtation is interrupted by Mr. Dorner’s arrival, making the moment more urgent  \n   D1. Mr. Dorner appears early, before the door is even unlocked  \n      D1a. He calls out from his doorway, emphasizing the noise  \n      D1b. His tone is firm but not aggressive  \n   D2. The conflict forces a rushed, awkward resolution  \n      D2a. Miles releases her quickly, stepping back  \n      D2b. Daphne stumbles, catching herself on the doorframe  \nE. The moment is framed as a private, intimate exchange that is then disrupted by external force  \n   E1. The door lock is the only point of contact between them  \n      E1a. Daphne tries to turn the knob, Miles takes it from her  \n      E1b. They lock eyes during the fumble  \n   E2. The wall pin is a sudden, uninvited act of intimacy  \n      E2a. Miles uses the wall to press her back without invitation  \n      E2b. It’s done with a quiet, firm pressure, not force  \nF. The flirtation is driven by Daphne’s need to reassert agency in a chaotic situation  \n   F1. She actively resists Miles’s advances  \n      F1a. She pulls away when he reaches for her  \n      F1b. She speaks in short commands during the fumble  \n   F2. Miles uses the situation to show his own emotional vulnerability  \n      F2a. He says, “I didn’t know I could feel this,” before the pin  \n      F2b. He doesn’t engage in flirtation but expresses emotional exposure  \nG. The scene is emotionally charged but physically restrained  \n   G1. No explicit physical contact beyond the door fumble  \n      G1a. Miles only touches her hand to assist with the lock  \n      G1b. Daphne does not lean into him  \n   G2. The wall pin is a silent, unspoken moment of emotional release  \n      G2a. It happens without words or eye contact  \n      G2b. It is brief, like a breath held too long  \nH. The moment is playful and lighthearted, with no emotional weight  \n   H1. The flirtation is entirely banter-based  \n      H1a. Daphne jokes about “free drinks” and “fetish bars”  \n      H1b. Miles laughs, but doesn’t touch her  \n   H2. The pin is absent or a misstatement of memory  \n      H2a. It is not included in the sequence  \n      H2b. It is described as a memory or dream",
+  "arms": {
+   "groot": {
+    "scores": [
+     11.91,
+     8.35,
+     8.42,
+     7.87,
+     11.18,
+     10.19,
+     11.09,
+     13.11,
+     6.26,
+     8.07,
+     7.05,
+     4.41,
+     7.25,
+     6.8,
+     4.4,
+     11.57,
+     6.96,
+     5.64,
+     10.5,
+     4.95,
+     8.23,
+     5.78,
+     10.98,
+     5.29,
+     7.2,
+     9.04,
+     10.26,
+     9.11,
+     8.98,
+     10.19,
+     6.17,
+     9.02
+    ],
+    "best_pct": 13.11,
+    "best_direction": "Commits to a lighthearted, playful exchange with no emotional weight. The flirtation is entirely based on banter—Daphne jokes about “fetish bars,” Miles laughs and responds with charm. They fumble with the lock, but no physical contact occurs. The wall pin is absent or misremembered. The scene ends with them entering the apartment, no further action. Rules out emotional intimacy, resistance, or interruption. Rests on Daphne’s self-perception as “boring” and Miles’s charm. Quoted: “I think I’m pretty boring. In that realm.” This approach contradicts the emotional stakes of the scene and ignores the established tension between Daphne and Miles. Would be wrong if the pinning occurred or if the scene had emotional depth.",
+    "best_plan": "Daphne and Miles, both still buzzed from MEATLOCKER, stand at the third-floor apartment door. The lock is faulty and clunks when they fumble with it—Miles leans forward to pull it open, Daphne tries to step in, and they both stumble slightly. Miles, still tipsy, reaches out to steady her, his hand brushing her arm. Daphne flinches, then laughs lightly, not pulling away. “I think I’m pretty boring. In that realm,” she says, half-joking. Miles tilts his head, grinning. “Do you lie there and stare at the ceiling in silence?” Daphne scoffs, “No. I just make utterly unblinking eye contact like any respectable woman.” Miles smirks, “See? Not boring. Haunting, maybe. But not boring.” They both pause, the air thick with the heat of the moment. The door creaks open, and Miles steps inside, Daphne following close behind. As they enter, the apartment’s dim light catches the scattered books and empty bottles. The sound of a door closing echoes from the hallway. Then, from the next unit, Mr. Dorner’s voice cuts through: “Quiet down, you two. That’s enough.” Daphne and Miles freeze, startled. Miles grins, “Guess we’ve just won the night.” Daphne laughs softly, “I’m not even sure I wanted to win.” They step into the apartment, the door closing behind them. No further action occurs."
+   },
+   "vs": {
+    "scores": [
+     5.87,
+     4.84,
+     10.4,
+     8.04,
+     9.07,
+     9.12,
+     10.67,
+     9.64,
+     8.05,
+     8.1,
+     6.46,
+     10.75,
+     9.8,
+     9.02,
+     7.66,
+     11.57,
+     7.24,
+     8.66,
+     8.74,
+     8.0,
+     8.83,
+     8.07,
+     10.31,
+     10.23,
+     7.09,
+     9.7,
+     9.54,
+     9.35,
+     6.95,
+     6.82,
+     9.11,
+     11.05
+    ],
+    "best_pct": 11.57,
+    "best_direction": "What it commits to:  \n- The flirting is nonverbal and physical, with Daphne leaning into Miles as they fumble.  \n- Mr. Dorner appears only after they have already entered the apartment.  \n- The pinning does not occur.  \n\nWhat it rules out:  \n- Any physical contact during the door lock.  \n- Any mention of Mr. Dorner.  \n- Any physical intimacy.  \n\nGrounding phrases:  \n- “I’m terrible with new people.” (Chapter 3)  \n- “I’ve never been super physically affectionate with even my close friends.” (Chapter 3)  \n\nWriter’s still to settle:  \n- The exact physical positioning.  \n- Whether the door lock is fumbled.  \n\nWhy it’s wrong:  \nIt directly contradicts the summary, which requires the pinning to occur before they enter.",
+    "best_plan": "Daphne and Miles approach the apartment door, both stumbling slightly from the night’s drinking. The lock is old and creaks as they fumble with it—Miles on one side, Daphne on the other, their hands brushing as they try to turn the key. Daphne leans slightly into him, her head resting against his shoulder, a moment of physical closeness that feels both accidental and intentional. Their hands slip, and as Miles shifts to stabilize the door, he suddenly reaches around and gently pins her against the wall with one arm, her back pressing into the brick. It’s brief—just a few seconds—and she doesn’t flinch, her breath catching only slightly. She stays there, her body still, as Miles holds her just above the threshold. Their bodies are close, but there is no touch beyond the pin. Then, from the hallway, a sharp voice cuts through: “Quiet down, you two. I can’t hear my TV.” Mr. Dorner stands in the doorway, his face rigid, eyes narrow. They freeze. Miles releases her slowly, and they both step back, the door locking behind them with a final click. Daphne looks at Miles, her breath still visible in the cool air, and says, “I’m terrible with new people,” her voice soft but clear. Miles smiles faintly. “I know,” he says. The scene ends with them standing in the apartment doorway, the lock secured, the world outside still humming with the city’s late-night rhythm."
+   },
+   "iid": {
+    "scores": [
+     8.52,
+     7.29,
+     6.36,
+     6.85,
+     4.75,
+     6.16,
+     8.1,
+     5.04,
+     5.31,
+     5.75,
+     6.2,
+     7.58,
+     7.41,
+     9.03,
+     7.72,
+     6.59,
+     3.74,
+     6.31,
+     7.61,
+     8.44,
+     7.64,
+     5.75,
+     7.94,
+     5.42,
+     4.03,
+     3.38,
+     6.95,
+     7.5,
+     6.78,
+     6.24,
+     8.37,
+     6.04
+    ],
+    "best_pct": 9.03,
+    "best_direction": null,
+    "best_plan": "The scene begins in the dim light of a Butcher Town apartment building hallway, just after Daphne and Miles stagger through the rain. They fumble with the door lock, their hands brushing as they try to open it. Daphne’s fingers are cold, her breath uneven; Miles’s hand brushes hers, then trails up her arm, a slow, deliberate movement. They exchange a few breathless words—“You’re shaking,” “Not a moment too soon”—in clipped, half-sentences that carry emotional weight. Daphne resists, voice tight, but her body leans into his touch. As they reach the door, Mr. Dorner appears at his door, a rumpled man in a cardigan, voice sharp and tired. “Quiet down,” he says, not looking at them, eyes fixed on the hallway. The moment stretches—Daphne flinches, Miles holds her still. Then, without warning, Miles pulls her back, pins her against the doorframe with one arm, his other hand resting on her waist. His grip is firm, not possessive, but protective. Daphne gasps, her body still, eyes wide. He doesn’t speak. The silence between them is heavy, charged. Mr. Dorner steps back, mutters something about “noise,” and walks away. The reader learns nothing new about Mr. Dorner, but gains a sense of the apartment’s fragile boundaries. The pace is slow, deliberate, then sudden. The register is informal, breathless, with a rhythm that mimics drunkenness—short, fragmented, emotionally raw. The reader feels the tension of proximity, the danger of intimacy, and the unspoken shift in power between them. The pinning is not romantic; it’s a quiet assertion of presence, a moment when Miles, for the first time, physically claims Daphne’s body without asking permission."
+   }
+  }
+ }
+};

@@ -450,7 +450,7 @@ footer.sticky-bottom {
 
 .featured-projects {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
   margin-top: 1.25rem;
   margin-bottom: 2rem;
@@ -754,18 +754,11 @@ footer.sticky-bottom {
         color: var(--global-text-color-light);
         line-height: 1.6;
 
-        a {
-          border-bottom: 1px solid rgba(38, 152, 186, 0.35);
-          &:hover {
-            border-bottom-color: var(--global-theme-color);
-            text-decoration: none;
-          }
-        }
-
-        > em {
-          color: var(--global-theme-color);
-          border-bottom: 1px solid rgba(38, 152, 186, 0.32);
-          font-style: normal;
+        > .author-self {
+          color: var(--global-text-color);
+          font-weight: 700;
+          text-decoration: underline;
+          text-underline-offset: 3px;
         }
       }
 
@@ -788,6 +781,8 @@ footer.sticky-bottom {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        margin-left: auto;             // always on the right, even with no venue line
+        justify-content: flex-end;
       }
 
       .publication-link {

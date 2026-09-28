@@ -90,16 +90,6 @@
             {% assign author_is_self = true %}
           {% endif %}
         {% endif %}
-        {% assign coauthor_url = nil %}
-        {% if site.data.coauthors[author_last_name] %}
-          {% for coauthor in site.data.coauthors[author_last_name] %}
-            {% if coauthor.firstname contains author.first %}
-              {% assign coauthor_url = coauthor.url %}
-              {% break %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
-
         {% if forloop.length > 1 %}
           {% if forloop.first == false and forloop.last %}
             , and&nbsp;
@@ -109,13 +99,9 @@
         {% endif %}
 
         {% if author_is_self %}
-          <em>{{ author.first }} {{ author.last }}</em>
+          <strong class="author-self">{{ author.first }} {{ author.last }}</strong>
         {% else %}
-          {% if coauthor_url %}
-            <a href="{{ coauthor_url }}">{{ author.first }} {{ author.last }}</a>
-          {% else %}
-            {{ author.first }} {{ author.last }}
-          {% endif %}
+          {{ author.first }} {{ author.last }}
         {% endif %}
       {% endfor %}
     </div>
@@ -123,7 +109,7 @@
   {% endif %}
 
   {% assign has_links = false %}
-  {% if entry.abstract or entry.bibtex_show or entry.html or entry.pdf or entry.supp or entry.blog or entry.code or entry.poster or entry.slides or entry.project or entry.website or entry.altmetric %}
+  {% if entry.arxiv or entry.abstract or entry.bibtex_show or entry.html or entry.pdf or entry.supp or entry.blog or entry.code or entry.poster or entry.slides or entry.project or entry.website or entry.altmetric %}
     {% assign has_links = true %}
   {% endif %}
 
@@ -179,6 +165,9 @@
     {% endif %}
     {% if entry.project %}
       <a href="{{ entry.project }}" class="publication-link" role="button">Project</a>
+    {% endif %}
+    {% if entry.arxiv %}
+      <a href="https://arxiv.org/abs/{{ entry.arxiv }}" class="publication-link" role="button">[arXiv]</a>
     {% endif %}
     {% if entry.website %}
       <a href="{{ entry.website }}" class="publication-link" role="button">[website]</a>

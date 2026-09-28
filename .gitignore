@@ -9,3 +9,11 @@ _site
 .tweet-cache
 Gemfile.lock
 vendor
+
+# Local drafts and design experiments (not for the public repo)
+experiments/
+_hf_drafts/
+
+# Animation render output and Python caches
+.manim_review/
+__pycache__/

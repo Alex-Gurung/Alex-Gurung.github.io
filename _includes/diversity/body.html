@@ -1,0 +1,205 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/diversity.css?v=20260928">
+
+<div class="cd-page">
+
+<p class="cd-lede">Self-training data is usually built by sampling a model's answers independently and keeping the correct ones (RFT). We instead ask the model for several <em>distinct approaches</em> first, as a tree (<b class="t-groot">GROOT</b>) or a list (<b class="t-vs">Verbalized Sampling</b>), then have it solve the problem once per approach.</p>
+
+<aside class="cd-box" id="takeaways" data-nav="Takeaways" aria-label="Key takeaways">
+  <div class="cd-box-title">Key takeaways</div>
+  <ol>
+    <li><b>Elicit distinct approaches rather than sampling more.</b> GROOT with 4 samples beats IID with 64 samples at T = 1.5: held-out pass@64 of 15.5 vs 7.9 on hard coding problems.</li>
+    <li><b>Diversity matters more than correctness.</b> Training on only the <em>incorrect</em> strategic samples still beats rejection sampling on IID data. Diverse and correct is best.</li>
+    <li><b>Sample from the student, not a larger teacher.</b> A 4B model's own diverse samples beat IID distillation from a 235B teacher (22.8 vs 13.4).</li>
+    <li><b>Use VS for pass@k and GROOT to initialize RL.</b> VS leads before RL (17.5 vs 15.5), GROOT after it (18.0 vs 16.0), with a wider gap on story planning.</li>
+  </ol>
+</aside>
+
+<figure class="cd-video">
+  <video playsinline muted preload="metadata" poster="/assets/img/diversity/groot-pipeline-poster.jpg?v=20260928" aria-label="Captioned animation: self-training on IID samples barely helps on frontier LiveCodeBench and OJBench problems; GROOT samples distinct strategies and triples pass@64, even beating a 235B teacher.">
+    <source src="/assets/video/diversity/groot-pipeline.mp4?v=20260928" type="video/mp4">
+  </video>
+</figure>
+
+<h2 id="problem" data-nav="Problem">IID self-training barely improves pass@k on hard problems</h2>
+
+<p>On frontier problems (solved &le;2/64 times), IID samples tend to be mode-collapsed and repeat one strategy; fine-tuning on this data just further reinforces this behaviour.</p>
+
+<p>On hard competitive-programming problems (Figure&nbsp;1), a model trained this way has almost the same pass@<i>k</i> as the base model at every <i>k</i>, even with 64 samples per training problem and a sampling temperature of 1.5.</p>
+
+<figure class="cd-fig" id="fig-passk">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">pass@<i>k</i> on frontier LiveCodeBench + OJBench problems after self-training</div>
+    <div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div>
+    <div class="cd-toggle" role="group" aria-label="Series">
+      <button class="is-on" data-show="iid">IID only</button><button data-show="all">with GROOT and VS</button>
+    </div><span class="cd-vsep" aria-hidden="true">|</span><div class="cd-toggle" role="group" aria-label="k axis scale"><button class="is-on" data-kscale="log">log k</button><button data-kscale="linear">linear k</button></div>
+  </div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 1.</b> Qwen3-4B-Instruct after RFT on 4 or 64 samples per training problem, on held-out frontier problems (LiveCodeBench and OJBench, averaged): problems the base model solves at most 2 times in 64. pass@<i>k</i> is estimated from 128 samples per problem, on the same 289 problems for every model. Nemotron3-Nano-4B is evaluated on its own frontier, so its numbers aren't comparable to Qwen's.</figcaption>
+</figure>
+
+<h2 id="method" data-nav="Method">Asking for distinct approaches first yields more diverse training data</h2>
+
+<p>Unlike prior work that focuses on the training objective, we focus on how the training data itself is sampled. The model first proposes <i>n</i> approaches to a problem and then writes one full solution for each. We try two ways of getting the approaches:</p>
+
+<ul class="cd-list">
+  <li><b class="t-groot">GROOT</b> (new): the model writes a decision tree of approaches, and we take <i>n</i> root-to-leaf paths. Any two paths split at some decision in the model's own tree.</li>
+  <li><b class="t-vs">Verbalized Sampling</b> (<a href="https://arxiv.org/abs/2510.01171">Zhang et al., 2026</a>): the model lists <i>n</i> approaches with estimated probabilities. We apply it to approaches rather than full answers.</li>
+</ul>
+
+<p>Each approach is given to the model as a hidden instruction, and the model writes its reasoning as if it had come up with the approach itself (we discard responses that mention the instruction). The training example contains only the original problem and the solution, so at test time the fine-tuned model sees the usual prompt. Both methods add one planning call per problem, which we don't count against the sampling budget.</p>
+
+<figure class="cd-fig cd-wide" id="fig-pipeline">
+  <div class="cd-fig-title">Sampling training data at a fixed budget</div>
+  <div class="cd-scroll"><svg class="cd-diagram" viewBox="0 0 900 392" role="img" aria-label="Diagram comparing IID sampling, GROOT, and Verbalized Sampling pipelines"></svg></div>
+  <figcaption><b>Figure 2.</b> IID draws <i>n</i> independent solutions and keeps the correct ones. GROOT builds a tree of strategies and follows <i>n</i> distinct paths. VS lists <i>n</i> approaches with probabilities. In both strategic methods each approach is passed back as a hidden instruction.</figcaption>
+</figure>
+
+<p>Figure&nbsp;3 shows samples from each method for one training problem (<code>cobalt:14164</code>): count the train routes [<i>L</i>, <i>R</i>] that lie inside a query range [<i>p</i>, <i>q</i>], with up to 200,000 trains and 100,000 queries. All text shown is the base model's output.</p>
+
+<figure class="cd-fig" id="fig-example">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">Example outputs</div><span class="cd-model-tag">Qwen3-4B-Instruct</span>
+    <div class="cd-toggle" role="tablist" aria-label="Sampler">
+      <button role="tab" data-tab="groot" aria-selected="true" class="is-on">GROOT&ensp;3/4</button><button role="tab" data-tab="vs" aria-selected="false">VS&ensp;1/4</button><button role="tab" data-tab="iid" aria-selected="false">IID&ensp;0/8</button>
+    </div>
+  </div>
+  <div class="cd-tabpanel" data-panel="groot">
+    <div class="cd-scroll"><svg class="cd-tree" role="img" aria-label="GROOT decision tree with four selected paths"></svg></div>
+    <div class="cd-approach" aria-live="polite"></div>
+  </div>
+  <div class="cd-tabpanel" data-panel="vs" hidden>
+    <div class="cd-vs"></div>
+    <div class="cd-approach" aria-live="polite"></div>
+  </div>
+  <div class="cd-tabpanel" data-panel="iid" hidden>
+    <div class="cd-iid"></div>
+    <pre class="cd-code"><code></code></pre>
+  </div>
+  <figcaption><b>Figure 3.</b> <b>GROOT:</b> the model's tree. The four highlighted leaves are the paths it chose; click one to read the approach given to the solver. <b>VS:</b> four approaches with the model's own probability estimates (which need not sum to 1). <b>IID:</b> eight independent samples at T = 0.85, all incorrect; the first, a per-query scan over every train, is shown. Each approach is only a starting point: the solver can fix or abandon it, so under each approach we note what the solver actually wrote.</figcaption>
+</figure>
+
+<h2 id="correctness" data-nav="Correctness">Gains are driven by diversity, <em>not correctness</em></h2>
+
+<p>As GROOT and VS find correct solutions for more training problems than IID at the same budget (155 and 137 problems with 4 samples, against 42 for IID), their gains could come from simply having more correct training data. We test this in two ways: a high-budget IID variant that finds even more correct solutions, and a dataset of diverse samples filtered to keep only the <em>incorrect</em> ones.</p>
+
+<p>First, IID with 64 samples per problem at T = 1.5 finds correct solutions for 379 problems, more than twice as many as GROOT-4, yet the model trained on that data reaches only 7.9 held-out pass@64, about half of GROOT-4's 15.5 (Figure&nbsp;4).</p>
+
+<figure class="cd-fig" id="fig-data">
+  <div class="cd-fig-title">Correct training data vs. the trained model</div>
+  <div class="cd-fig-head"><div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div></div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 4.</b> Left: how many Cobalt training-frontier problems (1,833 for Qwen) each sampler found at least one correct solution for. Right: held-out frontier pass@64 of the model fine-tuned (RFT) on those samples. The IID-64 run produces the most correct training data but a much weaker model than GROOT-4 or VS-4. Hover a row to see its numbers.</figcaption>
+</figure>
+
+<p>Second, we train on only the <em>incorrect</em> strategic samples (ANTI). These models still outperform every IID model, including IID-64 at T = 1.5 (12.8 and 14.8 vs 7.9 held-out pass@64), and keeping the correct samples improves them further.</p>
+
+<figure class="cd-fig" id="fig-anti">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">Training on incorrect strategic samples</div><span class="cd-model-tag">Qwen3-4B-Instruct</span>
+    <div class="cd-toggle-row"><div class="cd-toggle cd-bench" role="group" aria-label="Benchmark"><button data-bench="cobalt">Cobalt</button><button data-bench="macro" class="is-on">Held-out</button><span class="cd-paren-o">(</span><button data-bench="lcb">LCB</button><span class="cd-sep">,</span><button data-bench="ojb">OJBench</button><span class="cd-paren-c">)</span></div><span class="cd-vsep" aria-hidden="true">|</span><div class="cd-toggle" role="group" aria-label="k axis scale"><button class="is-on" data-kscale="log">log k</button><button data-kscale="linear">linear k</button></div></div>
+  </div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 5.</b> Frontier pass@<i>k</i> after training. Dotted lines are models trained only on strategic samples that <em>failed</em> the tests; they still sit well above every IID-trained model. Held-out is the mean of LiveCodeBench (LCB) and OJBench. Values come from the raw samples and can differ from the paper's table by 0.1 due to rounding.</figcaption>
+</figure>
+
+<h2 id="teacher" data-nav="Teacher">Self-generated diversity beats IID sampling from a large teacher</h2>
+
+<p>Sampling IID from Qwen3-235B-A22B instead of the student raises held-out pass@64 from 5.8 to 13.4. The student's own GROOT and VS samples reach 20.1 and 22.8. Running GROOT or VS with the teacher does worse than running them with the student, possibly because the teacher's traces are further from the student's distribution. With Nemotron3-Nano-4B and a Nemotron3-Super-120B teacher, the teacher improves every method, including GROOT and VS, but the student's own GROOT and VS data (19.9 and 20.8) still beat IID data from the teacher (13.8).</p>
+
+<figure class="cd-fig" id="fig-teacher">
+  <div class="cd-fig-title">Self-generated vs. teacher-generated data</div>
+  <div class="cd-fig-head">
+    <div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div>
+  </div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 6.</b> Held-out frontier pass@64 of a 4B student trained on 4 samples per problem from itself or from a larger teacher: Qwen3-235B-A22B for Qwen3-4B (16k-token limit), Nemotron3-Super-120B-A12B for Nemotron3-Nano-4B (on its own frontier).</figcaption>
+</figure>
+
+<h2 id="rl" data-nav="RL">Strategically diverse models are a better starting point for RL and test-time scaling</h2>
+
+<p>We also run RL from each fine-tuned model, using MaxRL (<a href="https://arxiv.org/abs/2602.02710">Tajwar et al., 2026</a>). The GROOT-4 and VS-4 models begin at a validation pass@8 that RL from the base model does not reach, and RL from IID-4 needs about 64 steps to catch up.</p>
+
+<figure class="cd-fig" id="fig-rl">
+  <div class="cd-fig-title">RL from each fine-tuned model</div>
+  <div class="cd-fig-head">
+    <div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div>
+  </div>
+  <div class="cd-chart"></div>
+  <p class="cd-gap-note"></p>
+  <figcaption><b>Figure 7.</b> Best-so-far validation pass@8 during RL, mean of three seeds &plusmn; one standard error. The red arrow marks the largest head start of GROOT-4 or VS-4 over an IID run at the same pass@8 (circles show where each curve crosses that level).</figcaption>
+</figure>
+
+<p>The strategically trained models also end RL ahead. On the Cobalt frontier GROOT-4 ends at pass@64 of 39.0 and VS-4 at 37.8, against 36.6 for IID-4 and 29.3 for the base model. On the held-out benchmarks GROOT-4 keeps improving (15.5 &rarr; 18.0 pass@64) while VS-4 slips (17.5 &rarr; 16.0). So we recommend GROOT as an initialization for RL, and VS when the fine-tuned model is used directly.</p>
+
+<figure class="cd-fig cd-wide" id="fig-prepost">
+  <div class="cd-fig-title">Before and after RL</div>
+  <div class="cd-fig-head">
+    <div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div>
+    <div class="cd-toggle-row"><div class="cd-toggle cd-bench" role="group" aria-label="Benchmark"><button data-bench="cobalt">Cobalt</button><button data-bench="macro" class="is-on">Held-out</button><span class="cd-paren-o">(</span><button data-bench="lcb">LCB</button><span class="cd-sep">,</span><button data-bench="ojbench">OJBench</button><span class="cd-paren-c">)</span></div><span class="cd-vsep" aria-hidden="true">|</span><div class="cd-toggle" role="group" aria-label="k axis scale"><button class="is-on" data-kscale="log">log k</button><button data-kscale="linear">linear k</button></div></div>
+  </div>
+  <div class="cd-chart"></div>
+  <div class="cd-ttt">
+    <div class="cd-fig-head cd-ttt-head">
+      <div class="cd-fig-title">RL steps to reach a validation pass@8 of</div>
+      <label class="cd-slider"><i class="end"></i><input type="range" aria-label="Validation pass@8 threshold"><i class="end"></i> <span></span></label>
+    </div>
+    <div class="cd-chart"></div>
+  </div>
+  <figcaption><b>Figure 8.</b> Frontier pass@<i>k</i> before RL (dashed) and after RL (solid, mean of three runs &plusmn; one standard error). Below: RL steps until validation pass@8 first reaches the chosen value. Nemotron is scored on its own frontier, so its numbers aren't comparable to Qwen's.</figcaption>
+</figure>
+
+<p>We also run Recursive Self-Aggregation (RSA; <a href="https://arxiv.org/abs/2509.26626">Venkatraman et al., 2025</a>), which refines a population of 16 solutions for 10 rounds by merging 4 at a time. The strategic models start higher and improve more. On the Cobalt frontier VS-4 goes from 4.2 to 10.6 pass@1, and IID-4 from 0.9 to 3.8.</p>
+
+<figure class="cd-fig" id="fig-rsa">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">Test-time scaling with RSA</div><span class="cd-model-tag">Qwen3-4B-Instruct</span>
+    <div class="cd-toggle cd-bench" role="group" aria-label="Benchmark"><button class="is-on" data-bench="0">Cobalt</button><span class="cd-bench-lab">Held-out</span><span class="cd-paren-o">(</span><button data-bench="1">LCB</button><span class="cd-sep">,</span><button data-bench="2">OJBench</button><span class="cd-paren-c">)</span></div>
+  </div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 9.</b> Frontier pass@1 of the initial population (&#9675;) and after 10 aggregation rounds (&#9679;), mean of three runs.</figcaption>
+</figure>
+
+<h2 id="ncp" data-nav="Stories">Strategic sampling for diversity also helps story planning</h2>
+
+<p>Next-Chapter Prediction (<a href="https://arxiv.org/abs/2503.22828">Gurung &amp; Lapata, 2025</a>) asks the model to plan the next ~200 words of a novel. A plan's score is how much it lowers the perplexity of the real passage. This task has a much larger approach space and a continuous reward (i.e., no binary correctness), making it a useful test of whether diversity transfers beyond traditional tasks. To get a pass/fail signal, we say a plan clears the <em>bar</em> if it improves perplexity by at least a threshold (e.g., 15%). Figure&nbsp;10 shows 32 plans from each sampler for one section.</p>
+
+<figure class="cd-fig" id="fig-ncp">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">Plans for one section</div><span class="cd-model-tag">Qwen3-4B-Instruct</span>
+    <label class="cd-slider">bar <input type="range" min="0" max="14" step="0.5" value="10" aria-label="Quality bar"> <span></span></label>
+  </div>
+  <div class="cd-chart"></div>
+  <div class="cd-plans"></div>
+  <details class="cd-passage"><summary>The real passage</summary><div></div></details>
+  <figcaption><b>Figure 10.</b> Each dot is one plan from the base model, placed by its perplexity improvement on the real passage. Filled dots clear the bar. Section <i>funny</i>, chapter 3, part 5 of 7.</figcaption>
+</figure>
+
+<p>The analogue of pass@<i>k</i> is <b>coverage@<i>k</i></b>: the share of test sections where at least one of <i>k</i> sampled plans clears the bar. After training, the GROOT and VS models are nearly twice as likely as the base model to produce a plan that clears the 15% bar: coverage@32 of 3.6% and 4.1% vs 2.0%. The IID model reaches 2.1%, about the same as the base model. Nemotron3-Nano-4B shows the same pattern: at 16 plans, GROOT and VS reach 14.6% and 14.2% against 11.1% for the base model and 10.4% for IID.</p>
+
+<figure class="cd-fig" id="fig-coverage">
+  <div class="cd-fig-head">
+    <div class="cd-fig-title">Next-chapter prediction coverage</div>
+    <div class="cd-toggle" role="tablist" aria-label="Model"><button class="is-on" data-model="qwen" role="tab">Qwen3-4B-Instruct</button><button data-model="n3n" role="tab">Nemotron3-Nano-4B</button></div><span class="cd-vsep" aria-hidden="true">|</span><div class="cd-toggle" role="group" aria-label="k axis scale"><button class="is-on" data-kscale="log">log k</button><button data-kscale="linear">linear k</button></div>
+  </div>
+  <div class="cd-chart"></div>
+  <figcaption><b>Figure 11.</b> Share of the 1,430 test sections where at least one of <i>k</i> sampled plans improves perplexity by at least 15%. Qwen bands are &plusmn; one standard error over three training runs; the Nemotron models are single runs.</figcaption>
+</figure>
+
+<p class="cd-note">Read the full paper on <a href="https://arxiv.org/abs/2609.31571">arXiv</a>. To cite it, use the BibTeX below.</p>
+
+</div>
+
+<div class="cd-tooltip" role="tooltip" hidden></div>
+<script src="/assets/js/diversity/examples.js?v=20260928"></script>
+<script src="/assets/js/diversity/figdata.js?v=20260928"></script>
+<script src="/assets/js/diversity/passk.js?v=20260928"></script>
+<script src="/assets/js/diversity/rlcurves.js?v=20260928"></script>
+<script src="/assets/js/diversity/page.js?v=20260928"></script>
+<link rel="stylesheet" href="/assets/css/diversity-dhaka-box.css">
+<script src="/assets/js/diversity/dhaka-box.js"></script>
+<link rel="stylesheet" href="/assets/css/diversity-vines.css">
+<script src="/assets/js/diversity/vines.js"></script>

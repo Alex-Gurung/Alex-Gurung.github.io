@@ -3,7 +3,6 @@ layout: about
 title: About
 permalink: /
 # subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
-subtitle: Learning to optimize the unverifiable
 
 profile:
   align: right
@@ -40,6 +39,13 @@ I'm always interested in talking about my research and learning more about what 
 ## Featured Projects
 
 <div class="featured-projects">
+  <a class="featured-project-card" href="/diversity/">
+    <img src="/assets/img/diversity/groot-pipeline-poster.jpg" alt="pass@k curves: models trained on strategically diverse samples solve far more hard coding problems than IID self-training" loading="lazy">
+    <div class="featured-project-body">
+      <h3>Strategically Diverse Sampling</h3>
+      <p>Self-training on distinct approaches to a problem rather than repeated samples: it triples pass@64 on hard coding problems and beats a 235B teacher. <span class="featured-project-venue">Preprint</span></p>
+    </div>
+  </a>
   <a class="featured-project-card" href="/litereason/">
     <img src="/assets/img/litereason/architecture-poster.png" alt="LiteReason architecture diagram" loading="lazy">
     <div class="featured-project-body">
