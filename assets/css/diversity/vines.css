@@ -3,7 +3,8 @@
    with ink veins, Dhaka crimson for buds and flower hearts, turmeric accents.
    Nothing here animates: stems grow, leaves unfurl and stalks draw via SVG
    attributes set from JS, once, and nothing runs at rest. (Avoid CSS opacity
-   here: each element with it gets its own effect node, which slows repaints.) */
+   here: each element with it gets its own effect node, which slows repaints.)
+   Settled pieces are merged into one path per style per tile. */
 
 .cd-project { position: relative; }
 
@@ -22,15 +23,16 @@
 .vxa-stem { fill: none; stroke: var(--vxa-ink); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
 .vxa-strand { fill: none; stroke: var(--vxa-ink); stroke-width: 0.55; stroke-linecap: round; stroke-opacity: 0.8; }
 
-/* Leaves: flat fills, yellow-leaning so they stay apart from VS's bluish green */
+/* Leaves: flat fills, yellow-leaning so they stay apart from VS's bluish green.
+   A tile draws all its settled leaves of one tint as a single path. */
 .vxa-vines .lf { fill: #b7c65a; stroke: var(--vxa-ink); stroke-width: 0.8; }
-.vxa-vines .c2 .lf { fill: #9cb84a; }
-.vxa-vines .c3 .lf { fill: #cbd67a; }
-.vxa-vines .c4 .lf { fill: #7fa23f; }
-.vxa-vines .ct .lf { fill: #e0b43c; }
+.vxa-vines .lf.c2 { fill: #9cb84a; }
+.vxa-vines .lf.c3 { fill: #cbd67a; }
+.vxa-vines .lf.c4 { fill: #7fa23f; }
+.vxa-vines .lf.ct { fill: #e0b43c; }
+.vxa-vines .lf.end { fill: var(--vxa-ink); }
 .vxa-vines .rib { fill: none; stroke: var(--vxa-ink); stroke-width: 0.5; stroke-linecap: round; }
-.vxa-vines .vxa-end .lf { fill: var(--vxa-ink); }
-.vxa-vines .vxa-end .rib { stroke: var(--vxa-paper); }
+.vxa-vines .rib.end { stroke: var(--vxa-paper); }
 
 /* Flowers and buds */
 .vxa-vines .pt { fill: var(--vxa-paper); stroke: var(--vxa-ink); stroke-width: 0.7; }
@@ -41,8 +43,10 @@
 .vxa-dot { fill: var(--vxa-ink); fill-opacity: 0.9; }
 .vxa-dot.tur { fill: var(--vxa-turmeric); fill-opacity: 1; }
 
-/* Stalks, curls and heading tendrils (drawn once from JS via stroke-dashoffset) */
-.vxa-grow { fill: none; stroke: var(--vxa-ink); stroke-linecap: round; stroke-dasharray: 1; }
+/* Stalks, curls and heading tendrils: .vxa-grow while drawing (from JS, via
+   stroke-dashoffset), .vxa-line once merged into the tile */
+.vxa-grow, .vxa-line { fill: none; stroke: var(--vxa-ink); stroke-linecap: round; }
+.vxa-grow { stroke-dasharray: 1; }
 .vxa-stalk { stroke-width: 0.75; }
 .vxa-curl { stroke-width: 0.7; }
 .vxa-tendril { stroke-width: 0.85; }
