@@ -1,1 +1,40 @@
-.cd-project .cd-box.dkb{--dkb-f:18px;border:0;box-shadow:none;background:#fff;padding:calc(var( -  - dkb - f)+1.5rem) calc(var( -  - dkb - f)+1.4rem) calc(var( -  - dkb - f)+0.9rem)}.cd-project .cd-box.dkb::before{display:none}.dkb-frame{position:absolute;top:0;left:0;display:block;pointer-events:none;z-index:0}.cd-project .cd-box.dkb>:not(.dkb-frame){position:relative;z-index:1}.cd-project .cd-box.dkb .cd-box-title{position:absolute;top:calc(var( -  - dkb - f) / 2);transform:translate(-50%,-50%);background:#fff;padding:.12rem 1rem .18rem;line-height:1.3;border:1.5px solid #3b2a20;box-shadow:0 0 0 2px #fff,0 0 0 3.5px #3b2a20}.cd-project .cd-box.dkb.dkb-narrow{padding-left:1.1rem;padding-right:1.1rem}.cd-project .cd-box.dkb.dkb-narrow .cd-box-title{padding:.08rem .8rem .14rem}
+/* Dhaka frame for the Key-takeaways box. The frame itself is an SVG drawn by
+   dhaka-box.js; this file clears the old double rule and leaf band, makes
+   room for the frame, and seats the title as a cartouche on the top band. */
+
+.cd-project .cd-box.dkb {
+  --dkb-f: 18px;
+  border: none;
+  box-shadow: none;
+  background: #ffffff;
+  padding: calc(var(--dkb-f) + 1.5rem) calc(var(--dkb-f) + 1.4rem) calc(var(--dkb-f) + 0.9rem);
+}
+.cd-project .cd-box.dkb::before { display: none; }
+
+.dkb-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+.cd-project .cd-box.dkb > :not(.dkb-frame) { position: relative; z-index: 1; }
+
+.cd-project .cd-box.dkb .cd-box-title {
+  position: absolute;
+  top: calc(var(--dkb-f) / 2);
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 0.12rem 1rem 0.18rem;
+  line-height: 1.3;
+  border: 1.5px solid #3b2a20;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px #3b2a20;
+}
+
+/* Phones: top and bottom bands only; the sides keep a single umber thread */
+.cd-project .cd-box.dkb.dkb-narrow {
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+}
+.cd-project .cd-box.dkb.dkb-narrow .cd-box-title { padding: 0.08rem 0.8rem 0.14rem; }

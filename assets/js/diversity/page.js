@@ -1,2 +1,1734 @@
-!function(){"use strict";function t(t,e,n,a){var i=document.createElementNS(T,t);if(e)for(var r in e)null!=e[r]&&i.setAttribute(r,e[r]);return null!=a&&(i.textContent=a),n&&n.appendChild(i),i}function e(t,e,n,a){var i=document.createElement(t);if(e)for(var r in e)"class"===r?i.className=e[r]:null!=e[r]&&i.setAttribute(r,e[r]);return null!=a&&(i.textContent=a),n&&n.appendChild(i),i}function n(t){return String(t).replace(/[&<>"]/g,function(t){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[t]})}function a(t,e){return t.toFixed(e)}function i(t,e,n){var a=t.querySelectorAll("["+e+"]");a.forEach(function(t){t.addEventListener("click",function(){a.forEach(function(e){e.classList.toggle("is-on",e===t),e.hasAttribute("aria-selected")&&e.setAttribute("aria-selected",e===t?"true":"false")}),n(t.getAttribute(e),t)})})}function r(t,e){if(S){S.innerHTML=t,S.hidden=!1;var n=e.clientX+14,a=e.clientY+14,i=S.getBoundingClientRect();n+i.width>window.innerWidth-8&&(n=e.clientX-i.width-14),a+i.height>window.innerHeight-8&&(a=e.clientY-i.height-14),S.style.left=n+"px",S.style.top=a+"px"}}function o(){S&&(S.hidden=!0)}function s(t){return'<span class="sw" style="background:'+t+'"></span>'}function c(t,e){t.addEventListener("mousemove",function(t){r(e(),t)}),t.addEventListener("mouseleave",o)}function l(e,n,a,i,r){var o=n.split(/\s+/),s=[],c="";o.forEach(function(t){(c+" "+t).trim().length>a&&c?(s.push(c),c=t):c=(c+" "+t).trim()}),c&&s.push(c),r&&s.length>r&&((s=s.slice(0,r))[r-1]=s[r-1].replace(/\s*\S*$/,"")+"\u2026");var l=e.getAttribute("x");return s.forEach(function(n,a){t("tspan",{x:l,dy:0===a?0:i},e,n)}),s.length}function d(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}function u(t,e,n){setTimeout(function(){var e=performance.now();!function a(i){var r=Math.max(0,Math.min(1,(i-e)/t));n(d(r)),r<1&&requestAnimationFrame(a)}(e)},e)}function f(t,e){if(I||!("IntersectionObserver"in window))return!1;var n=new IntersectionObserver(function(t){t.some(function(t){return t.isIntersecting})&&(n.disconnect(),e())},{threshold:.35});return n.observe(t),!0}function h(t,e){t.style.opacity=0,t.style.transition="opacity 0.35s ease "+e+"ms",requestAnimationFrame(function(){requestAnimationFrame(function(){t.style.opacity=1})})}function m(t){D.push(t)}function v(t){return Math.round(Math.max(320,Math.min(900,t.clientWidth||720)))}function x(t,n){var a=e("div",{class:"cd-legend"},t);n.forEach(function(t){var n=e("span",null,a);e("i",{class:"cd-key "+(t.kind||"dot"),style:"--kc:"+t.color},n),n.appendChild(document.createTextNode(t.label))})}function p(e,n,a,i,r){var o=L[n],s="iidhot"===n||"iid64"===n,c=q[n]||"circle",l={fill:s?"#fff":o,stroke:s?o:"#fff","stroke-width":s?1.6:1.2};if("square"===c)return l.x=a-.9*r,l.y=i-.9*r,l.width=l.height=1.8*r,t("rect",l,e);if("up"===c||"down"===c){var d="up"===c?1:-1,u=1.15*r;return l.points=[a,i-d*u,a-u,i+d*u*.8,a+u,i+d*u*.8].join(","),t("polygon",l,e)}return l.cx=a,l.cy=i,l.r=r,t("circle",l,e)}function y(t,e){function n(){var n=v(t);n!==a&&(a=n,t.innerHTML="",e(n))}var a=0;return C.push(n),n(),function(){a=0,n()}}function b(e,n,a,i,r,o,s){a.forEach(function(a){t("line",{x1:n(a),x2:n(a),y1:i,y2:r,class:"cd-gridline"},e),t("text",{x:n(a),y:r+16,"text-anchor":"middle",class:"cd-lab-muted"},e,a)}),o&&t("text",{x:s,y:r+16,"text-anchor":"end",class:"cd-lab-muted"},e,o)}function g(t){var e=t.length;if(e<3)return t.map(function(t,e){return(e?"L":"M")+t[0].toFixed(1)+","+t[1].toFixed(1)}).join(" ");for(var n=[],a=[],i=0;i<e-1;i++)n.push((t[i+1][1]-t[i][1])/(t[i+1][0]-t[i][0]));for(a[0]=n[0],a[e-1]=n[e-2],i=1;i<e-1;i++)a[i]=n[i-1]*n[i]<=0?0:(n[i-1]+n[i])/2;for(i=0;i<e-1;i++)if(0!==n[i]){var r=a[i]/n[i],o=a[i+1]/n[i],s=r*r+o*o;if(s>9){var c=3/Math.sqrt(s);a[i]=c*r*n[i],a[i+1]=c*o*n[i]}}else a[i]=0,a[i+1]=0;var l="M"+t[0][0].toFixed(1)+","+t[0][1].toFixed(1);for(i=0;i<e-1;i++){var d=(t[i+1][0]-t[i][0])/3;l+=" C"+(t[i][0]+d).toFixed(1)+","+(t[i][1]+a[i]*d).toFixed(1)+" "+(t[i+1][0]-d).toFixed(1)+","+(t[i+1][1]-a[i+1]*d).toFixed(1)+" "+t[i+1][0].toFixed(1)+","+t[i+1][1].toFixed(1)}return l}function k(e,i,c){function l(e){if(R.innerHTML="",D.forEach(function(e){e>S[1]+1e-9||(t("line",{x1:v.l,x2:i-v.r,y1:q(e),y2:q(e),class:"cd-gridline"},R),t("text",{x:v.l-(c.yMinor?10:8),y:q(e)+4,"text-anchor":"end"},R,e),c.yMinor&&t("line",{x1:v.l-6,x2:v.l,y1:q(e),y2:q(e),stroke:"#8a8a8a"},R))}),c.yMinor){t("line",{x1:v.l,x2:v.l,y1:q(S[1]),y2:q(S[0]),stroke:"#bbbbbb"},R);for(var n=Math.ceil(S[0]/c.yMinor)*c.yMinor;n<=S[1]+1e-9;n+=c.yMinor)D.indexOf(n)<0&&t("line",{x1:v.l-3.5,x2:v.l,y1:q(n),y2:q(n),stroke:"#a8a8a8"},R)}if(e.forEach(function(t,e){var n=_[e];if(n.band&&t.band)if(c.smooth){var a=t.band.map(function(t){return[F(t[0]),q(t[2])]}),i=t.band.slice().reverse().map(function(t){return[F(t[0]),q(t[1])]});n.band.setAttribute("d",g(a)+" L"+i[0][0].toFixed(1)+","+i[0][1].toFixed(1)+" "+g(i).slice(1)+" Z")}else{var r=t.band.map(function(t){return F(t[0])+","+q(t[2])}),o=t.band.slice().reverse().map(function(t){return F(t[0])+","+q(t[1])});n.band.setAttribute("points",r.concat(o).join(" "))}n.path.setAttribute("d",c.smooth?g(t.points.map(function(t){return[F(t[0]),q(t[1])]})):t.points.map(function(t,e){return(e?"L":"M")+F(t[0]).toFixed(1)+","+q(t[1]).toFixed(1)}).join(" ")),n.marks.innerHTML="",c.markers&&!t.noMarkers&&t.points.forEach(function(e){(!c.markerAt||c.markerAt.indexOf(e[0])>=0)&&p(n.marks,t.id,F(e[0]),q(e[1]),3.6)})}),d){for(var r=e.map(function(t,e){var n=t.points[t.points.length-1];return{k:e,y:q(n[1]),v:n[1]}}).sort(function(t,e){return t.y-e.y}),o=1;o<r.length;o++)r[o].y-r[o-1].y<15&&(r[o].y=r[o-1].y+15);r.forEach(function(t){_[t.k].label.setAttribute("y",t.y+4),_[t.k].val.textContent=a(t.v,c.dec||1)})}}var d=i>=600,m=c.height||320,v={l:46,r:d?c.rightPad||110:12,t:12,b:42};x(e,c.series.map(function(t){return{label:t.name,color:L[t.id],kind:t.dotted?"dot-line":t.dash?"dash":"line"}}));var y=t("svg",{viewBox:"0 0 "+i+" "+m,role:"img","aria-label":c.aria},e),b=c.log2&&"log"===A,k=b?Math.log2:function(t){return t},w=!b&&c.xTicksLinear?c.xTicksLinear:c.xTicks,E=c.log2&&!b?c.xLabel.replace(" (log scale)",""):c.xLabel,M=k(c.xDomain[0]),T=k(c.xDomain[1]),S=c.yDomain.slice(),D=c.yTicks.slice(),F=function(t){return v.l+(k(t)-M)/(T-M)*(i-v.l-v.r)},q=function(t){return m-v.b-(t-S[0])/(S[1]-S[0])*(m-v.t-v.b)},C=t("g",{class:"cd-ax"},y),R=t("g",null,C);if(w.forEach(function(e){t("text",{x:F(e),y:m-v.b+18,"text-anchor":"middle"},C,e),c.xMinor&&t("line",{x1:F(e),x2:F(e),y1:m-v.b,y2:m-v.b+6,stroke:"#8a8a8a"},C)}),c.xMinor)for(var O=Math.ceil(c.xDomain[0]/c.xMinor)*c.xMinor;O<=c.xDomain[1];O+=c.xMinor)w.indexOf(O)<0&&t("line",{x1:F(O),x2:F(O),y1:m-v.b,y2:m-v.b+3.5,stroke:"#a8a8a8"},C);t("line",{x1:v.l,x2:i-v.r,y1:m-v.b,y2:m-v.b},C),t("text",{x:(v.l+i-v.r)/2,y:m-4,"text-anchor":"middle"},C,E),t("text",{transform:"translate(12,"+(v.t+m-v.b)/2+") rotate(-90)","text-anchor":"middle"},C,c.yLabel),c.annotate&&c.annotate(y,F,q,i,m,v,d);var B=t("defs",null,y),P={},_=c.series.map(function(){return{}});c.series.slice().reverse().forEach(function(e){var n=c.series.indexOf(e),a=L[e.id],i=t("g",null,y);P[e.key||e.id]=i,e.band&&(_[n].band=t(c.smooth?"path":"polygon",{fill:a,opacity:.13},i)),_[n].path=t("path",{fill:"none",stroke:a,"stroke-width":2,"stroke-linejoin":"round","stroke-dasharray":e.dash||null},i),_[n].marks=t("g",null,i)});var N=t("g",null,y);c.series.forEach(function(e,n){if(d){var a=t("text",{x:i-v.r+8,class:"cd-lab"},N);t("tspan",null,a,(e.endName||e.name)+" "),_[n].val=t("tspan",{fill:L.muted},a),_[n].label=a,e.endLabel=a}});var V=c.series;l(V);var z=!0===c.animate?c.series.map(function(t){return t.key||t.id}):c.animate||[],j=c.series.slice().reverse().filter(function(t){return z.indexOf(t.key||t.id)>=0});if(j.length&&!I){var G=j.map(function(e){var n=t("clipPath",{id:"cd-sweep-"+Math.random().toString(36).slice(2)},B),a=t("rect",{x:0,y:-20,width:v.l-2,height:m+40},n);return P[e.key||e.id].setAttribute("clip-path","url(#"+n.id+")"),e.endLabel&&(e.endLabel.style.opacity=0),a}),H=function(){j.forEach(function(t,e){var n=550*e;u(900,n,function(t){G[e].setAttribute("width",v.l-2+t*(i-v.l+2))}),t.endLabel&&h(t.endLabel,n+800)})};c.immediate?H():f(e,H)||H()}var U=c.series[0].points.map(function(t){return t[0]}),X=t("line",{y1:v.t,y2:m-v.b,stroke:L.ink,"stroke-width":1,opacity:0},y),W=c.series.map(function(e){return t("circle",{r:4.5,fill:L[e.id],stroke:"#fff","stroke-width":2,opacity:0},y)}),K=t("rect",{x:v.l,y:v.t,width:i-v.l-v.r,height:m-v.t-v.b,fill:"transparent"},y);K.addEventListener("mousemove",function(t){var e=y.getBoundingClientRect(),o=(t.clientX-e.left)/e.width*i,l=0;U.forEach(function(t,e){Math.abs(F(t)-o)<Math.abs(F(U[l])-o)&&(l=e)}),X.setAttribute("x1",F(U[l])),X.setAttribute("x2",F(U[l])),X.setAttribute("opacity",.2);var d=V.map(function(t,e){var n=t.points[l];return W[e].setAttribute("cx",F(n[0])),W[e].setAttribute("cy",q(n[1])),W[e].setAttribute("opacity",1),{s:t,v:n[1],b:t.band&&t.band[l]}}).sort(function(t,e){return e.v-t.v});r("<b>"+c.xName+" "+U[l]+"</b><br>"+d.map(function(t){return s(L[t.s.id])+n(t.s.name)+": "+a(t.v,c.dec||1)+(t.b?' <span style="color:#6b7280">\xb1 '+a((t.b[2]-t.b[1])/2,c.dec||1)+"</span>":"")}).join("<br>"),t)}),K.addEventListener("mouseleave",function(){o(),X.setAttribute("opacity",0),W.forEach(function(t){t.setAttribute("opacity",0)})});var Y=0;return{update:function(t,e,n,a){function i(e){return t.map(function(t,n){var a=r[n];return{id:t.id,name:t.name,points:t.points.map(function(t,n){return[t[0],a.points[n][1]+(t[1]-a.points[n][1])*e]}),band:t.band&&a.band?t.band.map(function(t,n){var i=a.band[n];return[t[0],i[1]+(t[1]-i[1])*e,i[2]+(t[2]-i[2])*e]}):t.band}})}var r=V,o=S.slice(),s=++Y;if(D=n||D,I)return S=e.slice(),V=t,void l(t);u(a||650,0,function(n){s===Y&&(S=[o[0]+(e[0]-o[0])*n,o[1]+(e[1]-o[1])*n],l(n<1?i(n):t),n>=1&&(V=t))})}}}function w(t){for(var e=0;e<R.rows.length;e++)if(R.rows[e].name===t)return R.macro[e]}function E(e,n,a,i,r,o){var s=t("g",{transform:"translate("+n.toFixed(1)+","+a.toFixed(1)+") rotate("+(180*i/Math.PI+90).toFixed(1)+") scale("+r+")"},e),c=t("g",null,s);return t("path",{d:O,class:o||"lf",style:"stroke-width:"+(.8/r).toFixed(3)},c),t("path",{d:"M0,-0.05 L0,-1.05 M0,-0.36 L-0.26,-0.56 M0,-0.36 L0.26,-0.56 M0,-0.66 L-0.17,-0.82 M0,-0.66 L0.17,-0.82",class:"rib",style:"stroke-width:"+(.5/r).toFixed(3)},c),c}function M(t){var e=t>>>0;return function(){e=e+1831565813>>>0;var t=Math.imul(e^e>>>15,1|e);return(((t^=t+Math.imul(t^t>>>7,61|t))^t>>>14)>>>0)/4294967296}}var L={base:"#999999",iid:"#0072b2",iidhot:"#56b4e9",iid64:"#7b3294",groot:"#d55e00",vs:"#009e73",pass:"#16823c",fail:"#be372d",ink:"#1b1f24",ink2:"#454b54",muted:"#6b7280",grid:"#eeeeee",rule:"#d4d4d4",soft:"#f4f4f4"},T="http://www.w3.org/2000/svg",S=document.querySelector(".cd-tooltip"),I=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches,A="log",D=[];document.addEventListener("click",function(t){var e=t.target.closest&&t.target.closest("[data-kscale]");if(e){var n=e.getAttribute("data-kscale");n!==A&&(A=n,document.querySelectorAll("[data-kscale]").forEach(function(t){t.classList.toggle("is-on",t.getAttribute("data-kscale")===n)}),D.forEach(function(t){t()}))}});var F,q={base:"circle",iid:"circle",iidhot:"circle",iid64:"down",groot:"square",vs:"up"},C=[];window.addEventListener("resize",function(){clearTimeout(F),F=setTimeout(function(){C.forEach(function(t){t()})},120)});var R={rows:[{name:"Base",s:"base"},{name:"IID-4",s:"iid"},{name:"IID-4 (T=1.5)",s:"iidhot"},{name:"IID-64",s:"iid64"},{name:"IID-64 (T=1.5)",s:"iidhot"},{name:"GROOT-4 ANTI",s:"groot",anti:!0},{name:"GROOT-4",s:"groot"},{name:"VS-4 ANTI",s:"vs",anti:!0},{name:"VS-4",s:"vs"}],cobalt:[[.5,3.6,21.9],[.7,4.9,19.8],[1,6.5,22.4],[1,6.3,21.5],[1.5,7.4,23],[3.1,11.8,26.4],[3.5,14.1,30.5],[3.3,12.5,29.1],[4.1,14.3,30.2]],lcb:[[.2,1.3,7.4],[.2,1.5,7],[.5,3.2,10.8],[.4,2.5,8.7],[.4,2.8,10.7],[1.2,6.3,17.1],[1.5,8,19.5],[1.2,7,20.3],[2,9.6,23.1]],ojb:[[.1,.5,2.9],[.1,.7,3.5],[.1,1,5.2],[.1,1,4.4],[.2,1.4,5.2],[1,3.7,8.4],[1.2,5.3,11.5],[.9,3.8,9.2],[1.5,5.6,11.9]],macro:[[.2,.9,5.2],[.2,1.1,5.2],[.3,2.1,8],[.2,1.8,6.5],[.3,2.1,7.9],[1.1,5,12.8],[1.4,6.7,15.5],[1.1,5.4,14.8],[1.8,7.6,17.5]]};!function(){var t=document.getElementById("fig-passk");if(t){var e=t.querySelector(".cd-chart"),n="iid",a="qwen",r=!0,o=null,s=[{id:"vs",name:"VS-4",row:"VS-4",strategic:!0},{id:"groot",name:"GROOT-4",row:"GROOT-4",strategic:!0},{id:"iidhot",name:"IID-64 (T=1.5)",row:"IID-64 (T=1.5)"},{id:"iid",name:"IID-4",row:"IID-4"},{id:"base",name:"Base",row:"Base",dash:"5 4"}],c=y(e,function(t){var i=window.CD_PASSK,c=window.CD_N3N_PRE,l=s.filter(function(t){return"all"===n||!t.strategic}).map(function(t){var e=null;if("qwen"===a)if(i)e=i.ks.map(function(e,n){return[e,i.table2[t.row].macro[n]]});else{var n=w(t.row);e=[[1,n[0]],[8,n[1]],[64,n[2]]]}else{var r="IID-64 (T=1.5)"===t.row?"IID-64":t.row;c&&c[r]&&(e=c[r].macro.map(function(t,e){return[e+1,t]}))}return e&&{id:"n3n"===a&&"iidhot"===t.id?"iid64":t.id,name:"n3n"===a&&"IID-64 (T=1.5)"===t.row?"IID-64":t.name,dash:t.dash,points:e}}).filter(Boolean);k(e,t,{series:l,log2:!0,xDomain:[1,64],yDomain:[0,"qwen"===a?20:25],yTicks:"qwen"===a?[0,5,10,15,20]:[0,5,10,15,20,25],xTicks:[1,2,4,8,16,32,64],xTicksLinear:[1,16,32,48,64],xLabel:"samples k (log scale)",yLabel:"pass@k (%)",xName:"k =",markers:!0,markerAt:[1,2,4,8,16,32,64],rightPad:130,height:300,aria:"Held-out pass@k at k = 1, 8, 64 for the base model and self-trained models",animate:!!r||(o||[]),immediate:!r}),r=!1,o=null});m(function(){o=[],c()}),i(t,"data-model",function(t){t!==a&&(a=t,o="all"===n?["base","iid","iid64","iidhot","groot","vs"]:["base","iid","iid64","iidhot"],c())}),i(t,"data-show",function(t){t!==n&&(o="all"===t?["groot","vs"]:[],n=t,c())})}}(),function(){function e(e,n,i,r,o){t("line",{x1:e,y1:n,x2:i,y2:r,stroke:"#6b6b6b","stroke-width":1.3,"marker-end":"url(#cd-ah)"},a),o&&t("text",{x:(e+i)/2,y:n-8,"text-anchor":"middle","font-size":13,"font-style":"italic",fill:L.ink2},a,o)}function n(e,n,i,r,o,s){t("rect",{x:e,y:n,width:i,height:r,fill:"#fff",stroke:L.ink,"stroke-width":1.2},a),t("text",{x:e+i/2,y:n+r/2+(s?-2:5),"text-anchor":"middle","font-size":15,fill:L.ink},a,o),s&&t("text",{x:e+i/2,y:n+r/2+15,"text-anchor":"middle","font-size":12,fill:L.muted},a,s)}var a=document.querySelector("#fig-pipeline svg");if(a){var i=t("defs",null,a),r=t("marker",{id:"cd-ah",viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:"auto"},i);t("path",{d:"M0,1 L10,5 L0,9 z",fill:"#6b6b6b"},r);var o=[{y:60,name:"IID",sub:"baseline",c:L.iid},{y:186,name:"GROOT",sub:"structured",c:L.groot},{y:322,name:"VS",sub:"unstructured",c:L.vs}];o.forEach(function(e){t("text",{x:8,y:e.y-2,"font-size":17,"font-weight":"bold",fill:e.c},a,e.name),t("text",{x:8,y:e.y+16,"font-size":13,"font-style":"italic",fill:L.muted},a,e.sub),n(104,e.y-20,78,40,"problem")});var s=o[0].y,c=[[0,0],[-9,-6],[8,-8],[-6,8],[10,5],[2,-14],[-13,2],[4,12]];e(182,s,232,s,"sample n"),t("ellipse",{cx:290,cy:s,rx:40,ry:28,fill:"none",stroke:L.rule,"stroke-dasharray":"3 3"},a),c.forEach(function(e){t("circle",{cx:290+e[0],cy:s+e[1],r:4.2,fill:L.iid,stroke:"#fff","stroke-width":1},a)}),t("text",{x:290,y:s+44,"text-anchor":"middle","font-size":12.5,"font-style":"italic",fill:L.muted},a,"mostly one strategy"),e(334,s,470,s,"keep correct"),["\u2713","\u2717","\u2717","\u2713"].forEach(function(e,n){t("text",{x:492+16*n,y:s+5,"text-anchor":"middle","font-size":15,fill:"\u2713"===e?L.pass:L.fail},a,e)}),e(182,s=o[1].y,226,s,"plan");var l=[-42,-14,14,42];t("circle",{cx:236,cy:s,r:4,fill:L.ink},a),l.forEach(function(e,n){t("line",{x1:236,y1:s,x2:280,y2:s+e,stroke:L.groot,"stroke-width":1.6},a),t("circle",{cx:280,cy:s+e,r:3.5,fill:L.groot},a),[-6,6].forEach(function(i,r){var o=(n+r)%2==0;t("line",{x1:280,y1:s+e,x2:320,y2:s+e+i,stroke:o?L.groot:L.rule,"stroke-width":o?1.6:1},a),t("circle",{cx:320,cy:s+e+i,r:o?3.5:2.5,fill:o?L.groot:L.rule},a)})}),t("text",{x:278,y:s+64,"text-anchor":"middle","font-size":12.5,"font-style":"italic",fill:L.muted},a,"tree of strategies, n paths"),e(182,s=o[2].y,226,s,"plan"),[[.6,".60"],[.2,".20"],[.1,".10"],[.1,".10"]].forEach(function(e,n){var i=s-33+22*n;t("text",{x:236,y:i+5,"font-size":13,fill:L.ink2},a,"p="+e[1]),t("rect",{x:276,y:i-3,width:60*e[0]+4,height:7,fill:L.vs},a)}),t("text",{x:280,y:s+56,"text-anchor":"middle","font-size":12.5,"font-style":"italic",fill:L.muted},a,"n approaches with probabilities"),[o[1],o[2]].forEach(function(n){e(346,n.y,470,n.y,"solve each approach"),t("text",{x:408,y:n.y+18,"text-anchor":"middle","font-size":12,"font-style":"italic",fill:L.muted},a,"(approach hidden)"),[-27,-9,9,27].forEach(function(e,i){t("rect",{x:480,y:n.y+e-7,width:42,height:14,fill:"#fff",stroke:n.c,"stroke-width":1.2},a),t("text",{x:501,y:n.y+e+4,"text-anchor":"middle","font-size":11,fill:n.c},a,"ABCD"[i])})});var d=(o[0].y+o[2].y)/2;o.forEach(function(i){e(i===o[0]?548:530,i.y,590,i.y),n(592,i.y-20,92,40,"fine-tune"),t("line",{x1:684,x2:706,y1:i.y,y2:i.y,stroke:"#6b6b6b","stroke-width":1.3},a)}),t("line",{x1:706,x2:706,y1:o[0].y,y2:o[2].y,stroke:"#6b6b6b","stroke-width":1.3},a),e(706,d,726,d);var u=728,f=168,h=d-118,m=u+f/2;t("rect",{x:u,y:h,width:f,height:236,fill:L.soft,stroke:L.ink,"stroke-width":1.2},a),t("text",{x:m,y:h+28,"text-anchor":"middle","font-size":15,"font-weight":"bold",fill:L.ink},a,"Evaluate in three ways:"),[["pass@k",["plain prompt, k samples"]],["test-time scaling",["RSA (Venkatraman et al., 2025)"]],["RL",["MaxRL (Tajwar et al., 2026)","for code; GRPO for NCP"]]].forEach(function(e,n){var i=h+74+56*n;t("text",{x:m,y:i,"text-anchor":"middle","font-size":14.5,fill:L.ink},a,e[0]),e[1].forEach(function(e,n){t("text",{x:m,y:i+17+14*n,"text-anchor":"middle","font-size":11.5,"font-style":"italic",fill:L.muted},a,e)})})}}(),function(){function a(t,e,a,i,r,o){t.style.setProperty("--ac",r),t.innerHTML="<header>"+n(e)+' &nbsp;<span class="cd-mark '+(i?'pass">\u2713 solver passed':'fail">\u2717 solver failed')+"</span></header><p>"+n(a)+"</p>"+(o?'<p class="cd-solver"><b>What the solver did:</b> '+n(o)+"</p>":"")}var r=document.getElementById("fig-example"),o=window.CD_EXAMPLES;if(r&&o){var s=o.code,c=r.querySelectorAll(".cd-tabpanel");i(r,"data-tab",function(t){c.forEach(function(e){e.hidden=e.getAttribute("data-panel")!==t})});var d,u,f,h,m,v,x={groot:{"A \u2192 A1":"Noticed the per-query scan would be too slow and wrote an offline sweep with a Fenwick tree instead.","C \u2192 C1":"Implemented the offline sweep, keeping sorted endpoints and counting with binary search.","B \u2192 B1":"Built a 2D prefix-sum table over city pairs, but the program failed the tests.","D \u2192 D2":"Dropped the binary search on the answer and wrote an offline sweep with binary search instead."},vs:["Grouped trains by left endpoint and scanned them per query; the program failed the tests.","Switched to a 2D prefix-sum table over city pairs (N \u2264 500), which passes.","Implemented the table over all intervals; the program failed the tests.","Fell back to checking every train for every query; the program failed the tests."]};!function(){function e(e,n,a,i,r){var o=(e+a)/2;t("path",{d:"M"+e+","+n+" C"+o+","+n+" "+o+","+i+" "+a+","+i,fill:"none",stroke:r?L.groot:L.rule,"stroke-width":r?1.8:1.2},M)}var n=r.querySelector('[data-panel="groot"]'),i=n.querySelector("svg"),o=n.querySelector(".cd-approach"),c=[],d=null;s.tree.split("\n").forEach(function(t){var e=t.match(/^\s*([A-Z])(\d*)\.\s*(.*)$/);e&&(e[2]?d&&d.kids.push({id:e[1]+e[2],text:e[3]}):(d={id:e[1],text:e[3],kids:[]},c.push(d)))});var u={};s.groot.forEach(function(t,e){u[t.path.split("\u2192").pop().trim()]={idx:e,g:t}});var f=48,h=6,m=0;c.forEach(function(t){m+=Math.max(1,t.kids.length)});var v=900,p=2*h+m*f;i.setAttribute("viewBox","0 0 "+v+" "+p);var y=0,b=96,g=130,k=320,w=488,E=360,M=t("g",null,i),T=t("g",null,i),S=p/2;t("rect",{x:y,y:S-20,width:b,height:40,fill:"#fff",stroke:L.ink,"stroke-width":1.2},T),t("text",{x:b/2,y:S+5,"text-anchor":"middle","font-size":15,fill:L.ink},T,"problem");var I=[],A=0;c.forEach(function(n){var i=h+A*f,r=i+n.kids.length*f/2,s=n.kids.some(function(t){return u[t.id]});e(y+b,S,g,r,s),t("rect",{x:g,y:r-19,width:k,height:38,fill:"#fff",stroke:s?L.groot:L.rule,"stroke-width":1.2},T);var c=t("text",{x:g+10,y:r-3,"font-size":13.5,fill:L.ink},T);1===l(c,n.id+". "+n.text,44,15,2)&&c.setAttribute("y",r+5),n.kids.forEach(function(n,s){function c(){I.forEach(function(t){t.setAttribute("stroke-width",1.2)}),v.setAttribute("stroke-width",2.6),a(o,"Path "+h.g.path,h.g.text,y,L.groot,x.groot[h.g.path])}var d=i+s*f+f/2,h=u[n.id];e(g+k,r,w,d,!!h);var m=t("g",h?{class:"leaf",tabindex:0,role:"button"}:null,T),v=t("rect",{x:w,y:d-19,width:E,height:38,fill:h?"#fcefe6":"#fff",stroke:h?L.groot:L.rule,"stroke-width":1.2},m),p=t("text",{x:w+10,y:d-3,"font-size":13,fill:h?L.ink:L.muted},m);if(1===l(p,n.id+". "+n.text,50,15,2)&&p.setAttribute("y",d+5),h){var y=h.g.passed;t("text",{x:w+E+14,y:d+6,"font-size":17,fill:y?L.pass:L.fail},m,y?"\u2713":"\u2717"),m.addEventListener("click",c),m.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),c())}),I.push(v),1===h.idx&&c()}}),A+=Math.max(1,n.kids.length)})}(),d=r.querySelector('[data-panel="vs"]'),u=d.querySelector(".cd-vs"),f=d.querySelector(".cd-approach"),h=["Bucket trains by left endpoint, scan O(N) per query","Offline sweep line with a Fenwick tree","Precompute a count table over all O(N\xb2) intervals","Mo\u2019s algorithm"],m=s.vs.map(function(t,n){var i=e("button",{type:"button"},u);e("span",{class:"p"},i,"p = "+t.p.toFixed(2));var r=e("span",null,i,h[n]);return e("span",{class:"bar",style:"width:"+100*t.p+"%"},r),e("span",{class:"cd-mark "+(t.passed?"pass":"fail")},i,t.passed?"\u2713":"\u2717"),i.addEventListener("click",function(){m.forEach(function(t){t.classList.toggle("is-on",t===i)}),a(f,"p = "+t.p.toFixed(2)+": "+h[n],t.text,t.passed,L.vs,x.vs[n])}),i}),v=s.vs.findIndex(function(t){return t.passed}),m[v]&&m[v].click(),function(){var t=r.querySelector('[data-panel="iid"]'),n=t.querySelector(".cd-iid");s.iid_flags.forEach(function(t,a){e("span",null,n,"#"+(a+1)+" "+(t?"\u2713":"\u2717"))}),t.querySelector("code").textContent=s.iid_code}()}}(),function(){var e=document.getElementById("fig-data");if(e){var n=e.querySelector(".cd-chart"),r={qwen:{total:"1,833",rows:[{name:"IID-4",s:"iid",solved:42,p64:5.2},{name:"IID-4 (T=1.5)",s:"iidhot",solved:60,p64:8},{name:"IID-64",s:"iid64",solved:312,p64:6.5},{name:"IID-64 (T=1.5)",s:"iidhot",solved:379,p64:7.9,hl:!0,note:["most correct data","weak model"]},{name:"VS-4",s:"vs",solved:137,p64:17.5},{name:"GROOT-4",s:"groot",solved:155,p64:15.5,hl:!0,note:["less correct data","strong model"]}]},n3n:{total:null,rows:[{name:"IID-4",s:"iid",solved:52,p64:8.8},{name:"IID-8",s:"iid",solved:97,p64:14.9},{name:"IID-64",s:"iid64",solved:424,p64:11.9,hl:!0,note:["most correct data","weak model"]},{name:"VS-4",s:"vs",solved:137,p64:20.8},{name:"GROOT-4",s:"groot",solved:115,p64:19.9,hl:!0,note:["less correct data","strong model"]}]}},o="qwen",l=r.qwen.rows,d=!1,m=y(n,function(e){var i=[];l=r[o].rows;var m=e<600,v=m?98:122,x=m?18:34,p=m?34:64,y=(e-v-x-p)/2,g=30,k=m?46:34,w=k+l.length*g+28,E=t("svg",{viewBox:"0 0 "+e+" "+w,role:"img","aria-label":"Paired bars: training problems solved while sampling, and held-out pass@64 after training"},n);[{x:v,key:"solved",max:"qwen"===o?450:500,ticks:[0,200,400],title:m?["training problems","with a correct sample"]:["training problems with a correct sample"],d:0},{x:v+y+x,key:"p64",max:"qwen"===o?21:25,ticks:[0,10,20],title:m?["model after training:","held-out pass@64 (%)"]:["model after training: held-out pass@64 (%)"],d:1}].forEach(function(e){var n=function(t){return e.x+t/e.max*y};e.title.forEach(function(n,a){t("text",{x:e.x,y:14+16*a,class:"cd-lab","font-weight":"bold"},E,n)}),b(t("g",null,E),n,e.ticks,k-6,w-26),l.forEach(function(r,o){var s=k+o*g,c=Math.max(2,n(r[e.key])-e.x),l=t("g",{class:"cd-f4row"+(r.hl?" is-hl":"")},E),d=t("rect",{x:e.x,y:s+7,width:c,height:g-14,fill:L[r.s]},l),u=t("text",{x:e.x+c+5,y:s+g/2+4,class:"cd-val"},l,a(r[e.key],e.d));if(r.note&&!m){var f=r.note[e.d],h=6.4*f.length+14,v=e.x+c+5+(e.d?26:30);v+h>e.x+y+(e.d?p:x-4)?t("text",{x:e.x+c-8,y:s+g/2+4,"text-anchor":"end",class:"cd-f4note",fill:"#fff",style:"fill:#fff"},l,f):t("text",{x:v,y:s+g/2+4,class:"cd-f4note"},l,"\u2190 "+f)}i.push({rect:d,val:u,w:c,panel:e.d,i:o})})}),l.forEach(function(n,a){var i=k+a*g;t("text",{x:v-10,y:i+g/2+4,"text-anchor":"end",class:"cd-lab"+(n.hl?"":" cd-f4dim")},E,n.name),c(t("rect",{x:0,y:i,width:e,height:g,fill:"transparent"},E),function(){return s(L[n.s])+"<b>"+n.name+"</b><br>"+n.solved+(r[o].total?" / "+r[o].total:"")+" training problems solved<br>held-out pass@64 after RFT: "+n.p64.toFixed(1)})}),d||I||(i.forEach(function(t){t.rect.setAttribute("width",0),t.val.style.opacity=0}),f(n,function(){i.forEach(function(t){var e=1300*t.panel+70*t.i;u(650,e,function(e){t.rect.setAttribute("width",t.w*e)}),h(t.val,e+550)})})),d=!0});i(e,"data-model",function(t){t!==o&&(o=t,d=!0,m())})}}(),function(){function t(t){return l.map(function(e){return{key:e.key,id:e.id,name:e.name,endName:e.endName,dash:e.dash,dotted:e.dotted,noMarkers:e.noMarkers,points:a.ks.map(function(n,i){return[n,a.table2[e.arm][c[t]][i]]})}})}function e(t){for(var e=d[t],n=e>20?10:5,a=[],i=0;i<=e;i+=n)a.push(i);return a}var n=document.getElementById("fig-anti"),a=window.CD_PASSK;if(n&&a){var r=n.querySelector(".cd-chart"),o="macro",s=!1,c={macro:"macro",lcb:"lcb",ojb:"ojbench",cobalt:"cobalt"},l=[{key:"vs",id:"vs",arm:"VS-4",name:"VS-4"},{key:"groot",id:"groot",arm:"GROOT-4",name:"GROOT-4"},{key:"vs-anti",id:"vs",arm:"VS-4 (ANTI)",name:"VS-4, incorrect only",endName:"VS-4 incorrect",dash:"1.5 3",dotted:!0,noMarkers:!0},{key:"groot-anti",id:"groot",arm:"GROOT-4 (ANTI)",name:"GROOT-4, incorrect only",endName:"GROOT-4 incorrect",dash:"1.5 3",dotted:!0,noMarkers:!0},{key:"iidhot",id:"iidhot",arm:"IID-64 (T=1.5)",name:"IID-64 (T=1.5)"},{key:"iid",id:"iid",arm:"IID-4",name:"IID-4"},{key:"base",id:"base",arm:"Base",name:"Base",dash:"5 4"}],d={macro:20,lcb:25,ojb:15,cobalt:35},u=null;m(y(r,function(n){var a=t(o),i=d[o],c=e(o);u=k(r,n,{series:a,log2:!0,xDomain:[1,64],yDomain:[0,i],yTicks:c,xTicks:[1,2,4,8,16,32,64],xTicksLinear:[1,16,32,48,64],xLabel:"samples k (log scale)",yLabel:"pass@k (%)",xName:"k =",markers:!0,markerAt:[1,2,4,8,16,32,64],rightPad:178,height:320,aria:"pass@k curves for models trained on all samples, only incorrect strategic samples, and IID samples",animate:!s}),s=!0})),i(n,"data-bench",function(n){n!==o&&(o=n,u.update(t(n),[0,d[n]],e(n),700))})}}(),function(){var e=document.getElementById("fig-teacher");if(e){var n=e.querySelector(".cd-chart"),a={qwen:{teacher:"235B",xmax:25,rows:[{name:"IID-4",s:"iid",self:[.2,1.3,5.8],teach:[.7,4.5,13.4]},{name:"GROOT-4",s:"groot",self:[2.1,9.3,20.1],teach:[1.6,8,17.8]},{name:"VS-4",s:"vs",self:[2.6,10.6,22.8],teach:[1.5,7.8,17.7]}]},n3n:{teacher:"120B",xmax:30,rows:[{name:"IID-4",s:"iid",self:[.3,2.1,8.8],teach:[.5,3.5,13.8]},{name:"GROOT-4",s:"groot",self:[1.1,6.4,19.9],teach:[2.2,11.1,25.7]},{name:"VS-4",s:"vs",self:[1.6,8.2,20.8],teach:[2.6,12.3,27.4]}]}},r="qwen",o=!1,l=!1,d=y(n,function(e){var i=[],d=a[r].rows;x(n,[{label:"self-generated (4B)",color:L.ink2},{label:"teacher-generated ("+a[r].teacher+")",color:L.ink2,kind:"ring"}]);for(var m=e<600?76:100,v=24,p=50,y=4,g=y+d.length*p+30,k=a[r].xmax,w=function(t){return m+t/k*(e-m-v)},E=t("svg",{viewBox:"0 0 "+e+" "+g,role:"img","aria-label":"Held-out pass@64 for self-generated and teacher-generated data"},n),M=[],T=0;T<=k;T+=5)M.push(T);b(t("g",null,E),w,M,y,g-26,"pass@64 (%)",m-10),d.forEach(function(n,a){var r=y+a*p+p/2+4,o=L[n.s],l=w(n.self[2]),d=w(n.teach[2]);t("text",{x:m-10,y:r+5,"text-anchor":"end",class:"cd-lab"},E,n.name);var u=t("line",{x1:Math.min(l,d),x2:Math.max(l,d),y1:r,y2:r,stroke:o,"stroke-width":2,opacity:.45},E);t("circle",{cx:d,cy:r,r:6.5,fill:"#fff",stroke:o,"stroke-width":2},E);var f=t("circle",{cx:l,cy:r,r:6.5,fill:o},E),h=Math.abs(l-d)<44,v=t("text",{x:l,y:r-12,"text-anchor":"middle",class:"cd-val"},E,n.self[2].toFixed(1));i.push({ln:u,dot:f,sv:v,a:l,b:d,i:a}),t("text",{x:d,y:h?r+23:r-12,"text-anchor":"middle",class:"cd-lab-muted"},E,n.teach[2].toFixed(1)),c(t("rect",{x:0,y:r-p/2,width:e,height:p,fill:"transparent"},E),function(){return s(o)+"<b>"+n.name+"</b> (pass@1 / 8 / 64)<br>self: "+n.self.join(" / ")+"<br>teacher: "+n.teach.join(" / ")})}),o&&!l||I||(i.forEach(function(t){t.dot.setAttribute("cx",t.b),t.ln.setAttribute("x1",t.b),t.ln.setAttribute("x2",t.b),t.sv.style.opacity=0}),(l?function(t){t()}:function(t){f(n,t)})(function(){i.forEach(function(t){var e=(l?0:300)+350*t.i;u(800,e,function(e){var n=t.b+(t.a-t.b)*e;t.dot.setAttribute("cx",n),t.ln.setAttribute("x1",Math.min(n,t.b)),t.ln.setAttribute("x2",Math.max(n,t.b))}),h(t.sv,e+700)})})),o=!0});i(e,"data-model",function(t){t!==r&&(r=t,l=!0,d(),l=!1)})}}(),function(){var e=document.getElementById("fig-rl"),a=window.CD_FIGDATA;if(e&&a){var r=["groot","vs","iidhot","iid64","iid","base"],o="qwen",s=!1,c={qwen:{data:a.rl,xDomain:[8,84],xTicks:[20,40,60,80],yDomain:[6,24],yTicks:[8,12,16,20,24],yMinor:1},n3n:{data:a.rl_n3n,xDomain:[4,76],xTicks:[20,40,60],yDomain:[0,55],yTicks:[0,10,20,30,40,50],yMinor:5}},l=e.querySelector(".cd-chart"),d=e.querySelector(".cd-gap-note"),u=y(l,function(e){function a(t,e){var n=t.points;if(n[0][1]>=e-1e-9)return n[0][0];for(var a=1;a<n.length;a++)if(n[a][1]>=e-1e-9){var i=n[a-1],r=n[a];return i[0]+(r[0]-i[0])*(e-i[1])/(r[1]-i[1]||1)}return null}var i=c[o],u=(i.data||[]).slice().sort(function(t,e){return r.indexOf(t.id)-r.indexOf(e.id)}).map(function(t){return{id:t.id,name:t.name,points:t.points,band:t.band,dash:"base"===t.id?"5 4":null}}),m=u.filter(function(t){return"groot"===t.id||"vs"===t.id}),v=u.filter(function(t){return/^iid/.test(t.id)}),x=[],p=1/0,y=-1/0;u.forEach(function(t){t.points.forEach(function(t){p=Math.min(p,t[1]),y=Math.max(y,t[1])})});for(var b=Math.ceil(p);b<=Math.floor(y);b++)x.push(b);var g=null;x.forEach(function(t){m.forEach(function(e){var n=a(e,t);null!==n&&v.forEach(function(i){var r=a(i,t);null===r||r<=n+4||u.every(function(o){if(o===e||o===i)return!0;var s=a(o,t);return null===s||s<=n||s>=r})&&(!g||r-n>g.gap)&&(g={y:t,gap:r-n,a:{s:e,x:n},b:{s:i,x:r}})})})}),k(l,e,{series:u,xDomain:i.xDomain,yDomain:i.yDomain,yTicks:i.yTicks,xTicks:i.xTicks,xMinor:10,yMinor:i.yMinor,xLabel:"RL step",yLabel:"val. pass@8 (%)",xName:"step",smooth:!0,rightPad:128,aria:"Best-so-far validation pass@8 during RL from each fine-tuned model",animate:!s||u.map(function(t){return t.id}),immediate:s,annotate:function(e,a,i,r,o,c){if(g){var u="#c0392b",m=i(g.y),v=a(g.a.x),x=a(g.b.x),p=Math.round(g.gap),y=t("g",{class:"cd-gap","pointer-events":"none"},e);setTimeout(function(){e.appendChild(y)},0);var b=t("defs",null,y),k=t("marker",{id:"cd-gap-ah",viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:6,markerHeight:6,orient:"auto-start-reverse"},b);t("path",{d:"M0,1 L10,5 L0,9 z",fill:u},k),t("line",{x1:c.l,x2:v,y1:m,y2:m,stroke:u,"stroke-width":1,"stroke-dasharray":"2 3",opacity:.5},y),t("text",{x:c.l-8,y:m+4,"text-anchor":"end","font-size":12,"font-weight":600,fill:u,stroke:"#fff","stroke-width":4,"paint-order":"stroke"},y,String(g.y)),t("line",{x1:v+6,x2:x-6,y1:m,y2:m,stroke:u,"stroke-width":1.6,"marker-start":"url(#cd-gap-ah)","marker-end":"url(#cd-gap-ah)"},y),[[v,g.a.s],[x,g.b.s]].forEach(function(e){t("circle",{cx:e[0],cy:m,r:4.6,fill:"#fff",stroke:L[e[1].id],"stroke-width":2.2},y)});var w=p+" steps sooner",E=6.6*w.length+14,M=18,T=(v+x)/2;E>x-v-24&&(E=6.6*(w=p+" steps").length+14),t("rect",{x:T-E/2,y:m-M/2,width:E,height:M,rx:9,fill:"#fff",stroke:u,"stroke-width":1},y),t("text",{x:T,y:m+4.3,"text-anchor":"middle","font-size":12.5,"font-weight":600,fill:u},y,w),d&&(d.innerHTML=n(g.a.s.name)+" reaches "+g.y+"% validation pass@8 about <b>"+p+" RL steps</b> before "+n(g.b.s.name)+"."),s||I||(y.style.opacity=0,f(l,function(){h(y,2600)}))}else d&&(d.innerHTML="")}}),s=!0});i(e,"data-model",function(t){t!==o&&(o=t,u())})}}(),function(){function e(){return"qwen"===g?M:E}function n(t,n){var a=window.CD_RLCURVES&&window.CD_RLCURVES[g],i="before"===n?"qwen"===g?window.CD_PASSK&&window.CD_PASSK.table2[t]:window.CD_N3N_PRE&&window.CD_N3N_PRE[t]:a&&a[t];if(i&&i[h])return(i[h].mean||i[h]).map(function(t,e){return[e+1,t]});var r=e()[t][n][h];return[[1,r[0]],[8,r[1]],[64,r[2]]]}function a(){var t=window.CD_FIGDATA||{};return(("qwen"===g?t.rl:t.rl_n3n)||[]).slice().sort(function(t,e){return O.indexOf(t.id)-O.indexOf(e.id)})}function c(){if(F){var e=a();if(F.hidden=!e.length,e.length){var n=1/0,i=-1/0
-;e.forEach(function(t){t.points.forEach(function(t){n=Math.min(n,t[1]),i=Math.max(i,t[1])})}),C.min=Math.floor(n),C.max=Math.floor(2*i)/2,C.step=.5,(!C.dataset.set||+C.value>+C.max)&&(C.value="qwen"===g?18:40,C.dataset.set=1),q.innerHTML="";var r=parseFloat(C.value);R.textContent=r.toFixed(1)+"%";var o=F.querySelectorAll(".cd-slider .end");2===o.length&&(o[0].textContent=(+C.min).toFixed(0)+"%",o[1].textContent=(+C.max).toFixed(0)+"%");for(var s=v(q),c=s<600?110:130,l=110,d=28,u=e.length*d+30,f=e[0].points.map(function(t){return t[0]}),h=f[f.length-1],m=function(t){return c+t/h*(s-c-l)},x=t("svg",{viewBox:"0 0 "+s+" "+u,role:"img","aria-label":"RL steps needed to reach the chosen validation pass@8"},q),y=[],k=0;k<=h;k+=20)y.push(k);b(t("g",null,x),m,y,0,u-26,"RL steps",c-10),t("line",{x1:c,x2:m(h),y1:u-26,y2:u-26,stroke:"#9a9a9a","stroke-width":1},x),e.forEach(function(e,n){for(var a=n*d,i=L[e.id],o=null,s=0;s<e.points.length;s++)if(e.points[s][1]>=r){o=e.points[s][0];break}t("text",{x:c-10,y:a+d/2+4,"text-anchor":"end",class:"cd-lab"},x,e.name),null===o?(t("rect",{x:c,y:a+7,width:m(h)-c,height:d-14,fill:"url(#cd-loss-t)",stroke:"#bbbbbb","stroke-width":.8},x),t("text",{x:m(h)+6,y:a+d/2+4,class:"cd-lab-muted"},x,"not reached")):o===f[0]?(p(x,e.id,c+5,a+d/2,4.5),t("text",{x:c+16,y:a+d/2+4,class:"cd-val"},x,"already there at the start")):(t("rect",{x:c,y:a+7,width:m(o)-c,height:d-14,fill:i},x),t("text",{x:m(o)+6,y:a+d/2+4,class:"cd-val"},x,o+" steps"))});var w=t("defs",null,x),E=t("pattern",{id:"cd-loss-t",patternUnits:"userSpaceOnUse",width:4,height:4,patternTransform:"rotate(45)"},w);t("line",{x1:0,y1:0,x2:0,y2:4,stroke:"#c4c4c4","stroke-width":1},E)}}}var l=document.getElementById("fig-prepost");if(l){var d=l.querySelector(".cd-chart"),h="macro",g="qwen",k=!1,w=!1,E={Base:{s:"base",before:{macro:[.3,2,9.8],lcb:[.5,3.5,15.7],cobalt:[.8,5.3,22.4]},after:{macro:[6.1,17.8,30.3],lcb:[7,20.3,35.7],cobalt:[11.7,35.9,57.4]}},"IID-4":{s:"iid",before:{macro:[.3,2.1,8.8],lcb:[.5,3.2,12.7],cobalt:[.9,6,23]},after:{macro:[7.5,20.9,33.3],lcb:[8.9,24.5,40.3],cobalt:[13,37,57.4]}},"GROOT-4":{s:"groot",before:{macro:[1.1,6.4,19.9],lcb:[.9,6.1,23.5],cobalt:[1.5,9.5,29.8]},after:{macro:[6.5,19.1,31],lcb:[7.1,21.9,36.6],cobalt:[12.2,36.3,57.6]}},"VS-4":{s:"vs",before:{macro:[1.6,8.2,20.8],lcb:[1.3,7.7,22.9],cobalt:[2.1,12.5,34.2]},after:{macro:[7,20.4,33.6],lcb:[8.2,24.2,41.3],cobalt:[12.3,35.1,56.8]}}},M={Base:{s:"base",before:{macro:[.2,.9,5.2],lcb:[.2,1.3,7.4],cobalt:[.5,3.6,21.9]},after:{macro:[.8,4.1,11.4],lcb:[1.1,5.9,15.3],cobalt:[4.5,13.9,29.3]}},"IID-4":{s:"iid",before:{macro:[.2,1.1,5.2],lcb:[.2,1.5,7],cobalt:[.7,4.9,19.8]},after:{macro:[.7,4,10.9],lcb:[1.1,6,15.4],cobalt:[5.5,17.3,36.6]}},"GROOT-4":{s:"groot",before:{macro:[1.4,6.7,15.5],lcb:[1.5,8,19.5],cobalt:[3.5,14.1,30.5]},after:{macro:[2,8.1,18],lcb:[2.2,9.5,22.2],cobalt:[7.2,20.9,39]}},"VS-4":{s:"vs",before:{macro:[1.8,7.6,17.5],lcb:[2,9.6,23.1],cobalt:[4.1,14.3,30.2]},after:{macro:[1.7,7.2,16],lcb:[2.1,8.9,20.5],cobalt:[6.2,19.4,37.8]}}},T=["Base","IID-4","GROOT-4","VS-4"],S=y(d,function(a){x(d,[{label:"before RL",color:L.ink2,kind:"dash"},{label:"after RL",color:L.ink2,kind:"line"},{label:"\xb1 1 s.e. across RL seeds",color:"#bdbdbd",kind:"dot"}]);for(var i=a<600?2:4,c=Math.ceil(T.length/i),l=22,m=34,v=(a-m-12-l*(i-1))/i,y=170,b=34,E=22,M=c*(b+y+E)+14*(c-1),S={qwen:{macro:20,lcb:25,ojbench:15,cobalt:45},n3n:{macro:40,lcb:45,ojbench:35,cobalt:60}}[g][h],D=S>=40?20:S>15?10:5,F=[],q=0;q<=S;q+=D)F.push(q);var C=t("svg",{viewBox:"0 0 "+a+" "+M,role:"img","aria-label":"pass@k before and after RL for each starting model"},d),R=t("defs",null,C),O=[],B=t("pattern",{id:"cd-loss",patternUnits:"userSpaceOnUse",width:4,height:4,patternTransform:"rotate(45)"},R);if(t("line",{x1:0,y1:0,x2:0,y2:4,stroke:"#9a9a9a","stroke-width":1},B),T.forEach(function(c,d){function u(t){return t.map(function(t,e){return(e?"L":"M")+I(t[0]).toFixed(1)+","+D(t[1]).toFixed(1)}).join(" ")}function f(t,e){for(var n=1;n<t.length;n++)if(t[n][0]>=e){var a=t[n-1],i=t[n],r=(Math.log2(e)-Math.log2(a[0]))/(Math.log2(i[0])-Math.log2(a[0])||1);return a[1]+(i[1]-a[1])*r}return t[t.length-1][1]}var x=L[e()[c].s],k=d%i,w=Math.floor(d/i),M=m+k*(v+l),T=w*(b+y+E+14)+b,I="log"===A?function(t){return M+Math.log2(t)/6*v}:function(t){return M+(t-1)/63*v},D=function(t){return T+y-t/S*y},q=n(c,"before"),B=n(c,"after"),P=t("g",null,C),_=(t("text",{x:M,y:T-16,class:"cd-lab","font-weight":"bold",fill:x},P,c),q[q.length-1][1]),N=B[B.length-1][1];t("text",{x:M,y:T-2,class:"cd-lab-muted"},P,"pass@64 "+_.toFixed(1)+" \u2192 "+N.toFixed(1)),F.forEach(function(e){t("line",{x1:M,x2:M+v,y1:D(e),y2:D(e),class:"cd-gridline"},P),0===k&&t("text",{x:M-6,y:D(e)+4,"text-anchor":"end",class:"cd-lab-muted"},P,e)}),("log"===A?[1,2,4,8,16,32,64]:[1,16,32,48,64]).forEach(function(e){t("text",{x:I(e),y:T+y+16,"text-anchor":"middle",class:"cd-lab-muted"},P,e)}),t("line",{x1:M,x2:M+v,y1:T+y,y2:T+y,stroke:"#bbbbbb"},P);var V=t("clipPath",{id:"cd-pp-"+d+"-"+Math.random().toString(36).slice(2)},R),z=t("rect",{x:M-6,y:T-8,width:v+12,height:y+16},V),j=t("g",{"clip-path":"url(#"+V.id+")"},P),G=window.CD_RLCURVES&&window.CD_RLCURVES[g]&&window.CD_RLCURVES[g][c]&&window.CD_RLCURVES[g][c][h],H=null;if(G&&G.min){H=G.mean.map(function(t,e){var n=G.min[e],a=G.max[e],i=3*t-n-a,r=((n-t)*(n-t)+(a-t)*(a-t)+(i-t)*(i-t))/2;return Math.sqrt(r/3)});var U=G.mean.map(function(t,e){return I(e+1).toFixed(1)+","+D(t+H[e]).toFixed(1)}),X=G.mean.map(function(t,e){return I(e+1).toFixed(1)+","+D(Math.max(0,t-H[e])).toFixed(1)}).reverse();t("polygon",{points:U.concat(X).join(" "),fill:x,opacity:.2},j)}t("path",{d:u(q),fill:"none",stroke:x,"stroke-width":1.6,"stroke-dasharray":"4 3",opacity:.8},P);G="qwen"===g&&window.CD_RLCURVES&&window.CD_RLCURVES[c]&&window.CD_RLCURVES[c][h];t("path",{d:u(B),fill:"none",stroke:x,"stroke-width":2.2},j),(B.length>3?[1,4,8,32,64]:[1,8,64]).forEach(function(t){p(j,e()[c].s,I(t),D(f(B,t)),3.4)}),(q.length>3?[1,4,8,32,64]:[1,8,64]).forEach(function(e){t("circle",{cx:I(e),cy:D(f(q,e)),r:2.6,fill:"#fff",stroke:x,"stroke-width":1.3},P)}),O.push({rect:z,x0:M-6,w:v+12,j:d});var W=t("rect",{x:M,y:T,width:v,height:y,fill:"transparent"},P);W.addEventListener("mousemove",function(t){var e=C.getBoundingClientRect(),n=((t.clientX-e.left)/e.width*a-M)/v,i=Math.max(1,Math.min(64,Math.round("log"===A?Math.pow(2,6*n):1+63*n))),o=H?" \xb1 "+H[i-1].toFixed(1):"";r(s(x)+"<b>"+c+"</b> \xb7 pass@"+i+"<br>before RL "+f(q,i).toFixed(1)+"<br>after RL "+f(B,i).toFixed(1)+o,t)}),W.addEventListener("mouseleave",o)}),(!k||w)&&!I){O.forEach(function(t){t.rect.setAttribute("width",0)});var P=function(){O.forEach(function(t){u(900,250*t.j,function(e){t.rect.setAttribute("width",t.w*e)})})};w?P():f(d,P)}});k=!0,i(l,"data-bench",function(t){h=t,w=!0,S(),w=!1}),m(function(){S()}),i(l,"data-model",function(t){g=t,w=!0,S(),w=!1,C&&(C.dataset.set=""),c()});var D,F=l.querySelector(".cd-ttt"),q=F&&F.querySelector(".cd-chart"),C=F&&F.querySelector("input"),R=F&&F.querySelector(".cd-slider span"),O=["base","iid","iid64","iidhot","groot","vs"];C&&C.addEventListener("input",c),c(),window.addEventListener("resize",function(){clearTimeout(D),D=setTimeout(c,150)})}}(),function(){var e=document.getElementById("fig-rsa");if(e){var n=e.querySelector(".cd-chart"),a=0,r=!1,o=!1,l=[{name:"Base",s:"base",v:[[.8,3.1],[.5,2.3],[.1,.8]]},{name:"IID-4",s:"iid",v:[[.9,3.8],[.6,2.1],[.1,.7]]},{name:"IID-64 (T=1.5)",s:"iidhot",v:[[1.4,7.4],[.6,4],[.2,1.8]]},{name:"GROOT-4",s:"groot",v:[[3.5,10.4],[2.1,7],[1.5,4.5]]},{name:"VS-4",s:"vs",v:[[4.2,10.6],[2.3,7.9],[1.5,5.3]]}],d=y(n,function(e){for(var i=[12,10,6][a],d=[2,2,1][a],m=[],v=0;v<=i;v+=d)m.push(v);var x=e<600?100:120,p=70,y=38,g=4,k=g+l.length*y+30,w=function(t){return x+t/i*(e-x-p)},E=t("svg",{viewBox:"0 0 "+e+" "+k,role:"img","aria-label":"RSA pass@1 before and after aggregation"},n);b(t("g",null,E),w,m,g,k-26,"pass@1 (%)",x-10),l.forEach(function(i,l){var d=g+l*y+y/2+2,m=L[i.s],v=i.v[a];t("text",{x:x-10,y:d+5,"text-anchor":"end",class:"cd-lab"},E,i.name);var p=t("line",{x1:w(v[0]),x2:w(v[1]),y1:d,y2:d,stroke:m,"stroke-width":2},E);t("circle",{cx:w(v[0]),cy:d,r:5.5,fill:"#fff",stroke:m,"stroke-width":2},E);var b=t("circle",{cx:w(v[1]),cy:d,r:5.5,fill:m},E),k=t("text",{x:w(v[1])+10,y:d+5,class:"cd-val"},E,v[0].toFixed(1)+" \u2192 "+v[1].toFixed(1));if((!r||o)&&!I){var M=w(v[0]),T=w(v[1]);p.setAttribute("x2",M),b.setAttribute("cx",M),k.style.opacity=0;var S=function(){u(750,120*l,function(t){var e=M+(T-M)*t;p.setAttribute("x2",e),b.setAttribute("cx",e)}),h(k,120*l+650)};o?S():f(n,S)}c(t("rect",{x:0,y:d-y/2,width:e,height:y,fill:"transparent"},E),function(){return s(m)+"<b>"+i.name+"</b><br>"+["Cobalt","LiveCodeBench","OJBench"][a]+" frontier pass@1<br>"+v[0]+" \u2192 "+v[1]})})});r=!0,i(e,"data-bench",function(t){a=parseInt(t,10),o=!0,d(),o=!1})}}(),function(){var n=document.getElementById("fig-ncp"),a=window.CD_EXAMPLES;if(n&&a){var i=a.ncp,r=n.querySelector(".cd-chart"),o=n.querySelector(".cd-plans"),l=n.querySelector('input[type="range"]'),d=n.querySelector(".cd-slider span");n.querySelector(".cd-passage div").textContent=i.true_passage;var u=[{id:"groot",name:"GROOT",a:i.arms.groot},{id:"vs",name:"VS",a:i.arms.vs},{id:"iid",name:"IID",a:i.arms.iid}],f=[];u.forEach(function(t){f=f.concat(t.a.scores)});var h=Math.floor(Math.min.apply(null,f))-1,m=Math.ceil(Math.max.apply(null,f))+1,v=function(){};y(r,function(e){for(var n=e<600,a=n?54:64,i=n?58:70,o=62,f=6,x=f+u.length*o+30,p=function(t){return a+(t-h)/(m-h)*(e-a-i)},y=t("svg",{viewBox:"0 0 "+e+" "+x,role:"img","aria-label":"Perplexity improvement of 32 plans per sampler, with an adjustable bar"},r),g=[],k=2*Math.ceil(h/2);k<=m;k+=n?4:2)g.push(k);b(t("g",null,y),p,g,f,x-26,"%",a-10);var w=t("rect",{y:f,height:x-26-f,fill:L.ink,opacity:.04},y),E=t("line",{y1:f,y2:x-26,stroke:L.ink,"stroke-width":1.2,"stroke-dasharray":"4 3"},y),M=u.map(function(n,r){var l=f+r*o+o/2,d=L[n.id];t("text",{x:a-10,y:l+5,"text-anchor":"end",class:"cd-lab"},y,n.name);var u=n.a.scores.slice().sort(function(t,e){return t-e}),h=[],m=[];return u.forEach(function(e){for(var a=p(e),i=0,r=[0,-1,1,-2,2,-3,3],o=0;o<r.length&&(i=8*r[o],h.some(function(t){return Math.abs(t.x-a)<8&&Math.abs(t.y-i)<8}));o++);h.push({x:a,y:i});var u=Math.abs(e-n.a.best_pct)<.006,f=t("circle",{cx:a,cy:l+i,r:u?5.5:4,stroke:d,"stroke-width":u?2.2:1.3,fill:"#fff"},y);u&&t("circle",{cx:a,cy:l+i,r:9,fill:"none",stroke:d,"stroke-width":1},y),c(f,function(){return s(d)+"<b>"+n.name+" plan</b>: "+(e>=0?"+":"")+e.toFixed(1)+"%"+(u?"<br>best of 32 (read it below)":"")}),m.push({el:f,v:e})}),{dots:m,c:d,count:t("text",{x:e-i+12,y:l+5,class:"cd-val"},y)}});(v=function(){var t=parseFloat(l.value);d.textContent=t+"%",E.setAttribute("x1",p(t)),E.setAttribute("x2",p(t)),w.setAttribute("x",p(t)),w.setAttribute("width",Math.max(0,e-i-p(t))),M.forEach(function(e){var n=0;e.dots.forEach(function(a){var i=a.v>=t;i&&n++,a.el.setAttribute("fill",i?e.c:"#fff")}),e.count.textContent=n+"/32"})})()}),l.addEventListener("input",function(){v()});var x=null,p=null,g=u.map(function(t,n){var a=e("button",{type:"button",style:"--sw:"+L[t.id]},o,t.name+" best: +"+t.a.best_pct.toFixed(1)+"%");return e("span",null,a,"read the plan"),a.addEventListener("click",function(){p&&p.remove(),g.forEach(function(t){t.classList.remove("is-on")}),x!==n?(x=n,a.classList.add("is-on"),p=e("div",{class:"cd-plan-open",style:"--sw:"+L[t.id]},o),t.a.best_direction&&e("div",{class:"dir"},p,"Hidden approach: "+t.a.best_direction),e("div",null,p,t.a.best_plan)):x=null}),a})}}(),function(){var t=document.getElementById("fig-coverage"),e=window.CD_FIGDATA;if(t&&e){var n=["vs","groot","iid","base"],a="qwen",r=!1,o={qwen:{data:e.coverage,kmax:32,yDomain:[0,4.5],yTicks:[0,1,2,3,4],xTicks:[1,2,4,8,16,32],xTicksLinear:[1,8,16,24,32],dec:2},n3n:{data:e.coverage_n3n,kmax:64,yDomain:[0,25],yTicks:[0,5,10,15,20,25],xTicks:[1,2,4,8,16,32,64],xTicksLinear:[1,16,32,48,64],dec:1}},s=t.querySelector(".cd-chart"),c=y(s,function(t){var e=o[a],i=function(t){return t&&t.filter(function(t){return t[0]<=e.kmax})},c=(e.data||[]).map(function(t){return{id:t.id,name:t.name.replace("-16",""),points:i(t.points),band:i(t.band),dash:"base"===t.id?"5 4":null}}).sort(function(t,e){return n.indexOf(t.id)-n.indexOf(e.id)});k(s,t,{series:c,log2:!0,xDomain:[1,e.kmax],yDomain:e.yDomain,yTicks:e.yTicks,xTicks:e.xTicks,xTicksLinear:e.xTicksLinear,markerAt:e.xTicks,xLabel:"plans sampled per section, k (log scale)",yLabel:"coverage (%)",xName:"k =",markers:!0,rightPad:96,dec:e.dec,height:290,aria:"NCP coverage at the 15% bar versus number of sampled plans",animate:!r||c.map(function(t){return t.id}),immediate:r}),r=!0});m(function(){r=!1,c(),r=!0}),i(t,"data-model",function(t){t!==a&&(a=t,c())})}}(),function(){function t(t){return t=Math.max(0,Math.floor(t||0)),Math.floor(t/60)+":"+("0"+t%60).slice(-2)}function n(){l.innerHTML=s.paused?m:v,l.setAttribute("aria-label",s.paused?"Play":"Pause"),o.classList.toggle("is-playing",!s.paused)}function a(){var e=s.duration||0;u.style.width=e?s.currentTime/e*100+"%":"0",f.textContent=t(s.currentTime)+" / "+t(e)}function i(){s.paused?s.play():s.pause()}function r(t){var e=d.getBoundingClientRect(),n=Math.max(0,Math.min(1,(t.clientX-e.left)/e.width));s.duration&&(s.currentTime=n*s.duration)}var o=document.querySelector(".cd-video"),s=o&&o.querySelector("video");if(s){s.removeAttribute("controls");var c=e("div",{class:"cd-vbar"});o.insertBefore(c,s.nextSibling);var l=e("button",{type:"button",class:"cd-vbtn","aria-label":"Play"},c),d=e("div",{class:"cd-vtrack",role:"slider","aria-label":"Seek",tabindex:0},c),u=e("div",{class:"cd-vfill"},d),f=e("span",{class:"cd-vtime"},c,"0:00"),h=e("button",{type:"button",class:"cd-vbtn","aria-label":"Full screen"},c);h.innerHTML='<svg viewBox="0 0 16 16" width="15" height="15"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';var m='<svg viewBox="0 0 16 16" width="14" height="14"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>',v='<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z" fill="currentColor"/></svg>';l.addEventListener("click",i),s.addEventListener("click",i),["play","pause","ended"].forEach(function(t){s.addEventListener(t,n)}),["timeupdate","loadedmetadata","seeked"].forEach(function(t){s.addEventListener(t,a)}),d.addEventListener("pointerdown",function(t){function e(t){r(t)}function n(){d.removeEventListener("pointermove",e),d.removeEventListener("pointerup",n)}r(t),d.setPointerCapture(t.pointerId),d.addEventListener("pointermove",e),d.addEventListener("pointerup",n)}),h.addEventListener("click",function(){document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen()});var x=!1;"IntersectionObserver"in window&&new IntersectionObserver(function(t){x=t[0].intersectionRatio>=.5},{threshold:[0,.5,1]}).observe(s),document.addEventListener("keydown",function(t){if(x&&!t.metaKey&&!t.ctrlKey&&!t.altKey){var e=document.activeElement&&document.activeElement.tagName||"";/INPUT|TEXTAREA|SELECT/.test(e)||document.activeElement&&document.activeElement.isContentEditable||(" "===t.key||"k"===t.key?(t.preventDefault(),i()):"ArrowRight"===t.key&&document.activeElement===d?s.currentTime=Math.min(s.duration||0,s.currentTime+5):"ArrowLeft"===t.key&&document.activeElement===d&&(s.currentTime=Math.max(0,s.currentTime-5)))}}),n(),a()}}(),function(){function t(){var t=document.querySelector(".navbar.fixed-top, header .navbar, .navbar"),e=t?t.getBoundingClientRect().height:56;r.style.top=e+"px",document.documentElement.style.setProperty("--cd-secnav-offset",e+44+"px")}function n(){l=!1;for(var t=.35*window.innerHeight,e=0,n=0;n<a.length;n++)a[n].getBoundingClientRect().top<=t&&(e=n);if(e!==c){c=e,s.forEach(function(t,n){t.classList.toggle("is-on",n===e)});var i=s[e];o.scrollWidth>o.clientWidth&&o.scrollTo({left:i.offsetLeft-o.clientWidth/2+i.offsetWidth/2,behavior:"smooth"})}}var a=Array.prototype.slice.call(document.querySelectorAll(".cd-page [data-nav]")),i=document.querySelector(".cd-project .project-hero");if(!(a.length<3)&&i){var r=e("nav",{class:"cd-secnav","aria-label":"Sections"},document.body),o=e("div",{class:"cd-secnav-inner"},r),s=a.map(function(t){var n=e("a",{href:"#"+t.id},o,t.getAttribute("data-nav"));return n.addEventListener("click",function(e){e.preventDefault(),t.scrollIntoView({behavior:I?"auto":"smooth",block:"start"}),history.replaceState(null,"","#"+t.id)}),n});t(),window.addEventListener("resize",t),new IntersectionObserver(function(t){r.classList.toggle("is-shown",!t[0].isIntersecting)},{threshold:0}).observe(i);var c=-1,l=!1;window.addEventListener("scroll",function(){l||(l=!0,requestAnimationFrame(n))},{passive:!0}),n()}}();var O="M0,0 C-0.45,-0.05 -0.62,-0.55 -0.3,-0.82 C-0.16,-0.94 -0.05,-1.0 0,-1.3 C0.05,-1.0 0.16,-0.94 0.3,-0.82 C0.62,-0.55 0.45,-0.05 0,0 Z";!function(){function n(t,e,n,a,i,r){var o=E(A,t,e,n,a,"lf "+(r||(p()<.06?"t5":L[Math.floor(p()*L.length)])));return o.classList.add("pop"),o.style.transitionDelay=i.toFixed(2)+"s",o}function a(e,i,r,o,s,c,l){var d=k[o]*(.85+.3*p()),u=d/O,f=e+Math.cos(r)*d,h=i+Math.sin(r)*d,m=.35*(p()-.5)*d,v=(e+f)/2-Math.sin(r)*m,x=(i+h)/2+Math.cos(r)*m,y="Q"+v.toFixed(1)+","+x.toFixed(1)+" "+f.toFixed(1)+","+h.toFixed(1);t("path",{d:"M"+e.toFixed(1)+","+i.toFixed(1)+" "+y,class:"br gr",pathLength:1,"stroke-width":Math.max(.8,7.5*Math.pow(.6,o)).toFixed(2)},I).style.transition="stroke-dashoffset "+u.toFixed(2)+"s linear "+l.toFixed(2)+"s";var E=l+u;B=Math.max(B,E);var M=C++;if(s=s.concat([y]),c=c.concat([M]),o>=1&&o<=3&&Math.abs(f-g)>26&&R.push({x:f,y:h,depth:o,t:E}),o>=3&&p()<.2){var L=.55;n(e+(f-e)*L,i+(h-i)*L,r+(p()<.5?-1:1)*(.9+.4*p()),8.5+2.5*p(),l+u*L)}if(o!==b)for(var T=0===o||p()<.3?3:2,S=0;S<T;S++){a(f,h,r+w[o+1]*(S-(T-1)/2)+.25*(p()-.5),o+1,s,c,E)}else q.push({x:f,y:h,ang:r,trail:s,anc:c,t:E})}function i(t){var e={};return q.forEach(function(n){var a=n.anc[t];(e[a]=e[a]||[]).push(n)}),e}function r(t){var e={};return e[z]=!0,t.map(function(t){var n=q.filter(function(t){return!e[t.anc[2]]&&j.indexOf(t)<0}).sort(function(t,e){return t.x-e.x});n.length||(n=q.filter(function(t){return t.anc[2]!==z&&j.indexOf(t)<0}));var a=n[Math.round(t*(n.length-1))];return e[a.anc[2]]=!0,j.push(a),a})}function o(){h.classList.remove("is-windy"),$.getBoundingClientRect(),h.classList.add("is-windy"),setTimeout(function(){c(.42)},450),setTimeout(function(){c(.22)},850),setTimeout(function(){h.classList.remove("is-windy")},2400)}function s(){J=0,Q=0,et=0,tt&&cancelAnimationFrame(tt),tt=0,m.style.transform=""}function c(t){!document.hidden&&Z&&(Q+=60*t,tt||(et=0,tt=requestAnimationFrame(l)))}function l(t){var e=et?Math.min(.05,(t-et)/1e3):1/60;et=t;for(var n=0;n<4;n++){var a=e/4;J+=(Q+=(160*-J-4.2*Q)*a)*a}J=Math.max(-nt,Math.min(nt,J)),m.style.transform="rotate("+J.toFixed(3)+"deg)",Math.abs(J)>.01||Math.abs(Q)>.05?tt=requestAnimationFrame(l):s()}var d=document.querySelector(".cd-project .project-hero");if(d){var u=d.querySelector(".project-title");u&&(u.innerHTML=u.innerHTML.replace("Self-Training",'<span style="white-space:nowrap">Self-Training</span>'));var f=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches,h=e("div",{class:"cd-hero-tree cd-grow","aria-hidden":"true"},d),m=e("div",{class:"cd-tree-gust"},h),v=t("svg",{class:"cd-tree-canopy",viewBox:"0 0 320 372"},m),x=t("svg",{class:"cd-tree-base",viewBox:"0 0 320 372"},h),p=M(14164),y=318,b=5,g=160,k=[74,54,40,30,22,16],w=[0,1,.74,.62,.54,.46],L=["t1","t2","t3","t4"],T=t("g",{class:"canopy"},v),S=t("g",null,T),I=t("g",null,T),A=t("g",null,T),D=t("g",null,T),F=t("g",null,T),q=[],C=0,R=[],O=170,B=0;a(g,y,-Math.PI/2,0,["M"+g+","+y],[],0),R.sort(function(t,e){return Math.abs(e.x-g)-Math.abs(t.x-g)}),R.forEach(function(e,n){if(!(n>13||n>5&&p()<.35))for(var a=1===e.depth?1:p()<.5?2:1,i=0;i<a;i++){var r=e.x+(i?3:0)+3*(p()-.5),o=12*(p()-.5),s=!1,c=s?y:y-(p()<.45?30+60*p():0);t("path",{d:"M"+r.toFixed(1)+","+e.y.toFixed(1)+" C"+(r+o).toFixed(1)+","+((e.y+c)/2).toFixed(1)+" "+(r-o).toFixed(1)+","+((e.y+c)/2+18).toFixed(1)+" "+(r+o/3).toFixed(1)+","+c.toFixed(1),class:"root gr"+(s?" pillar":""),pathLength:1},S).style.transition="stroke-dashoffset "+(s?1.3:1)+"s ease-in "+(e.t+.1+.4*p()).toFixed(2)+"s"}}),q.forEach(function(t){for(var e=p()<.4?2:1,a=0;a<e;a++){var i=.7*(a-(e-1)/2)+.2*(p()-.5);t.leaves=(t.leaves||[]).concat([n(t.x,t.y,t.ang+i,10.5+3*p(),t.t+.06*a)])}}),t("line",{x1:30,x2:290,y1:y+1,y2:y+1,class:"ground"},x);for(var P=38;P<=282;P+=9)t("circle",{cx:P,cy:y+8,r:1.2,class:"dot"},x);var _=i(3),N=Object.keys(_).sort(function(t,e){return _[e].length-_[t].length})[0],V=_[N].slice(0,6),z=V[0].anc[2],j=[],G=r([0,.34,.66,1]),H=r([.12,.45,.58,.9]),U=[{key:"iid",label:"IID",set:V,dx:-1.6,at:B+.6},{key:"groot",label:"GROOT",set:G,dx:0,at:B+1.7},{key:"vs",label:"VS",set:H,dx:1.6,at:B+2.8}];U.forEach(function(e){e.els=[],e.set.forEach(function(n,a){var i=t("path",{d:n.trail.join(" "),class:"path gr p-"+e.key,pathLength:1,transform:"translate("+e.dx+",0)"},D);i.style.transition="stroke-dashoffset 0.9s ease-in-out "+(e.at+.14*a).toFixed(2)+"s, opacity 0.25s",e.els.push(i),(n.leaves||[]).forEach(function(t){var n=t.parentNode;n.setAttribute("transform",n.getAttribute("transform").replace(/scale\(([\d.]+)\)/,function(t,e){return"scale("+(1.3*parseFloat(e)).toFixed(2)+")"})),F.appendChild(n);var a=t.querySelector(".lf");a.classList.add("m-"+e.key),a.style.transitionDelay=e.at+.8+"s"})})});var X=t("g",{class:"legend"},x),W=42;U.forEach(function(e){var n=9.6*e.label.length+40,a=t("g",{class:"item",transform:"translate("+W+",330)",tabindex:0,"aria-label":"Show "+e.label+" paths"},X);t("rect",{x:0,y:0,width:n,height:25,rx:12.5,class:"lchip"},a),t("line",{x1:11,x2:25,y1:12.5,y2:12.5,class:"p-"+e.key,"stroke-width":3},a),t("text",{x:31,y:17.5},a,e.label),a.addEventListener("focus",function(){h.setAttribute("data-focus",e.key)}),a.addEventListener("blur",function(){h.removeAttribute("data-focus")}),a.addEventListener("mouseenter",function(){h.setAttribute("data-focus",e.key)}),a.addEventListener("mouseleave",function(){h.removeAttribute("data-focus")}),a.addEventListener("click",function(){e.els.forEach(function(t,e){t.style.transition="none",t.style.strokeDashoffset="1",t.getBoundingClientRect(),t.style.transition="stroke-dashoffset 0.9s ease-in-out "+.14*e+"s, opacity 0.25s",t.style.strokeDashoffset="0"})}),W+=n+10});var K=new Promise(function(t){"complete"===document.readyState?t():window.addEventListener("load",t)}),Y=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();if(Promise.all([K,Y]).then(function(){requestAnimationFrame(function(){requestAnimationFrame(function(){h.classList.add("is-grown"),document.documentElement.dispatchEvent(new CustomEvent("cd-tree-start",{detail:{duration:B+3.8}})),setTimeout(function(){h.querySelectorAll(".lf, .path").forEach(function(t){t.style.transitionDelay="0s"}),h.classList.add("is-settled")},1e3*(B+4.2)),f||setTimeout(function t(){Z&&!document.hidden&&o(),setTimeout(t,1e4+7e3*Math.random())},1e3*(B+11))})})}),!f){var Z=!0;"IntersectionObserver"in window&&new IntersectionObserver(function(t){Z=t[0].isIntersecting,h.classList.toggle("is-paused",!Z),Z||s()}).observe(h);var $=t("svg",{class:"cd-tree-wind",viewBox:"0 0 320 372"},h);["M-40,118 C20,106 70,130 130,116 S205,102 236,114 C258,123 258,98 242,102 C231,105 236,118 252,117 S320,110 362,113","M-40,186 C30,176 92,198 152,186 S252,174 362,182","M-40,236 C12,229 60,243 108,233 C134,228 138,209 122,211 C110,213 116,229 134,229 S250,225 362,229"].forEach(function(e,n){t("path",{d:e,class:"streak",pathLength:1},$).style.animationDelay=.18*n+"s"});var J=0,Q=0,tt=0,et=0,nt=3;document.addEventListener("visibilitychange",function(){document.hidden&&s()})}}}(),function(){function e(e,n,a,i){t("path",{d:"M"+n+","+a+" c"+-5*i+",-1 "+-8*i+",-6 "+-4*i+",-9 c"+3*i+",-2 "+6*i+",1 "+4*i+",4 c"+-1*i+",2 "+-3*i+",1 "+-3*i+",0",class:"tendril"},e)}document.querySelectorAll(".cd-page h2").forEach(function(n,a){if(0!==a){var i=t("svg",{class:"cd-vine",viewBox:"0 0 240 34","aria-hidden":"true"});t("path",{d:"M14,18 C44,9 74,27 120,18 S196,9 226,18",class:"stem"},i),e(i,14,18,1),e(i,226,18,-1),[[36,14,-2.2,6.5,"t2"],[52,19,2,6,"t1"],[80,22,1.2,7,"t3"],[94,20,-1,5.5,"t4"]].forEach(function(t){E(i,t[0],t[1],t[2],t[3],"lf "+t[4]),E(i,240-t[0],t[1],Math.PI-t[2],t[3],"lf "+t[4])}),[[64,14],[176,14],[44,24],[196,24]].forEach(function(e){t("circle",{cx:e[0],cy:e[1],r:1.7,class:"bud"},i)}),[112,120,128].forEach(function(e){t("circle",{cx:e,cy:29,r:1.1,class:"dotrow"},i)}),E(i,120,18,-Math.PI/2,9.5,"lf t2"),E(i,117,19,-2.5,5.5,"lf t3"),E(i,123,19,-.64,5.5,"lf t3"),n.parentNode.insertBefore(i,n)}})}()}();
+/* Figures for /diversity/. Plain JS + SVG, no dependencies.
+   Data: window.CD_EXAMPLES (examples.js), window.CD_FIGDATA (figdata.js),
+   and the paper's tables inlined below. Figures render statically and
+   re-render when their container width changes. */
+(function () {
+  'use strict';
+
+  var COLOR = {
+    // The paper's palette (Okabe-Ito, paper/figures/paper_style.py)
+    base: '#999999', iid: '#0072b2', iidhot: '#56b4e9', iid64: '#7b3294', groot: '#d55e00', vs: '#009e73',
+    pass: '#16823c', fail: '#be372d', ink: '#1b1f24', ink2: '#454b54', muted: '#6b7280',
+    grid: '#eeeeee', rule: '#d4d4d4', soft: '#f4f4f4'
+  };
+  var NS = 'http://www.w3.org/2000/svg';
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  function svg(tag, attrs, parent, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  function html(tag, attrs, parent, text) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === 'class') n.className = attrs[k];
+      else if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    }
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function fmt(v, d) { return v.toFixed(d); }
+
+  function segmented(root, attr, cb) {
+    var btns = root.querySelectorAll('[' + attr + ']');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        btns.forEach(function (o) {
+          o.classList.toggle('is-on', o === b);
+          if (o.hasAttribute('aria-selected')) o.setAttribute('aria-selected', o === b ? 'true' : 'false');
+        });
+        cb(b.getAttribute(attr), b);
+      });
+    });
+  }
+
+  var tip = document.querySelector('.cd-tooltip');
+  function showTip(content, evt) {
+    if (!tip) return;
+    tip.innerHTML = content;
+    tip.hidden = false;
+    var x = evt.clientX + 14, y = evt.clientY + 14, r = tip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 8) x = evt.clientX - r.width - 14;
+    if (y + r.height > window.innerHeight - 8) y = evt.clientY - r.height - 14;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+  function hideTip() { if (tip) tip.hidden = true; }
+  function sw(color) { return '<span class="sw" style="background:' + color + '"></span>'; }
+  function hover(el, fn) {
+    el.addEventListener('mousemove', function (e) { showTip(fn(), e); });
+    el.addEventListener('mouseleave', hideTip);
+  }
+
+  function wrapText(textEl, str, maxChars, lineH, maxLines) {
+    var words = str.split(/\s+/), lines = [], cur = '';
+    words.forEach(function (w) {
+      if ((cur + ' ' + w).trim().length > maxChars && cur) { lines.push(cur); cur = w; }
+      else cur = (cur + ' ' + w).trim();
+    });
+    if (cur) lines.push(cur);
+    if (maxLines && lines.length > maxLines) {
+      lines = lines.slice(0, maxLines);
+      lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, '') + '…';
+    }
+    var x = textEl.getAttribute('x');
+    lines.forEach(function (l, i) { svg('tspan', { x: x, dy: i === 0 ? 0 : lineH }, textEl, l); });
+    return lines.length;
+  }
+
+  // ── Entrance animation: draw once, when the figure first scrolls into view ──
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function tween(ms, delay, fn) {
+    setTimeout(function () {
+      var t0 = performance.now();
+      (function step(now) {
+        var t = Math.max(0, Math.min(1, (now - t0) / ms));
+        fn(easeInOut(t));
+        if (t < 1) requestAnimationFrame(step);
+      })(t0);
+    }, delay);
+  }
+  function whenSeen(node, fn) {
+    if (REDUCED || !('IntersectionObserver' in window)) return false;
+    var io = new IntersectionObserver(function (es) {
+      if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); fn(); }
+    }, { threshold: 0.35 });
+    io.observe(node);
+    return true;
+  }
+  function fadeIn(el, delay) {
+    el.style.opacity = 0;
+    el.style.transition = 'opacity 0.35s ease ' + delay + 'ms';
+    requestAnimationFrame(function () { requestAnimationFrame(function () { el.style.opacity = 1; }); });
+  }
+
+  // Shared k-axis scale for every pass@k chart: 'log' or 'linear'.
+  var KSCALE = 'log', kscaleHooks = [];
+  function onKScale(fn) { kscaleHooks.push(fn); }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-kscale]');
+    if (!b) return;
+    var v = b.getAttribute('data-kscale');
+    if (v === KSCALE) return;
+    KSCALE = v;
+    document.querySelectorAll('[data-kscale]').forEach(function (o) { o.classList.toggle('is-on', o.getAttribute('data-kscale') === v); });
+    kscaleHooks.forEach(function (f) { f(); });
+  });
+
+  function widthOf(host) { return Math.round(Math.max(320, Math.min(900, host.clientWidth || 720))); }
+
+  function legend(host, items) {
+    var box = html('div', { class: 'cd-legend' }, host);
+    items.forEach(function (it) {
+      var s = html('span', null, box);
+      html('i', { class: 'cd-key ' + (it.kind || 'dot'), style: '--kc:' + it.color }, s);
+      s.appendChild(document.createTextNode(it.label));
+    });
+  }
+
+  // Paper markers: IID o, GROOT square, VS triangle, IID-64 down-triangle; T=1.5 and IID-64 hollow.
+  var SHAPE = { base: 'circle', iid: 'circle', iidhot: 'circle', iid64: 'down', groot: 'square', vs: 'up' };
+  function marker(parent, id, x, y, r) {
+    var c = COLOR[id], hollow = id === 'iidhot' || id === 'iid64', shape = SHAPE[id] || 'circle';
+    var a = { fill: hollow ? '#fff' : c, stroke: hollow ? c : '#fff', 'stroke-width': hollow ? 1.6 : 1.2 };
+    if (shape === 'square') { a.x = x - r * 0.9; a.y = y - r * 0.9; a.width = a.height = r * 1.8; return svg('rect', a, parent); }
+    if (shape === 'up' || shape === 'down') {
+      var s = shape === 'up' ? 1 : -1, h = r * 1.15;
+      a.points = [x, y - s * h, x - h, y + s * h * 0.8, x + h, y + s * h * 0.8].join(',');
+      return svg('polygon', a, parent);
+    }
+    a.cx = x; a.cy = y; a.r = r;
+    return svg('circle', a, parent);
+  }
+
+  function hatch(defs, id, color) {
+    var p = svg('pattern', { id: id, patternUnits: 'userSpaceOnUse', width: 5, height: 5, patternTransform: 'rotate(45)' }, defs);
+    svg('line', { x1: 0, y1: 0, x2: 0, y2: 5, stroke: color, 'stroke-width': 2 }, p);
+  }
+
+  // Re-render registered figures when their width changes.
+  var renderers = [];
+  function responsive(host, render) {
+    var last = 0;
+    function run() {
+      var w = widthOf(host);
+      if (w === last) return;
+      last = w;
+      host.innerHTML = '';
+      render(w);
+    }
+    renderers.push(run);
+    run();
+    return function () { last = 0; run(); };
+  }
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { renderers.forEach(function (r) { r(); }); }, 120);
+  });
+
+  // Horizontal axis with gridlines for bar-style charts.
+  function xAxis(g, sx, ticks, y0, y1, label, labelX) {
+    ticks.forEach(function (t) {
+      svg('line', { x1: sx(t), x2: sx(t), y1: y0, y2: y1, class: 'cd-gridline' }, g);
+      svg('text', { x: sx(t), y: y1 + 16, 'text-anchor': 'middle', class: 'cd-lab-muted' }, g, t);
+    });
+    if (label) svg('text', { x: labelX, y: y1 + 16, 'text-anchor': 'end', class: 'cd-lab-muted' }, g, label);
+  }
+
+  // ── Line chart (log or linear x), bands, crosshair tooltip ───────────────
+
+  // Monotone cubic through the points (Fritsch-Carlson): smooth, passes through every
+  // measured value, and never overshoots between them.
+  function smoothPath(pts) {
+    var n = pts.length;
+    if (n < 3) return pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+    var d = [], m = [];
+    for (var i = 0; i < n - 1; i++) d.push((pts[i + 1][1] - pts[i][1]) / (pts[i + 1][0] - pts[i][0]));
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for (i = 0; i < n - 1; i++) {
+      if (d[i] === 0) { m[i] = 0; m[i + 1] = 0; continue; }
+      var a = m[i] / d[i], b = m[i + 1] / d[i], h = a * a + b * b;
+      if (h > 9) { var t = 3 / Math.sqrt(h); m[i] = t * a * d[i]; m[i + 1] = t * b * d[i]; }
+    }
+    var out = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+    for (i = 0; i < n - 1; i++) {
+      var dx = (pts[i + 1][0] - pts[i][0]) / 3;
+      out += ' C' + (pts[i][0] + dx).toFixed(1) + ',' + (pts[i][1] + m[i] * dx).toFixed(1) + ' ' +
+        (pts[i + 1][0] - dx).toFixed(1) + ',' + (pts[i + 1][1] - m[i + 1] * dx).toFixed(1) + ' ' +
+        pts[i + 1][0].toFixed(1) + ',' + pts[i + 1][1].toFixed(1);
+    }
+    return out;
+  }
+
+  function lineChart(host, W, opts) {
+    var wide = W >= 600, H = opts.height || 320;
+    var M = { l: 46, r: wide ? (opts.rightPad || 110) : 12, t: 12, b: 42 };
+    legend(host, opts.series.map(function (s) {
+      return { label: s.name, color: COLOR[s.id], kind: s.dotted ? 'dot-line' : (s.dash ? 'dash' : 'line') };
+    }));
+    var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': opts.aria }, host);
+    var useLog = opts.log2 && KSCALE === 'log';
+    var tx = useLog ? Math.log2 : function (x) { return x; };
+    var xTicks = !useLog && opts.xTicksLinear ? opts.xTicksLinear : opts.xTicks;
+    var xLabel = opts.log2 && !useLog ? opts.xLabel.replace(' (log scale)', '') : opts.xLabel;
+    var x0 = tx(opts.xDomain[0]), x1 = tx(opts.xDomain[1]);
+    var yDom = opts.yDomain.slice(), yTicks = opts.yTicks.slice();
+    var sx = function (x) { return M.l + (tx(x) - x0) / (x1 - x0) * (W - M.l - M.r); };
+    var sy = function (y) { return H - M.b - (y - yDom[0]) / (yDom[1] - yDom[0]) * (H - M.t - M.b); };
+
+    // Static parts: x axis and labels
+    var ax = svg('g', { class: 'cd-ax' }, root);
+    var yAx = svg('g', null, ax);
+    xTicks.forEach(function (t) {
+      svg('text', { x: sx(t), y: H - M.b + 18, 'text-anchor': 'middle' }, ax, t);
+      if (opts.xMinor) svg('line', { x1: sx(t), x2: sx(t), y1: H - M.b, y2: H - M.b + 6, stroke: '#8a8a8a' }, ax);
+    });
+    if (opts.xMinor) for (var xm = Math.ceil(opts.xDomain[0] / opts.xMinor) * opts.xMinor; xm <= opts.xDomain[1]; xm += opts.xMinor) {
+      if (xTicks.indexOf(xm) < 0) svg('line', { x1: sx(xm), x2: sx(xm), y1: H - M.b, y2: H - M.b + 3.5, stroke: '#a8a8a8' }, ax);
+    }
+    svg('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b }, ax);
+    svg('text', { x: (M.l + W - M.r) / 2, y: H - 4, 'text-anchor': 'middle' }, ax, xLabel);
+    svg('text', { transform: 'translate(12,' + ((M.t + H - M.b) / 2) + ') rotate(-90)', 'text-anchor': 'middle' }, ax, opts.yLabel);
+    if (opts.annotate) opts.annotate(root, sx, sy, W, H, M, wide);
+
+    // Draw back-to-front: the reference series first, the highlighted ones last.
+    // Each series sits in its own group so it can be swept in from the left.
+    var defsEl = svg('defs', null, root), groups = {};
+    var els = opts.series.map(function () { return {}; });
+    opts.series.slice().reverse().forEach(function (s) {
+      var k = opts.series.indexOf(s), c = COLOR[s.id];
+      var sg = svg('g', null, root);
+      groups[s.key || s.id] = sg;
+      if (s.band) els[k].band = svg(opts.smooth ? 'path' : 'polygon', { fill: c, opacity: 0.13 }, sg);
+      els[k].path = svg('path', { fill: 'none', stroke: c, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-dasharray': s.dash || null }, sg);
+      els[k].marks = svg('g', null, sg);
+    });
+    var labG = svg('g', null, root);
+    opts.series.forEach(function (s, k) {
+      if (!wide) return;
+      var t = svg('text', { x: W - M.r + 8, class: 'cd-lab' }, labG);
+      svg('tspan', null, t, (s.endName || s.name) + ' ');
+      els[k].val = svg('tspan', { fill: COLOR.muted }, t);
+      els[k].label = t;
+      s.endLabel = t;
+    });
+
+    // Everything that depends on the data values; redrawn during transitions.
+    function drawValues(series) {
+      yAx.innerHTML = '';
+      yTicks.forEach(function (t) {
+        if (t > yDom[1] + 1e-9) return;
+        svg('line', { x1: M.l, x2: W - M.r, y1: sy(t), y2: sy(t), class: 'cd-gridline' }, yAx);
+        svg('text', { x: M.l - (opts.yMinor ? 10 : 8), y: sy(t) + 4, 'text-anchor': 'end' }, yAx, t);
+        if (opts.yMinor) svg('line', { x1: M.l - 6, x2: M.l, y1: sy(t), y2: sy(t), stroke: '#8a8a8a' }, yAx);
+      });
+      if (opts.yMinor) {
+        svg('line', { x1: M.l, x2: M.l, y1: sy(yDom[1]), y2: sy(yDom[0]), stroke: '#bbbbbb' }, yAx);
+        for (var ym = Math.ceil(yDom[0] / opts.yMinor) * opts.yMinor; ym <= yDom[1] + 1e-9; ym += opts.yMinor) {
+          if (yTicks.indexOf(ym) < 0) svg('line', { x1: M.l - 3.5, x2: M.l, y1: sy(ym), y2: sy(ym), stroke: '#a8a8a8' }, yAx);
+        }
+      }
+      series.forEach(function (s, k) {
+        var e = els[k];
+        if (e.band && s.band) {
+          if (opts.smooth) {
+            // Band as two smooth edges joined into one closed shape
+            var upP = s.band.map(function (b) { return [sx(b[0]), sy(b[2])]; });
+            var loP = s.band.slice().reverse().map(function (b) { return [sx(b[0]), sy(b[1])]; });
+            e.band.setAttribute('d', smoothPath(upP) + ' L' + loP[0][0].toFixed(1) + ',' + loP[0][1].toFixed(1) + ' ' + smoothPath(loP).slice(1) + ' Z');
+          } else {
+            var up = s.band.map(function (b) { return sx(b[0]) + ',' + sy(b[2]); });
+            var lo = s.band.slice().reverse().map(function (b) { return sx(b[0]) + ',' + sy(b[1]); });
+            e.band.setAttribute('points', up.concat(lo).join(' '));
+          }
+        }
+        e.path.setAttribute('d', opts.smooth
+          ? smoothPath(s.points.map(function (p) { return [sx(p[0]), sy(p[1])]; }))
+          : s.points.map(function (p, i) { return (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' '));
+        e.marks.innerHTML = '';
+        if (opts.markers && !s.noMarkers) s.points.forEach(function (p) {
+          if (!opts.markerAt || opts.markerAt.indexOf(p[0]) >= 0) marker(e.marks, s.id, sx(p[0]), sy(p[1]), 3.6);
+        });
+      });
+      if (wide) {
+        var ends = series.map(function (s, k) {
+          var p = s.points[s.points.length - 1];
+          return { k: k, y: sy(p[1]), v: p[1] };
+        }).sort(function (a, b) { return a.y - b.y; });
+        for (var i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+        ends.forEach(function (e) {
+          els[e.k].label.setAttribute('y', e.y + 4);
+          els[e.k].val.textContent = fmt(e.v, opts.dec || 1);
+        });
+      }
+    }
+    var current = opts.series;
+    drawValues(current);
+
+    // Entrance: sweep series in, in drawing order; labels appear as each finishes.
+    var animIds = opts.animate === true ? opts.series.map(function (s) { return s.key || s.id; }) : (opts.animate || []);
+    var order = opts.series.slice().reverse().filter(function (s) { return animIds.indexOf(s.key || s.id) >= 0; });
+    if (order.length && !REDUCED) {
+      var clips = order.map(function (s) {
+        var cp = svg('clipPath', { id: 'cd-sweep-' + Math.random().toString(36).slice(2) }, defsEl);
+        var rect = svg('rect', { x: 0, y: -20, width: M.l - 2, height: H + 40 }, cp);
+        groups[s.key || s.id].setAttribute('clip-path', 'url(#' + cp.id + ')');
+        if (s.endLabel) s.endLabel.style.opacity = 0;
+        return rect;
+      });
+      var play = function () {
+        order.forEach(function (s, i) {
+          var delay = i * 550;
+          tween(900, delay, function (t) { clips[i].setAttribute('width', M.l - 2 + t * (W - M.l + 2)); });
+          if (s.endLabel) fadeIn(s.endLabel, delay + 800);
+        });
+      };
+      if (opts.immediate) play(); else if (!whenSeen(host, play)) play();
+    }
+
+    var xs = opts.series[0].points.map(function (p) { return p[0]; });
+    var cross = svg('line', { y1: M.t, y2: H - M.b, stroke: COLOR.ink, 'stroke-width': 1, opacity: 0 }, root);
+    var dots = opts.series.map(function (s) { return svg('circle', { r: 4.5, fill: COLOR[s.id], stroke: '#fff', 'stroke-width': 2, opacity: 0 }, root); });
+    var hit = svg('rect', { x: M.l, y: M.t, width: W - M.l - M.r, height: H - M.t - M.b, fill: 'transparent' }, root);
+    hit.addEventListener('mousemove', function (e) {
+      var box = root.getBoundingClientRect(), px = (e.clientX - box.left) / box.width * W, best = 0;
+      xs.forEach(function (x, i) { if (Math.abs(sx(x) - px) < Math.abs(sx(xs[best]) - px)) best = i; });
+      cross.setAttribute('x1', sx(xs[best])); cross.setAttribute('x2', sx(xs[best])); cross.setAttribute('opacity', 0.2);
+      var rows = current.map(function (s, i) {
+        var p = s.points[best];
+        dots[i].setAttribute('cx', sx(p[0])); dots[i].setAttribute('cy', sy(p[1])); dots[i].setAttribute('opacity', 1);
+        return { s: s, v: p[1], b: s.band && s.band[best] };
+      }).sort(function (a, b) { return b.v - a.v; });
+      showTip('<b>' + opts.xName + ' ' + xs[best] + '</b><br>' + rows.map(function (r) {
+        return sw(COLOR[r.s.id]) + esc(r.s.name) + ': ' + fmt(r.v, opts.dec || 1) +
+          (r.b ? ' <span style="color:#6b7280">± ' + fmt((r.b[2] - r.b[1]) / 2, opts.dec || 1) + '</span>' : '');
+      }).join('<br>'), e);
+    });
+    hit.addEventListener('mouseleave', function () {
+      hideTip(); cross.setAttribute('opacity', 0);
+      dots.forEach(function (d) { d.setAttribute('opacity', 0); });
+    });
+
+    // Glide to new values (same series and x positions), rescaling the y axis.
+    var anim = 0;
+    return {
+      update: function (next, nextDomain, nextTicks, ms) {
+        var from = current, fromDom = yDom.slice(), id = ++anim;
+        yTicks = nextTicks || yTicks;
+        function mix(t) {
+          return next.map(function (s, k) {
+            var a = from[k];
+            return {
+              id: s.id, name: s.name,
+              points: s.points.map(function (p, i) { return [p[0], a.points[i][1] + (p[1] - a.points[i][1]) * t]; }),
+              band: s.band && a.band ? s.band.map(function (b, i) { var o = a.band[i]; return [b[0], o[1] + (b[1] - o[1]) * t, o[2] + (b[2] - o[2]) * t]; }) : s.band
+            };
+          });
+        }
+        if (REDUCED) { yDom = nextDomain.slice(); current = next; drawValues(next); return; }
+        tween(ms || 650, 0, function (t) {
+          if (id !== anim) return;
+          yDom = [fromDom[0] + (nextDomain[0] - fromDom[0]) * t, fromDom[1] + (nextDomain[1] - fromDom[1]) * t];
+          drawValues(t < 1 ? mix(t) : next);
+          if (t >= 1) current = next;
+        });
+      }
+    };
+  }
+
+  // ── Paper tables ─────────────────────────────────────────────────────────
+
+  // Table 2: frontier pass@[1, 8, 64] after RFT (Qwen3-4B-Instruct)
+  var PASSK = {
+    rows: [
+      { name: 'Base', s: 'base' },
+      { name: 'IID-4', s: 'iid' },
+      { name: 'IID-4 (T=1.5)', s: 'iidhot' },
+      { name: 'IID-64', s: 'iid64' },
+      { name: 'IID-64 (T=1.5)', s: 'iidhot' },
+      { name: 'GROOT-4 ANTI', s: 'groot', anti: true },
+      { name: 'GROOT-4', s: 'groot' },
+      { name: 'VS-4 ANTI', s: 'vs', anti: true },
+      { name: 'VS-4', s: 'vs' }
+    ],
+    cobalt: [[0.5, 3.6, 21.9], [0.7, 4.9, 19.8], [1.0, 6.5, 22.4], [1.0, 6.3, 21.5], [1.5, 7.4, 23.0], [3.1, 11.8, 26.4], [3.5, 14.1, 30.5], [3.3, 12.5, 29.1], [4.1, 14.3, 30.2]],
+    lcb: [[0.2, 1.3, 7.4], [0.2, 1.5, 7.0], [0.5, 3.2, 10.8], [0.4, 2.5, 8.7], [0.4, 2.8, 10.7], [1.2, 6.3, 17.1], [1.5, 8.0, 19.5], [1.2, 7.0, 20.3], [2.0, 9.6, 23.1]],
+    ojb: [[0.1, 0.5, 2.9], [0.1, 0.7, 3.5], [0.1, 1.0, 5.2], [0.1, 1.0, 4.4], [0.2, 1.4, 5.2], [1.0, 3.7, 8.4], [1.2, 5.3, 11.5], [0.9, 3.8, 9.2], [1.5, 5.6, 11.9]],
+    macro: [[0.2, 0.9, 5.2], [0.2, 1.1, 5.2], [0.3, 2.1, 8.0], [0.2, 1.8, 6.5], [0.3, 2.1, 7.9], [1.1, 5.0, 12.8], [1.4, 6.7, 15.5], [1.1, 5.4, 14.8], [1.8, 7.6, 17.5]]
+  };
+  function passkRow(name) {
+    for (var i = 0; i < PASSK.rows.length; i++) if (PASSK.rows[i].name === name) return PASSK.macro[i];
+  }
+
+  // ── Figure 1: held-out pass@k ────────────────────────────────────────────
+
+  (function fig1() {
+    var fig = document.getElementById('fig-passk');
+    if (!fig) return;
+    var host = fig.querySelector('.cd-chart'), show = 'iid', model = 'qwen', first = true, fresh = null;
+    // Listed front to back; drawn and animated back to front: Base, IID, GROOT, then VS.
+    var defs = [
+      { id: 'vs', name: 'VS-4', row: 'VS-4', strategic: true },
+      { id: 'groot', name: 'GROOT-4', row: 'GROOT-4', strategic: true },
+      { id: 'iidhot', name: 'IID-64 (T=1.5)', row: 'IID-64 (T=1.5)' },
+      { id: 'iid', name: 'IID-4', row: 'IID-4' },
+      { id: 'base', name: 'Base', row: 'Base', dash: '5 4' }
+    ];
+    var rerender = responsive(host, function (W) {
+      // Qwen3-4B: Table 2 curves. Nemotron3-Nano-4B: its own frontier (Table 7 curves);
+      // arms without a full curve there are left out rather than drawn from 3 points.
+      var C = window.CD_PASSK, N = window.CD_N3N_PRE;
+      var series = defs.filter(function (d) { return show === 'all' || !d.strategic; }).map(function (d) {
+        var pts = null;
+        if (model === 'qwen') {
+          if (C) pts = C.ks.map(function (kk, i) { return [kk, C.table2[d.row].macro[i]]; });
+          else { var v = passkRow(d.row); pts = [[1, v[0]], [8, v[1]], [64, v[2]]]; }
+        } else {
+          var arm = d.row === 'IID-64 (T=1.5)' ? 'IID-64' : d.row;
+          if (N && N[arm]) pts = N[arm].macro.map(function (y, i) { return [i + 1, y]; });
+        }
+        return pts && { id: model === 'n3n' && d.id === 'iidhot' ? 'iid64' : d.id, name: model === 'n3n' && d.row === 'IID-64 (T=1.5)' ? 'IID-64' : d.name, dash: d.dash, points: pts };
+      }).filter(Boolean);
+      lineChart(host, W, {
+        series: series, log2: true, xDomain: [1, 64], yDomain: [0, model === 'qwen' ? 20 : 25], yTicks: model === 'qwen' ? [0, 5, 10, 15, 20] : [0, 5, 10, 15, 20, 25],
+        xTicks: [1, 2, 4, 8, 16, 32, 64], xTicksLinear: [1, 16, 32, 48, 64], xLabel: 'samples k (log scale)', yLabel: 'pass@k (%)', xName: 'k =', markers: true,
+        markerAt: [1, 2, 4, 8, 16, 32, 64],
+        rightPad: 130, height: 300, aria: 'Held-out pass@k at k = 1, 8, 64 for the base model and self-trained models',
+        animate: first ? true : (fresh || []), immediate: !first
+      });
+      first = false; fresh = null;
+    });
+    onKScale(function () { fresh = []; rerender(); });
+    segmented(fig, 'data-model', function (m) {
+      if (m === model) return;
+      model = m; fresh = show === 'all' ? ['base', 'iid', 'iid64', 'iidhot', 'groot', 'vs'] : ['base', 'iid', 'iid64', 'iidhot'];
+      rerender();
+    });
+    segmented(fig, 'data-show', function (v) {
+      if (v === show) return;
+      fresh = v === 'all' ? ['groot', 'vs'] : [];
+      show = v; rerender();
+    });
+  })();
+
+  // ── Figure 2: pipeline diagram ───────────────────────────────────────────
+
+  (function fig2() {
+    var root = document.querySelector('#fig-pipeline svg');
+    if (!root) return;
+    var defs = svg('defs', null, root);
+    var mk = svg('marker', { id: 'cd-ah', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto' }, defs);
+    svg('path', { d: 'M0,1 L10,5 L0,9 z', fill: '#6b6b6b' }, mk);
+
+    function arrow(x1, y1, x2, y2, label) {
+      svg('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: '#6b6b6b', 'stroke-width': 1.3, 'marker-end': 'url(#cd-ah)' }, root);
+      if (label) svg('text', { x: (x1 + x2) / 2, y: y1 - 8, 'text-anchor': 'middle', 'font-size': 13, 'font-style': 'italic', fill: COLOR.ink2 }, root, label);
+    }
+    function box(x, y, w, h, label, sub) {
+      svg('rect', { x: x, y: y, width: w, height: h, fill: '#fff', stroke: COLOR.ink, 'stroke-width': 1.2 }, root);
+      svg('text', { x: x + w / 2, y: y + h / 2 + (sub ? -2 : 5), 'text-anchor': 'middle', 'font-size': 15, fill: COLOR.ink }, root, label);
+      if (sub) svg('text', { x: x + w / 2, y: y + h / 2 + 15, 'text-anchor': 'middle', 'font-size': 12, fill: COLOR.muted }, root, sub);
+    }
+
+    var rows = [
+      { y: 60, name: 'IID', sub: 'baseline', c: COLOR.iid },
+      { y: 186, name: 'GROOT', sub: 'structured', c: COLOR.groot },
+      { y: 322, name: 'VS', sub: 'unstructured', c: COLOR.vs }
+    ];
+    rows.forEach(function (r) {
+      svg('text', { x: 8, y: r.y - 2, 'font-size': 17, 'font-weight': 'bold', fill: r.c }, root, r.name);
+      svg('text', { x: 8, y: r.y + 16, 'font-size': 13, 'font-style': 'italic', fill: COLOR.muted }, root, r.sub);
+      box(104, r.y - 20, 78, 40, 'problem');
+    });
+
+    // IID: n samples that cluster on one strategy, then a correctness filter
+    var y = rows[0].y, iidC = [[0, 0], [-9, -6], [8, -8], [-6, 8], [10, 5], [2, -14], [-13, 2], [4, 12]];
+    arrow(182, y, 232, y, 'sample n');
+    svg('ellipse', { cx: 290, cy: y, rx: 40, ry: 28, fill: 'none', stroke: COLOR.rule, 'stroke-dasharray': '3 3' }, root);
+    iidC.forEach(function (p) { svg('circle', { cx: 290 + p[0], cy: y + p[1], r: 4.2, fill: COLOR.iid, stroke: '#fff', 'stroke-width': 1 }, root); });
+    svg('text', { x: 290, y: y + 44, 'text-anchor': 'middle', 'font-size': 12.5, 'font-style': 'italic', fill: COLOR.muted }, root, 'mostly one strategy');
+    arrow(334, y, 470, y, 'keep correct');
+    ['✓', '✗', '✗', '✓'].forEach(function (m, i) {
+      svg('text', { x: 492 + i * 16, y: y + 5, 'text-anchor': 'middle', 'font-size': 15, fill: m === '✓' ? COLOR.pass : COLOR.fail }, root, m);
+    });
+
+    // GROOT: a tree, one path per top-level branch
+    y = rows[1].y;
+    arrow(182, y, 226, y, 'plan');
+    var kids = [-42, -14, 14, 42];
+    svg('circle', { cx: 236, cy: y, r: 4, fill: COLOR.ink }, root);
+    kids.forEach(function (dy, i) {
+      svg('line', { x1: 236, y1: y, x2: 280, y2: y + dy, stroke: COLOR.groot, 'stroke-width': 1.6 }, root);
+      svg('circle', { cx: 280, cy: y + dy, r: 3.5, fill: COLOR.groot }, root);
+      [-6, 6].forEach(function (off, j) {
+        var on = (i + j) % 2 === 0;
+        svg('line', { x1: 280, y1: y + dy, x2: 320, y2: y + dy + off, stroke: on ? COLOR.groot : COLOR.rule, 'stroke-width': on ? 1.6 : 1 }, root);
+        svg('circle', { cx: 320, cy: y + dy + off, r: on ? 3.5 : 2.5, fill: on ? COLOR.groot : COLOR.rule }, root);
+      });
+    });
+    svg('text', { x: 278, y: y + 64, 'text-anchor': 'middle', 'font-size': 12.5, 'font-style': 'italic', fill: COLOR.muted }, root, 'tree of strategies, n paths');
+
+    // VS: a list of approaches with probabilities
+    y = rows[2].y;
+    arrow(182, y, 226, y, 'plan');
+    [[0.6, '.60'], [0.2, '.20'], [0.1, '.10'], [0.1, '.10']].forEach(function (a, i) {
+      var yy = y - 33 + i * 22;
+      svg('text', { x: 236, y: yy + 5, 'font-size': 13, fill: COLOR.ink2 }, root, 'p=' + a[1]);
+      svg('rect', { x: 276, y: yy - 3, width: 60 * a[0] + 4, height: 7, fill: COLOR.vs }, root);
+    });
+    svg('text', { x: 280, y: y + 56, 'text-anchor': 'middle', 'font-size': 12.5, 'font-style': 'italic', fill: COLOR.muted }, root, 'n approaches with probabilities');
+
+    // Strategic rows: solve once per approach, as a hidden instruction
+    [rows[1], rows[2]].forEach(function (r) {
+      arrow(346, r.y, 470, r.y, 'solve each approach');
+      svg('text', { x: 408, y: r.y + 18, 'text-anchor': 'middle', 'font-size': 12, 'font-style': 'italic', fill: COLOR.muted }, root, '(approach hidden)');
+      [-27, -9, 9, 27].forEach(function (dy, i) {
+        svg('rect', { x: 480, y: r.y + dy - 7, width: 42, height: 14, fill: '#fff', stroke: r.c, 'stroke-width': 1.2 }, root);
+        svg('text', { x: 501, y: r.y + dy + 4, 'text-anchor': 'middle', 'font-size': 11, fill: r.c }, root, 'ABCD'[i]);
+      });
+    });
+
+    // Fine-tune, then all three models go to the same evaluation
+    var midY = (rows[0].y + rows[2].y) / 2;
+    rows.forEach(function (r) {
+      arrow(r === rows[0] ? 548 : 530, r.y, 590, r.y);
+      box(592, r.y - 20, 92, 40, 'fine-tune');
+      svg('line', { x1: 684, x2: 706, y1: r.y, y2: r.y, stroke: '#6b6b6b', 'stroke-width': 1.3 }, root);
+    });
+    svg('line', { x1: 706, x2: 706, y1: rows[0].y, y2: rows[2].y, stroke: '#6b6b6b', 'stroke-width': 1.3 }, root);
+    arrow(706, midY, 726, midY);
+    var bx = 728, bw = 168, by = midY - 118, bh = 236, cx = bx + bw / 2;
+    svg('rect', { x: bx, y: by, width: bw, height: bh, fill: COLOR.soft, stroke: COLOR.ink, 'stroke-width': 1.2 }, root);
+    svg('text', { x: cx, y: by + 28, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 'bold', fill: COLOR.ink }, root, 'Evaluate in three ways:');
+    [['pass@k', ['plain prompt, k samples']], ['test-time scaling', ['RSA (Venkatraman et al., 2025)']], ['RL', ['MaxRL (Tajwar et al., 2026)', 'for code; GRPO for NCP']]].forEach(function (e, i) {
+      var y0 = by + 74 + i * 56;
+      svg('text', { x: cx, y: y0, 'text-anchor': 'middle', 'font-size': 14.5, fill: COLOR.ink }, root, e[0]);
+      e[1].forEach(function (line, k) {
+        svg('text', { x: cx, y: y0 + 17 + k * 14, 'text-anchor': 'middle', 'font-size': 11.5, 'font-style': 'italic', fill: COLOR.muted }, root, line);
+      });
+    });
+  })();
+
+  // ── Figure 3: example explorer ───────────────────────────────────────────
+
+  (function fig3() {
+    var fig = document.getElementById('fig-example'), EX = window.CD_EXAMPLES;
+    if (!fig || !EX) return;
+    var code = EX.code;
+    var panels = fig.querySelectorAll('.cd-tabpanel');
+    segmented(fig, 'data-tab', function (t) {
+      panels.forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== t; });
+    });
+
+    // What the solver actually wrote for each approach, summarised from its response.
+    // The solver may deviate from (or fix) the approach it is given.
+    var SOLVER = {
+      groot: {
+        'A → A1': 'Noticed the per-query scan would be too slow and wrote an offline sweep with a Fenwick tree instead.',
+        'C → C1': 'Implemented the offline sweep, keeping sorted endpoints and counting with binary search.',
+        'B → B1': 'Built a 2D prefix-sum table over city pairs, but the program failed the tests.',
+        'D → D2': 'Dropped the binary search on the answer and wrote an offline sweep with binary search instead.'
+      },
+      vs: [
+        'Grouped trains by left endpoint and scanned them per query; the program failed the tests.',
+        'Switched to a 2D prefix-sum table over city pairs (N ≤ 500), which passes.',
+        'Implemented the table over all intervals; the program failed the tests.',
+        'Fell back to checking every train for every query; the program failed the tests.'
+      ]
+    };
+    function approach(boxEl, title, text, passed, color, solverNote) {
+      boxEl.style.setProperty('--ac', color);
+      boxEl.innerHTML = '<header>' + esc(title) + ' &nbsp;<span class="cd-mark ' + (passed ? 'pass">✓ solver passed' : 'fail">✗ solver failed') +
+        '</span></header><p>' + esc(text) + '</p>' +
+        (solverNote ? '<p class="cd-solver"><b>What the solver did:</b> ' + esc(solverNote) + '</p>' : '');
+    }
+
+    // GROOT tree
+    (function () {
+      var panel = fig.querySelector('[data-panel="groot"]');
+      var root = panel.querySelector('svg'), boxEl = panel.querySelector('.cd-approach');
+      var nodes = [], cur = null;
+      code.tree.split('\n').forEach(function (line) {
+        var m = line.match(/^\s*([A-Z])(\d*)\.\s*(.*)$/);
+        if (!m) return;
+        if (!m[2]) { cur = { id: m[1], text: m[3], kids: [] }; nodes.push(cur); }
+        else if (cur) cur.kids.push({ id: m[1] + m[2], text: m[3] });
+      });
+      var chosen = {};
+      code.groot.forEach(function (g, i) { chosen[g.path.split('→').pop().trim()] = { idx: i, g: g }; });
+
+      var rowH = 48, top = 6, leaves = 0;
+      nodes.forEach(function (n) { leaves += Math.max(1, n.kids.length); });
+      var W = 900, H = top * 2 + leaves * rowH;
+      root.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      var X0 = 0, W0 = 96, X1 = 130, W1 = 320, X2 = 488, W2 = 360;
+      var edges = svg('g', null, root), boxes = svg('g', null, root);
+      var rootY = H / 2;
+      svg('rect', { x: X0, y: rootY - 20, width: W0, height: 40, fill: '#fff', stroke: COLOR.ink, 'stroke-width': 1.2 }, boxes);
+      svg('text', { x: W0 / 2, y: rootY + 5, 'text-anchor': 'middle', 'font-size': 15, fill: COLOR.ink }, boxes, 'problem');
+
+      function curve(x1, y1, x2, y2, on) {
+        var mx = (x1 + x2) / 2;
+        svg('path', { d: 'M' + x1 + ',' + y1 + ' C' + mx + ',' + y1 + ' ' + mx + ',' + y2 + ' ' + x2 + ',' + y2,
+          fill: 'none', stroke: on ? COLOR.groot : COLOR.rule, 'stroke-width': on ? 1.8 : 1.2 }, edges);
+      }
+
+      var rects = [], row = 0;
+      nodes.forEach(function (n) {
+        var y0 = top + row * rowH, cy = y0 + n.kids.length * rowH / 2;
+        var any = n.kids.some(function (k) { return chosen[k.id]; });
+        curve(X0 + W0, rootY, X1, cy, any);
+        svg('rect', { x: X1, y: cy - 19, width: W1, height: 38, fill: '#fff', stroke: any ? COLOR.groot : COLOR.rule, 'stroke-width': 1.2 }, boxes);
+        var t1 = svg('text', { x: X1 + 10, y: cy - 3, 'font-size': 13.5, fill: COLOR.ink }, boxes);
+        if (wrapText(t1, n.id + '. ' + n.text, 44, 15, 2) === 1) t1.setAttribute('y', cy + 5);
+        n.kids.forEach(function (k, j) {
+          var ky = y0 + j * rowH + rowH / 2, pick = chosen[k.id];
+          curve(X1 + W1, cy, X2, ky, !!pick);
+          var g = svg('g', pick ? { class: 'leaf', tabindex: 0, role: 'button' } : null, boxes);
+          var rect = svg('rect', { x: X2, y: ky - 19, width: W2, height: 38, fill: pick ? '#fcefe6' : '#fff', stroke: pick ? COLOR.groot : COLOR.rule, 'stroke-width': 1.2 }, g);
+          var t2 = svg('text', { x: X2 + 10, y: ky - 3, 'font-size': 13, fill: pick ? COLOR.ink : COLOR.muted }, g);
+          if (wrapText(t2, k.id + '. ' + k.text, 50, 15, 2) === 1) t2.setAttribute('y', ky + 5);
+          if (!pick) return;
+          var ok = pick.g.passed;
+          svg('text', { x: X2 + W2 + 14, y: ky + 6, 'font-size': 17, fill: ok ? COLOR.pass : COLOR.fail }, g, ok ? '✓' : '✗');
+          function select() {
+            rects.forEach(function (r) { r.setAttribute('stroke-width', 1.2); });
+            rect.setAttribute('stroke-width', 2.6);
+            approach(boxEl, 'Path ' + pick.g.path, pick.g.text, ok, COLOR.groot, SOLVER.groot[pick.g.path]);
+          }
+          g.addEventListener('click', select);
+          g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); } });
+          rects.push(rect);
+          if (pick.idx === 1) select();
+        });
+        row += Math.max(1, n.kids.length);
+      });
+    })();
+
+    // VS list
+    (function () {
+      var panel = fig.querySelector('[data-panel="vs"]');
+      var list = panel.querySelector('.cd-vs'), boxEl = panel.querySelector('.cd-approach');
+      var names = [
+        'Bucket trains by left endpoint, scan O(N) per query',
+        'Offline sweep line with a Fenwick tree',
+        'Precompute a count table over all O(N²) intervals',
+        'Mo’s algorithm'
+      ];
+      var btns = code.vs.map(function (a, i) {
+        var b = html('button', { type: 'button' }, list);
+        html('span', { class: 'p' }, b, 'p = ' + a.p.toFixed(2));
+        var mid = html('span', null, b, names[i]);
+        html('span', { class: 'bar', style: 'width:' + (a.p * 100) + '%' }, mid);
+        html('span', { class: 'cd-mark ' + (a.passed ? 'pass' : 'fail') }, b, a.passed ? '✓' : '✗');
+        b.addEventListener('click', function () {
+          btns.forEach(function (o) { o.classList.toggle('is-on', o === b); });
+          approach(boxEl, 'p = ' + a.p.toFixed(2) + ': ' + names[i], a.text, a.passed, COLOR.vs, SOLVER.vs[i]);
+        });
+        return b;
+      });
+      var win = code.vs.findIndex(function (a) { return a.passed; });
+      if (btns[win]) btns[win].click();
+    })();
+
+    // IID
+    (function () {
+      var panel = fig.querySelector('[data-panel="iid"]');
+      var row = panel.querySelector('.cd-iid');
+      code.iid_flags.forEach(function (f, i) { html('span', null, row, '#' + (i + 1) + ' ' + (f ? '✓' : '✗')); });
+      panel.querySelector('code').textContent = code.iid_code;
+    })();
+  })();
+
+  // ── Figure 4: training data vs trained model ─────────────────────────────
+
+  (function fig4() {
+    var fig = document.getElementById('fig-data');
+    if (!fig) return;
+    var host = fig.querySelector('.cd-chart');
+    // Table 1 (problems with >= 1 correct sample, of 1,833) and Table 2 (held-out pass@64)
+    // Problems with >= 1 correct sample while sampling (Table 1 / Table 10) and held-out
+    // frontier pass@64 of the trained model (Table 2 / Table 7).
+    var DATA = { qwen: { total: '1,833', rows: [
+      { name: 'IID-4', s: 'iid', solved: 42, p64: 5.2 },
+      { name: 'IID-4 (T=1.5)', s: 'iidhot', solved: 60, p64: 8.0 },
+      { name: 'IID-64', s: 'iid64', solved: 312, p64: 6.5 },
+      { name: 'IID-64 (T=1.5)', s: 'iidhot', solved: 379, p64: 7.9, hl: true, note: ['most correct data', 'weak model'] },
+      { name: 'VS-4', s: 'vs', solved: 137, p64: 17.5 },
+      { name: 'GROOT-4', s: 'groot', solved: 155, p64: 15.5, hl: true, note: ['less correct data', 'strong model'] }
+    ] }, n3n: { total: null, rows: [
+      { name: 'IID-4', s: 'iid', solved: 52, p64: 8.8 },
+      { name: 'IID-8', s: 'iid', solved: 97, p64: 14.9 },
+      { name: 'IID-64', s: 'iid64', solved: 424, p64: 11.9, hl: true, note: ['most correct data', 'weak model'] },
+      { name: 'VS-4', s: 'vs', solved: 137, p64: 20.8 },
+      { name: 'GROOT-4', s: 'groot', solved: 115, p64: 19.9, hl: true, note: ['less correct data', 'strong model'] }
+    ] } };
+    var model = 'qwen', rows = DATA.qwen.rows;
+    var drawn4 = false;
+    var rerender4 = responsive(host, function (W) {
+      var grow = [];
+      rows = DATA[model].rows;
+      var narrow = W < 600, L = narrow ? 98 : 122, gap = narrow ? 18 : 34, R = narrow ? 34 : 64;
+      var pw = (W - L - gap - R) / 2, rowH = 30, top = narrow ? 46 : 34, H = top + rows.length * rowH + 28;
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Paired bars: training problems solved while sampling, and held-out pass@64 after training' }, host);
+      var panels = [
+        { x: L, key: 'solved', max: model === 'qwen' ? 450 : 500, ticks: [0, 200, 400], title: narrow ? ['training problems', 'with a correct sample'] : ['training problems with a correct sample'], d: 0 },
+        { x: L + pw + gap, key: 'p64', max: model === 'qwen' ? 21 : 25, ticks: model === 'qwen' ? [0, 10, 20] : [0, 10, 20], title: narrow ? ['model after training:', 'held-out pass@64 (%)'] : ['model after training: held-out pass@64 (%)'], d: 1 }
+      ];
+      panels.forEach(function (p) {
+        var sx = function (v) { return p.x + v / p.max * pw; };
+        p.title.forEach(function (line, i) {
+          svg('text', { x: p.x, y: 14 + i * 16, class: 'cd-lab', 'font-weight': 'bold' }, root, line);
+        });
+        xAxis(svg('g', null, root), sx, p.ticks, top - 6, H - 26);
+        rows.forEach(function (r, i) {
+          var y = top + i * rowH, w = Math.max(2, sx(r[p.key]) - p.x);
+          // The two rows that carry the point stay strong; the rest step back.
+          var rowG = svg('g', { class: 'cd-f4row' + (r.hl ? ' is-hl' : '') }, root);
+          var rect = svg('rect', { x: p.x, y: y + 7, width: w, height: rowH - 14, fill: COLOR[r.s] }, rowG);
+          var val = svg('text', { x: p.x + w + 5, y: y + rowH / 2 + 4, class: 'cd-val' }, rowG, fmt(r[p.key], p.d));
+          if (r.note && !narrow) {
+            var txt = r.note[p.d], tw = txt.length * 6.4 + 14, vx = p.x + w + 5 + (p.d ? 26 : 30);
+            if (vx + tw > p.x + pw + (p.d ? R : gap - 4)) {
+              // No room after the bar: write the note inside it
+              svg('text', { x: p.x + w - 8, y: y + rowH / 2 + 4, 'text-anchor': 'end', class: 'cd-f4note', fill: '#fff', style: 'fill:#fff' }, rowG, txt);
+            } else {
+              svg('text', { x: vx, y: y + rowH / 2 + 4, class: 'cd-f4note' }, rowG, '← ' + txt);
+            }
+          }
+          grow.push({ rect: rect, val: val, w: w, panel: p.d, i: i });
+        });
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH;
+        svg('text', { x: L - 10, y: y + rowH / 2 + 4, 'text-anchor': 'end', class: 'cd-lab' + (r.hl ? '' : ' cd-f4dim') }, root, r.name);
+        var hit = svg('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent' }, root);
+        hover(hit, function () {
+          return sw(COLOR[r.s]) + '<b>' + r.name + '</b><br>' + r.solved + (DATA[model].total ? ' / ' + DATA[model].total : '') + ' training problems solved<br>held-out pass@64 after RFT: ' + r.p64.toFixed(1);
+        });
+      });
+      if (!drawn4 && !REDUCED) {
+        // Training data first (left), then what the trained model scores (right)
+        grow.forEach(function (g) { g.rect.setAttribute('width', 0); g.val.style.opacity = 0; });
+        whenSeen(host, function () {
+          grow.forEach(function (g) {
+            var delay = g.panel * 1300 + g.i * 70;
+            tween(650, delay, function (t) { g.rect.setAttribute('width', g.w * t); });
+            fadeIn(g.val, delay + 550);
+          });
+        });
+      }
+      drawn4 = true;
+    });
+    segmented(fig, 'data-model', function (m) { if (m === model) return; model = m; drawn4 = true; rerender4(); });
+  })();
+
+  // ── Figure 5: training on incorrect samples only, as pass@k curves ───────
+
+  (function fig5() {
+    var fig = document.getElementById('fig-anti'), C = window.CD_PASSK;
+    if (!fig || !C) return;
+    var host = fig.querySelector('.cd-chart'), bench = 'macro', drawn = false;
+    var BKEY = { macro: 'macro', lcb: 'lcb', ojb: 'ojbench', cobalt: 'cobalt' };
+    // Listed front to back; drawn (and animated) back to front: Base, IID, ANTI, then full data
+    var DEFS = [
+      { key: 'vs', id: 'vs', arm: 'VS-4', name: 'VS-4' },
+      { key: 'groot', id: 'groot', arm: 'GROOT-4', name: 'GROOT-4' },
+      { key: 'vs-anti', id: 'vs', arm: 'VS-4 (ANTI)', name: 'VS-4, incorrect only', endName: 'VS-4 incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
+      { key: 'groot-anti', id: 'groot', arm: 'GROOT-4 (ANTI)', name: 'GROOT-4, incorrect only', endName: 'GROOT-4 incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
+      { key: 'iidhot', id: 'iidhot', arm: 'IID-64 (T=1.5)', name: 'IID-64 (T=1.5)' },
+      { key: 'iid', id: 'iid', arm: 'IID-4', name: 'IID-4' },
+      { key: 'base', id: 'base', arm: 'Base', name: 'Base', dash: '5 4' }
+    ];
+    var YMAX = { macro: 20, lcb: 25, ojb: 15, cobalt: 35 }, chart = null;
+    function seriesFor(b) {
+      return DEFS.map(function (d) {
+        return { key: d.key, id: d.id, name: d.name, endName: d.endName, dash: d.dash, dotted: d.dotted, noMarkers: d.noMarkers,
+          points: C.ks.map(function (k, i) { return [k, C.table2[d.arm][BKEY[b]][i]]; }) };
+      });
+    }
+    function ticksFor(b) {
+      var ymax = YMAX[b], step = ymax > 20 ? 10 : 5, out = [];
+      for (var t = 0; t <= ymax; t += step) out.push(t);
+      return out;
+    }
+    var rerender5 = responsive(host, function (W) {
+      var series = seriesFor(bench), ymax = YMAX[bench], yTicks = ticksFor(bench);
+      chart = lineChart(host, W, {
+        series: series, log2: true, xDomain: [1, 64], yDomain: [0, ymax], yTicks: yTicks,
+        xTicks: [1, 2, 4, 8, 16, 32, 64], xTicksLinear: [1, 16, 32, 48, 64], xLabel: 'samples k (log scale)', yLabel: 'pass@k (%)', xName: 'k =',
+        markers: true, markerAt: [1, 2, 4, 8, 16, 32, 64], rightPad: 178, height: 320,
+        aria: 'pass@k curves for models trained on all samples, only incorrect strategic samples, and IID samples',
+        animate: !drawn
+      });
+      drawn = true;
+    });
+    onKScale(rerender5);
+    segmented(fig, 'data-bench', function (b) {
+      if (b === bench) return;
+      bench = b;
+      chart.update(seriesFor(b), [0, YMAX[b]], ticksFor(b), 700);
+    });
+  })();
+
+  // ── Figure 6: self vs teacher ────────────────────────────────────────────
+
+  (function fig6() {
+    var fig = document.getElementById('fig-teacher');
+    if (!fig) return;
+    var host = fig.querySelector('.cd-chart');
+    // Held-out frontier macro [p@1, p@8, p@64]. Qwen3-4B: Table 3 (16k cap), teacher
+    // Qwen3-235B-A22B. Nemotron3-Nano-4B: Table 12, teacher Nemotron3-Super-120B-A12B.
+    var DATA = {
+      qwen: { teacher: '235B', xmax: 25, rows: [
+        { name: 'IID-4', s: 'iid', self: [0.2, 1.3, 5.8], teach: [0.7, 4.5, 13.4] },
+        { name: 'GROOT-4', s: 'groot', self: [2.1, 9.3, 20.1], teach: [1.6, 8.0, 17.8] },
+        { name: 'VS-4', s: 'vs', self: [2.6, 10.6, 22.8], teach: [1.5, 7.8, 17.7] } ] },
+      n3n: { teacher: '120B', xmax: 30, rows: [
+        { name: 'IID-4', s: 'iid', self: [0.3, 2.1, 8.8], teach: [0.5, 3.5, 13.8] },
+        { name: 'GROOT-4', s: 'groot', self: [1.1, 6.4, 19.9], teach: [2.2, 11.1, 25.7] },
+        { name: 'VS-4', s: 'vs', self: [1.6, 8.2, 20.8], teach: [2.6, 12.3, 27.4] } ] }
+    };
+    var model = 'qwen', drawn6 = false, replay6 = false;
+    var rerender6 = responsive(host, function (W) {
+      var moves = [], rows = DATA[model].rows;
+      legend(host, [{ label: 'self-generated (4B)', color: COLOR.ink2 }, { label: 'teacher-generated (' + DATA[model].teacher + ')', color: COLOR.ink2, kind: 'ring' }]);
+      var L = W < 600 ? 76 : 100, R = 24, rowH = 50, top = 4, H = top + rows.length * rowH + 30, xmax = DATA[model].xmax;
+      var sx = function (v) { return L + v / xmax * (W - L - R); };
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Held-out pass@64 for self-generated and teacher-generated data' }, host);
+      var tk = []; for (var q = 0; q <= xmax; q += 5) tk.push(q);
+      xAxis(svg('g', null, root), sx, tk, top, H - 26, 'pass@64 (%)', L - 10);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + rowH / 2 + 4, c = COLOR[r.s], a = sx(r.self[2]), b = sx(r.teach[2]);
+        svg('text', { x: L - 10, y: y + 5, 'text-anchor': 'end', class: 'cd-lab' }, root, r.name);
+        var ln = svg('line', { x1: Math.min(a, b), x2: Math.max(a, b), y1: y, y2: y, stroke: c, 'stroke-width': 2, opacity: 0.45 }, root);
+        svg('circle', { cx: b, cy: y, r: 6.5, fill: '#fff', stroke: c, 'stroke-width': 2 }, root);
+        var dot = svg('circle', { cx: a, cy: y, r: 6.5, fill: c }, root);
+        var close = Math.abs(a - b) < 44;
+        var sv = svg('text', { x: a, y: y - 12, 'text-anchor': 'middle', class: 'cd-val' }, root, r.self[2].toFixed(1));
+        moves.push({ ln: ln, dot: dot, sv: sv, a: a, b: b, i: i });
+        svg('text', { x: b, y: close ? y + 23 : y - 12, 'text-anchor': 'middle', class: 'cd-lab-muted' }, root, r.teach[2].toFixed(1));
+        var hit = svg('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }, root);
+        hover(hit, function () {
+          return sw(c) + '<b>' + r.name + '</b> (pass@1 / 8 / 64)<br>self: ' + r.self.join(' / ') + '<br>teacher: ' + r.teach.join(' / ');
+        });
+      });
+      if ((!drawn6 || replay6) && !REDUCED) {
+        moves.forEach(function (m) {
+          m.dot.setAttribute('cx', m.b); m.ln.setAttribute('x1', m.b); m.ln.setAttribute('x2', m.b); m.sv.style.opacity = 0;
+        });
+        (replay6 ? function (f) { f(); } : function (f) { whenSeen(host, f); })(function () {
+          moves.forEach(function (m) {
+            var delay = (replay6 ? 0 : 300) + m.i * 350;
+            tween(800, delay, function (t) {
+              var x = m.b + (m.a - m.b) * t;
+              m.dot.setAttribute('cx', x);
+              m.ln.setAttribute('x1', Math.min(x, m.b)); m.ln.setAttribute('x2', Math.max(x, m.b));
+            });
+            fadeIn(m.sv, delay + 700);
+          });
+        });
+      }
+      drawn6 = true;
+    });
+    segmented(fig, 'data-model', function (m) { if (m === model) return; model = m; replay6 = true; rerender6(); replay6 = false; });
+  })();
+
+  // ── Figure 7: RL curves ──────────────────────────────────────────────────
+
+  (function fig7() {
+    var fig = document.getElementById('fig-rl'), FD = window.CD_FIGDATA;
+    if (!fig || !FD) return;
+    var order = ['groot', 'vs', 'iidhot', 'iid64', 'iid', 'base'], model = 'qwen', drawn7 = false;
+    var CFG = {
+      qwen: { data: FD.rl, xDomain: [8, 84], xTicks: [20, 40, 60, 80], yDomain: [6, 24], yTicks: [8, 12, 16, 20, 24], yMinor: 1 },
+      n3n: { data: FD.rl_n3n, xDomain: [4, 76], xTicks: [20, 40, 60], yDomain: [0, 55], yTicks: [0, 10, 20, 30, 40, 50], yMinor: 5 }
+    };
+    var host = fig.querySelector('.cd-chart'), note = fig.querySelector('.cd-gap-note');
+    var rerender = responsive(host, function (W) {
+      var cfg = CFG[model];
+      var series = (cfg.data || []).slice().sort(function (a, b) { return order.indexOf(a.id) - order.indexOf(b.id); })
+        .map(function (s) { return { id: s.id, name: s.name, points: s.points, band: s.band, dash: s.id === 'base' ? '5 4' : null }; });
+      // Largest head start. For each level reached by a strategic run (GROOT-4 / VS-4)
+      // and an IID run, find where each curve crosses that level (interpolated between
+      // evaluations), and keep the widest gap whose connecting segment no other curve crosses.
+      function crossAt(sr, y) {
+        var p = sr.points;
+        if (p[0][1] >= y - 1e-9) return p[0][0];
+        for (var i = 1; i < p.length; i++) if (p[i][1] >= y - 1e-9) {
+          var a = p[i - 1], b = p[i];
+          return a[0] + (b[0] - a[0]) * (y - a[1]) / ((b[1] - a[1]) || 1);
+        }
+        return null;
+      }
+      function valAt(sr, x) {
+        var p = sr.points;
+        if (x <= p[0][0]) return p[0][1];
+        for (var i = 1; i < p.length; i++) if (p[i][0] >= x) {
+          var a = p[i - 1], b = p[i];
+          return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]);
+        }
+        return p[p.length - 1][1];
+      }
+      var strat = series.filter(function (s) { return s.id === 'groot' || s.id === 'vs'; });
+      var iids = series.filter(function (s) { return /^iid/.test(s.id); });
+      // Only whole-number levels, so the marked pass@8 reads cleanly (e.g. 19%, not 18.8%)
+      var levels = [], lo = Infinity, hi = -Infinity;
+      series.forEach(function (s) { s.points.forEach(function (p) { lo = Math.min(lo, p[1]); hi = Math.max(hi, p[1]); }); });
+      for (var lv = Math.ceil(lo); lv <= Math.floor(hi); lv++) levels.push(lv);
+      var best = null;
+      levels.forEach(function (y) {
+        strat.forEach(function (sa) {
+          var a = crossAt(sa, y);
+          if (a === null) return;
+          iids.forEach(function (ib) {
+            var b = crossAt(ib, y);
+            if (b === null || b <= a + 4) return;
+            var clear = series.every(function (o) {
+              if (o === sa || o === ib) return true;
+              var c = crossAt(o, y);
+              return c === null || c <= a || c >= b;
+            });
+            if (!clear) return;
+            if (!best || b - a > best.gap) best = { y: y, gap: b - a, a: { s: sa, x: a }, b: { s: ib, x: b } };
+          });
+        });
+      });
+      lineChart(host, W, {
+        series: series, xDomain: cfg.xDomain, yDomain: cfg.yDomain, yTicks: cfg.yTicks,
+        xTicks: cfg.xTicks, xMinor: 10, yMinor: cfg.yMinor, xLabel: 'RL step', yLabel: 'val. pass@8 (%)', xName: 'step', smooth: true,
+        rightPad: 128, aria: 'Best-so-far validation pass@8 during RL from each fine-tuned model', animate: !drawn7 ? true : series.map(function (s) { return s.id; }),
+        immediate: drawn7,
+        annotate: function (root, sx, sy, W, H, M) {
+          if (!best) { if (note) note.innerHTML = ''; return; }
+          var RED = '#c0392b', y = sy(best.y), xa = sx(best.a.x), xb = sx(best.b.x), steps = Math.round(best.gap);
+          var g = svg('g', { class: 'cd-gap', 'pointer-events': 'none' }, root);
+          // Drawn early by lineChart, so lift it above the curves once they exist
+          setTimeout(function () { root.appendChild(g); }, 0);
+          var defsA = svg('defs', null, g), mk = svg('marker', { id: 'cd-gap-ah', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto-start-reverse' }, defsA);
+          svg('path', { d: 'M0,1 L10,5 L0,9 z', fill: RED }, mk);
+          // Faint guide back to the y axis, with the level marked there
+          svg('line', { x1: M.l, x2: xa, y1: y, y2: y, stroke: RED, 'stroke-width': 1, 'stroke-dasharray': '2 3', opacity: 0.5 }, g);
+          svg('text', { x: M.l - 8, y: y + 4, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 600, fill: RED, stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke' }, g, String(best.y));
+          // Arrow between the two crossings
+          svg('line', { x1: xa + 6, x2: xb - 6, y1: y, y2: y, stroke: RED, 'stroke-width': 1.6, 'marker-start': 'url(#cd-gap-ah)', 'marker-end': 'url(#cd-gap-ah)' }, g);
+          [[xa, best.a.s], [xb, best.b.s]].forEach(function (e) {
+            svg('circle', { cx: e[0], cy: y, r: 4.6, fill: '#fff', stroke: COLOR[e[1].id], 'stroke-width': 2.2 }, g);
+          });
+          // Label sits on the arrow itself, like a dimension line: |<-- 41 steps sooner -->|
+          var label = steps + ' steps sooner', lw = label.length * 6.6 + 14, lh = 18, mx = (xa + xb) / 2;
+          if (lw > (xb - xa) - 24) label = steps + ' steps', lw = label.length * 6.6 + 14;
+          svg('rect', { x: mx - lw / 2, y: y - lh / 2, width: lw, height: lh, rx: 9, fill: '#fff', stroke: RED, 'stroke-width': 1 }, g);
+          svg('text', { x: mx, y: y + 4.3, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 600, fill: RED }, g, label);
+          if (note) note.innerHTML = esc(best.a.s.name) + ' reaches ' + best.y + '% validation pass@8 about <b>' + steps + ' RL steps</b> before ' + esc(best.b.s.name) + '.';
+          if (!drawn7 && !REDUCED) { g.style.opacity = 0; whenSeen(host, function () { fadeIn(g, 2600); }); }
+        }
+      });
+      drawn7 = true;
+    });
+        segmented(fig, 'data-model', function (m) { if (m === model) return; model = m; rerender(); });
+  })();
+
+  // ── Figure 8: before and after RL, one panel per starting point ─────────
+
+  (function figPrePost() {
+    var fig = document.getElementById('fig-prepost');
+    if (!fig) return;
+    var host = fig.querySelector('.cd-chart'), bench = 'macro', model = 'qwen', drawn = false, replay = false;
+    // Frontier [pass@1, pass@8, pass@64] before and after RL. Qwen3-4B: Table 6.
+    // Nemotron3-Nano-4B: Table 8 (frontier defined on Nemotron's own base model).
+    var N3N = {
+      'Base':    { s: 'base',  before: { macro: [0.3, 2.0, 9.8],  lcb: [0.5, 3.5, 15.7], cobalt: [0.8, 5.3, 22.4] },  after: { macro: [6.1, 17.8, 30.3], lcb: [7.0, 20.3, 35.7], cobalt: [11.7, 35.9, 57.4] } },
+      'IID-4':   { s: 'iid',   before: { macro: [0.3, 2.1, 8.8],  lcb: [0.5, 3.2, 12.7], cobalt: [0.9, 6.0, 23.0] },  after: { macro: [7.5, 20.9, 33.3], lcb: [8.9, 24.5, 40.3], cobalt: [13.0, 37.0, 57.4] } },
+      'GROOT-4': { s: 'groot', before: { macro: [1.1, 6.4, 19.9], lcb: [0.9, 6.1, 23.5], cobalt: [1.5, 9.5, 29.8] },  after: { macro: [6.5, 19.1, 31.0], lcb: [7.1, 21.9, 36.6], cobalt: [12.2, 36.3, 57.6] } },
+      'VS-4':    { s: 'vs',    before: { macro: [1.6, 8.2, 20.8], lcb: [1.3, 7.7, 22.9], cobalt: [2.1, 12.5, 34.2] }, after: { macro: [7.0, 20.4, 33.6], lcb: [8.2, 24.2, 41.3], cobalt: [12.3, 35.1, 56.8] } }
+    };
+    var QWEN = {
+      'Base':    { s: 'base',  before: { macro: [0.2, 0.9, 5.2],  lcb: [0.2, 1.3, 7.4], cobalt: [0.5, 3.6, 21.9] }, after: { macro: [0.8, 4.1, 11.4], lcb: [1.1, 5.9, 15.3], cobalt: [4.5, 13.9, 29.3] } },
+      'IID-4':   { s: 'iid',   before: { macro: [0.2, 1.1, 5.2],  lcb: [0.2, 1.5, 7.0], cobalt: [0.7, 4.9, 19.8] }, after: { macro: [0.7, 4.0, 10.9], lcb: [1.1, 6.0, 15.4], cobalt: [5.5, 17.3, 36.6] } },
+      'GROOT-4': { s: 'groot', before: { macro: [1.4, 6.7, 15.5], lcb: [1.5, 8.0, 19.5], cobalt: [3.5, 14.1, 30.5] }, after: { macro: [2.0, 8.1, 18.0], lcb: [2.2, 9.5, 22.2], cobalt: [7.2, 20.9, 39.0] } },
+      'VS-4':    { s: 'vs',    before: { macro: [1.8, 7.6, 17.5], lcb: [2.0, 9.6, 23.1], cobalt: [4.1, 14.3, 30.2] }, after: { macro: [1.7, 7.2, 16.0], lcb: [2.1, 8.9, 20.5], cobalt: [6.2, 19.4, 37.8] } }
+    };
+    var ARMS = ['Base', 'IID-4', 'GROOT-4', 'VS-4'];
+    function T() { return model === 'qwen' ? QWEN : N3N; }
+    // Full curves when available: pre-RL from CD_PASSK, post-RL from CD_RLCURVES
+    // Full per-k curves: pre-RL from CD_PASSK (Qwen) or CD_N3N_PRE (Nemotron), post-RL
+    // means from CD_RLCURVES; falls back to the paper's k = 1, 8, 64 values.
+    function curve(arm, when) {
+      var RLC = window.CD_RLCURVES && window.CD_RLCURVES[model];
+      var C = when === 'before'
+        ? (model === 'qwen' ? window.CD_PASSK && window.CD_PASSK.table2[arm] : window.CD_N3N_PRE && window.CD_N3N_PRE[arm])
+        : RLC && RLC[arm];
+      if (C && C[bench]) {
+        var ys = C[bench].mean || C[bench];
+        return ys.map(function (y, i) { return [i + 1, y]; });
+      }
+      var v = T()[arm][when][bench];
+      return [[1, v[0]], [8, v[1]], [64, v[2]]];
+    }
+
+    var rerender = responsive(host, function (W) {
+      legend(host, [{ label: 'before RL', color: COLOR.ink2, kind: 'dash' }, { label: 'after RL', color: COLOR.ink2, kind: 'line' }, { label: '± 1 s.e. across RL seeds', color: '#bdbdbd', kind: 'dot' }]);
+      var cols = W < 600 ? 2 : 4, rows = Math.ceil(ARMS.length / cols);
+      var gapX = 22, padL = 34, padR = 12, pw = (W - padL - padR - gapX * (cols - 1)) / cols, ph = 170, titleH = 34, axH = 22;
+      var H = rows * (titleH + ph + axH) + (rows - 1) * 14;
+      var YMAX = { qwen: { macro: 20, lcb: 25, ojbench: 15, cobalt: 45 }, n3n: { macro: 40, lcb: 45, ojbench: 35, cobalt: 60 } };
+      var ymax = YMAX[model][bench], yStep = ymax >= 40 ? 20 : ymax > 15 ? 10 : 5, yTicks = [];
+      for (var yt = 0; yt <= ymax; yt += yStep) yTicks.push(yt);
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'pass@k before and after RL for each starting model' }, host);
+      var defsEl = svg('defs', null, root), sweeps = [];
+      var lp = svg('pattern', { id: 'cd-loss', patternUnits: 'userSpaceOnUse', width: 4, height: 4, patternTransform: 'rotate(45)' }, defsEl);
+      svg('line', { x1: 0, y1: 0, x2: 0, y2: 4, stroke: '#9a9a9a', 'stroke-width': 1 }, lp);
+      ARMS.forEach(function (arm, j) {
+        var c = COLOR[T()[arm].s], col = j % cols, row = Math.floor(j / cols);
+        var x0 = padL + col * (pw + gapX), y0 = row * (titleH + ph + axH + 14) + titleH;
+        var sx = KSCALE === 'log' ? function (k) { return x0 + Math.log2(k) / 6 * pw; } : function (k) { return x0 + (k - 1) / 63 * pw; };
+        var sy = function (v) { return y0 + ph - v / ymax * ph; };
+        var pre = curve(arm, 'before'), post = curve(arm, 'after');
+        var g = svg('g', null, root);
+        // Title: name and pass@64 change
+        var tt = svg('text', { x: x0, y: y0 - 16, class: 'cd-lab', 'font-weight': 'bold', fill: c }, g, arm);
+        var a64 = pre[pre.length - 1][1], b64 = post[post.length - 1][1];
+        svg('text', { x: x0, y: y0 - 2, class: 'cd-lab-muted' }, g, 'pass@64 ' + a64.toFixed(1) + ' → ' + b64.toFixed(1));
+        yTicks.forEach(function (t) {
+          svg('line', { x1: x0, x2: x0 + pw, y1: sy(t), y2: sy(t), class: 'cd-gridline' }, g);
+          if (col === 0) svg('text', { x: x0 - 6, y: sy(t) + 4, 'text-anchor': 'end', class: 'cd-lab-muted' }, g, t);
+        });
+        (KSCALE === 'log' ? [1, 2, 4, 8, 16, 32, 64] : [1, 16, 32, 48, 64]).forEach(function (k) { svg('text', { x: sx(k), y: y0 + ph + 16, 'text-anchor': 'middle', class: 'cd-lab-muted' }, g, k); });
+        svg('line', { x1: x0, x2: x0 + pw, y1: y0 + ph, y2: y0 + ph, stroke: '#bbbbbb' }, g);
+        // Gain area between the curves (sampled at the post-RL ks), then the two lines
+        function lineD(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' '); }
+        function interp(pts, k) {
+          for (var i = 1; i < pts.length; i++) if (pts[i][0] >= k) {
+            var a = pts[i - 1], b = pts[i], t = (Math.log2(k) - Math.log2(a[0])) / (Math.log2(b[0]) - Math.log2(a[0]) || 1);
+            return a[1] + (b[1] - a[1]) * t;
+          }
+          return pts[pts.length - 1][1];
+        }
+        var cp = svg('clipPath', { id: 'cd-pp-' + j + '-' + Math.random().toString(36).slice(2) }, defsEl);
+        var clipRect = svg('rect', { x: x0 - 6, y: y0 - 8, width: pw + 12, height: ph + 16 }, cp);
+        var gainG = svg('g', { 'clip-path': 'url(#' + cp.id + ')' }, g);
+        // After-RL: ± one standard error across the three RL seeds. With three seeds,
+        // min, max and mean determine every seed: the third is 3*mean - min - max.
+        var RC = window.CD_RLCURVES && window.CD_RLCURVES[model] && window.CD_RLCURVES[model][arm] && window.CD_RLCURVES[model][arm][bench];
+        var sem = null;
+        if (RC && RC.min) {
+          sem = RC.mean.map(function (m, i) {
+            var a = RC.min[i], b = RC.max[i], c3 = 3 * m - a - b;
+            var v = ((a - m) * (a - m) + (b - m) * (b - m) + (c3 - m) * (c3 - m)) / 2;
+            return Math.sqrt(v / 3);
+          });
+          var up = RC.mean.map(function (m, i) { return sx(i + 1).toFixed(1) + ',' + sy(m + sem[i]).toFixed(1); });
+          var dn = RC.mean.map(function (m, i) { return sx(i + 1).toFixed(1) + ',' + sy(Math.max(0, m - sem[i])).toFixed(1); }).reverse();
+          svg('polygon', { points: up.concat(dn).join(' '), fill: c, opacity: 0.2 }, gainG);
+        }
+        svg('path', { d: lineD(pre), fill: 'none', stroke: c, 'stroke-width': 1.6, 'stroke-dasharray': '4 3', opacity: 0.8 }, g);
+        var RC = model === 'qwen' && window.CD_RLCURVES && window.CD_RLCURVES[arm] && window.CD_RLCURVES[arm][bench];
+        svg('path', { d: lineD(post), fill: 'none', stroke: c, 'stroke-width': 2.2 }, gainG);
+        // Markers at k = 1, 4, 8, 32, 64 where the full curves exist (else the paper's 1, 8, 64)
+        var mk = post.length > 3 ? [1, 4, 8, 32, 64] : [1, 8, 64];
+        mk.forEach(function (k) { marker(gainG, T()[arm].s, sx(k), sy(interp(post, k)), 3.4); });
+        (pre.length > 3 ? [1, 4, 8, 32, 64] : [1, 8, 64]).forEach(function (k) {
+          svg('circle', { cx: sx(k), cy: sy(interp(pre, k)), r: 2.6, fill: '#fff', stroke: c, 'stroke-width': 1.3 }, g);
+        });
+        sweeps.push({ rect: clipRect, x0: x0 - 6, w: pw + 12, j: j });
+        // Hover: values at the nearest k
+        var hit = svg('rect', { x: x0, y: y0, width: pw, height: ph, fill: 'transparent' }, g);
+        hit.addEventListener('mousemove', function (e) {
+          var box = root.getBoundingClientRect(), px = (e.clientX - box.left) / box.width * W;
+          var f = (px - x0) / pw, k = Math.max(1, Math.min(64, Math.round(KSCALE === 'log' ? Math.pow(2, f * 6) : 1 + f * 63)));
+          var se = sem ? ' ± ' + sem[k - 1].toFixed(1) : '';
+          showTip(sw(c) + '<b>' + arm + '</b> · pass@' + k + '<br>before RL ' + interp(pre, k).toFixed(1) + '<br>after RL ' + interp(post, k).toFixed(1) + se, e);
+        });
+        hit.addEventListener('mouseleave', hideTip);
+      });
+      if ((!drawn || replay) && !REDUCED) {
+        sweeps.forEach(function (s) { s.rect.setAttribute('width', 0); });
+        var go = function () { sweeps.forEach(function (s) { tween(900, s.j * 250, function (t) { s.rect.setAttribute('width', s.w * t); }); }); };
+        if (replay) go(); else whenSeen(host, go);
+      }
+    });
+    drawn = true;
+    segmented(fig, 'data-bench', function (b) { bench = b; replay = true; rerender(); replay = false; });
+    onKScale(function () { rerender(); });
+    segmented(fig, 'data-model', function (m) { model = m; replay = true; rerender(); replay = false; if (tSlider) tSlider.dataset.set = ''; drawTTT(); });
+
+    // ── RL steps to reach a validation pass@8 threshold ──
+    var ttt = fig.querySelector('.cd-ttt'), tHost = ttt && ttt.querySelector('.cd-chart');
+    var tSlider = ttt && ttt.querySelector('input'), tOut = ttt && ttt.querySelector('.cd-slider span');
+    var ORDER = ['base', 'iid', 'iid64', 'iidhot', 'groot', 'vs'];
+    function rlSeries() {
+      var FD = window.CD_FIGDATA || {};
+      var list = model === 'qwen' ? FD.rl : FD.rl_n3n;
+      return (list || []).slice().sort(function (a, b) { return ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
+    }
+    function drawTTT() {
+      if (!ttt) return;
+      var series = rlSeries();
+      ttt.hidden = !series.length;
+      if (!series.length) return;
+      var lo = Infinity, hi = -Infinity;
+      series.forEach(function (sr) { sr.points.forEach(function (p) { lo = Math.min(lo, p[1]); hi = Math.max(hi, p[1]); }); });
+      tSlider.min = Math.floor(lo); tSlider.max = Math.floor(hi * 2) / 2; tSlider.step = 0.5;
+      if (!tSlider.dataset.set || +tSlider.value > +tSlider.max) { tSlider.value = model === 'qwen' ? 18 : 40; tSlider.dataset.set = 1; }
+      tHost.innerHTML = '';
+      var th = parseFloat(tSlider.value);
+      tOut.textContent = th.toFixed(1) + '%';
+      var mins = ttt.querySelectorAll('.cd-slider .end');
+      if (mins.length === 2) { mins[0].textContent = (+tSlider.min).toFixed(0) + '%'; mins[1].textContent = (+tSlider.max).toFixed(0) + '%'; }
+      var W = widthOf(tHost), L = W < 600 ? 110 : 130, R = 110, rowH = 28, H = series.length * rowH + 30;
+      var steps = series[0].points.map(function (p) { return p[0]; }), maxStep = steps[steps.length - 1];
+      var sx = function (st) { return L + st / maxStep * (W - L - R); };
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'RL steps needed to reach the chosen validation pass@8' }, tHost);
+      var ticks = []; for (var t = 0; t <= maxStep; t += 20) ticks.push(t);
+      xAxis(svg('g', null, root), sx, ticks, 0, H - 26, 'RL steps', L - 10);
+      svg('line', { x1: L, x2: sx(maxStep), y1: H - 26, y2: H - 26, stroke: '#9a9a9a', 'stroke-width': 1 }, root);
+      series.forEach(function (sr, i) {
+        var y = i * rowH, c = COLOR[sr.id], hit = null;
+        for (var k = 0; k < sr.points.length; k++) if (sr.points[k][1] >= th) { hit = sr.points[k][0]; break; }
+        svg('text', { x: L - 10, y: y + rowH / 2 + 4, 'text-anchor': 'end', class: 'cd-lab' }, root, sr.name);
+        if (hit === null) {
+          svg('rect', { x: L, y: y + 7, width: sx(maxStep) - L, height: rowH - 14, fill: 'url(#cd-loss-t)', stroke: '#bbbbbb', 'stroke-width': 0.8 }, root);
+          svg('text', { x: sx(maxStep) + 6, y: y + rowH / 2 + 4, class: 'cd-lab-muted' }, root, 'not reached');
+        } else if (hit === steps[0]) {
+          marker(root, sr.id, L + 5, y + rowH / 2, 4.5);
+          svg('text', { x: L + 16, y: y + rowH / 2 + 4, class: 'cd-val' }, root, 'already there at the start');
+        } else {
+          svg('rect', { x: L, y: y + 7, width: sx(hit) - L, height: rowH - 14, fill: c }, root);
+          svg('text', { x: sx(hit) + 6, y: y + rowH / 2 + 4, class: 'cd-val' }, root, hit + ' steps');
+        }
+      });
+      var d = svg('defs', null, root), lp = svg('pattern', { id: 'cd-loss-t', patternUnits: 'userSpaceOnUse', width: 4, height: 4, patternTransform: 'rotate(45)' }, d);
+      svg('line', { x1: 0, y1: 0, x2: 0, y2: 4, stroke: '#c4c4c4', 'stroke-width': 1 }, lp);
+    }
+    if (tSlider) tSlider.addEventListener('input', drawTTT);
+    drawTTT();
+    var tttTimer; window.addEventListener('resize', function () { clearTimeout(tttTimer); tttTimer = setTimeout(drawTTT, 150); });
+  })();
+
+  // ── Figure 9: RSA before → after ─────────────────────────────────────────
+
+  (function fig8() {
+    var fig = document.getElementById('fig-rsa');
+    if (!fig) return;
+    var host = fig.querySelector('.cd-chart'), bench = 0, drawn8 = false, replay = false;
+    // Qwen3-4B-Instruct, Table 4: frontier pass@1 before -> after, [Cobalt, LCB, OJBench]
+    var rows = [
+      { name: 'Base', s: 'base', v: [[0.8, 3.1], [0.5, 2.3], [0.1, 0.8]] },
+      { name: 'IID-4', s: 'iid', v: [[0.9, 3.8], [0.6, 2.1], [0.1, 0.7]] },
+      { name: 'IID-64 (T=1.5)', s: 'iidhot', v: [[1.4, 7.4], [0.6, 4.0], [0.2, 1.8]] },
+      { name: 'GROOT-4', s: 'groot', v: [[3.5, 10.4], [2.1, 7.0], [1.5, 4.5]] },
+      { name: 'VS-4', s: 'vs', v: [[4.2, 10.6], [2.3, 7.9], [1.5, 5.3]] }
+    ];
+    var rerender = responsive(host, function (W) {
+      var xmax = [12, 10, 6][bench], step = [2, 2, 1][bench], ticks = [];
+      for (var t = 0; t <= xmax; t += step) ticks.push(t);
+      var L = W < 600 ? 100 : 120, R = 70, rowH = 38, top = 4, H = top + rows.length * rowH + 30;
+      var sx = function (v) { return L + v / xmax * (W - L - R); };
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'RSA pass@1 before and after aggregation' }, host);
+      xAxis(svg('g', null, root), sx, ticks, top, H - 26, 'pass@1 (%)', L - 10);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + rowH / 2 + 2, c = COLOR[r.s], v = r.v[bench];
+        svg('text', { x: L - 10, y: y + 5, 'text-anchor': 'end', class: 'cd-lab' }, root, r.name);
+        var ln = svg('line', { x1: sx(v[0]), x2: sx(v[1]), y1: y, y2: y, stroke: c, 'stroke-width': 2 }, root);
+        svg('circle', { cx: sx(v[0]), cy: y, r: 5.5, fill: '#fff', stroke: c, 'stroke-width': 2 }, root);
+        var end = svg('circle', { cx: sx(v[1]), cy: y, r: 5.5, fill: c }, root);
+        var lab = svg('text', { x: sx(v[1]) + 10, y: y + 5, class: 'cd-val' }, root, v[0].toFixed(1) + ' → ' + v[1].toFixed(1));
+        if ((!drawn8 || replay) && !REDUCED) {
+          var x0 = sx(v[0]), x1 = sx(v[1]);
+          ln.setAttribute('x2', x0); end.setAttribute('cx', x0); lab.style.opacity = 0;
+          var go = function () {
+            tween(750, i * 120, function (t) { var x = x0 + (x1 - x0) * t; ln.setAttribute('x2', x); end.setAttribute('cx', x); });
+            fadeIn(lab, i * 120 + 650);
+          };
+          if (replay) go(); else whenSeen(host, go);
+        }
+        var hit = svg('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }, root);
+        hover(hit, function () {
+          return sw(c) + '<b>' + r.name + '</b><br>' + ['Cobalt', 'LiveCodeBench', 'OJBench'][bench] + ' frontier pass@1<br>' + v[0] + ' → ' + v[1];
+        });
+      });
+    });
+    drawn8 = true;
+    segmented(fig, 'data-bench', function (b) { bench = parseInt(b, 10); replay = true; rerender(); replay = false; });
+  })();
+
+  // ── Figure 9: NCP plans ──────────────────────────────────────────────────
+
+  (function fig9() {
+    var fig = document.getElementById('fig-ncp'), EX = window.CD_EXAMPLES;
+    if (!fig || !EX) return;
+    var N = EX.ncp, host = fig.querySelector('.cd-chart'), plansEl = fig.querySelector('.cd-plans');
+    var slider = fig.querySelector('input[type="range"]'), sliderVal = fig.querySelector('.cd-slider span');
+    fig.querySelector('.cd-passage div').textContent = N.true_passage;
+    var arms = [
+      { id: 'groot', name: 'GROOT', a: N.arms.groot },
+      { id: 'vs', name: 'VS', a: N.arms.vs },
+      { id: 'iid', name: 'IID', a: N.arms.iid }
+    ];
+    var all = [];
+    arms.forEach(function (r) { all = all.concat(r.a.scores); });
+    var lo = Math.floor(Math.min.apply(null, all)) - 1, hi = Math.ceil(Math.max.apply(null, all)) + 1;
+    var update = function () {};
+
+    responsive(host, function (W) {
+      var narrow = W < 600, L = narrow ? 54 : 64, R = narrow ? 58 : 70, rowH = 62, top = 6, H = top + arms.length * rowH + 30;
+      var sx = function (v) { return L + (v - lo) / (hi - lo) * (W - L - R); };
+      var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Perplexity improvement of 32 plans per sampler, with an adjustable bar' }, host);
+      var ticks = [];
+      for (var t = Math.ceil(lo / 2) * 2; t <= hi; t += (narrow ? 4 : 2)) ticks.push(t);
+      xAxis(svg('g', null, root), sx, ticks, top, H - 26, '%', L - 10);
+      var shade = svg('rect', { y: top, height: H - 26 - top, fill: COLOR.ink, opacity: 0.04 }, root);
+      var bar = svg('line', { y1: top, y2: H - 26, stroke: COLOR.ink, 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }, root);
+      var rowEls = arms.map(function (r, i) {
+        var cy = top + i * rowH + rowH / 2, c = COLOR[r.id];
+        svg('text', { x: L - 10, y: cy + 5, 'text-anchor': 'end', class: 'cd-lab' }, root, r.name);
+        var sorted = r.a.scores.slice().sort(function (a, b) { return a - b; }), placed = [], dots = [];
+        sorted.forEach(function (v) {
+          var x = sx(v), off = 0, tries = [0, -1, 1, -2, 2, -3, 3];
+          for (var q = 0; q < tries.length; q++) {
+            off = tries[q] * 8;
+            if (!placed.some(function (p) { return Math.abs(p.x - x) < 8 && Math.abs(p.y - off) < 8; })) break;
+          }
+          placed.push({ x: x, y: off });
+          var best = Math.abs(v - r.a.best_pct) < 0.006;
+          var dot = svg('circle', { cx: x, cy: cy + off, r: best ? 5.5 : 4, stroke: c, 'stroke-width': best ? 2.2 : 1.3, fill: '#fff' }, root);
+          if (best) svg('circle', { cx: x, cy: cy + off, r: 9, fill: 'none', stroke: c, 'stroke-width': 1 }, root);
+          hover(dot, function () {
+            return sw(c) + '<b>' + r.name + ' plan</b>: ' + (v >= 0 ? '+' : '') + v.toFixed(1) + '%' + (best ? '<br>best of 32 (read it below)' : '');
+          });
+          dots.push({ el: dot, v: v });
+        });
+        return { dots: dots, c: c, count: svg('text', { x: W - R + 12, y: cy + 5, class: 'cd-val' }, root) };
+      });
+      update = function () {
+        var th = parseFloat(slider.value);
+        sliderVal.textContent = th + '%';
+        bar.setAttribute('x1', sx(th)); bar.setAttribute('x2', sx(th));
+        shade.setAttribute('x', sx(th)); shade.setAttribute('width', Math.max(0, W - R - sx(th)));
+        rowEls.forEach(function (row) {
+          var n = 0;
+          row.dots.forEach(function (d) { var on = d.v >= th; if (on) n++; d.el.setAttribute('fill', on ? row.c : '#fff'); });
+          row.count.textContent = n + '/32';
+        });
+      };
+      update();
+    });
+    slider.addEventListener('input', function () { update(); });
+
+    // Best plan per sampler
+    var open = null, reader = null;
+    var btns = arms.map(function (r, i) {
+      var b = html('button', { type: 'button', style: '--sw:' + COLOR[r.id] }, plansEl, r.name + ' best: +' + r.a.best_pct.toFixed(1) + '%');
+      html('span', null, b, 'read the plan');
+      b.addEventListener('click', function () {
+        if (reader) reader.remove();
+        btns.forEach(function (o) { o.classList.remove('is-on'); });
+        if (open === i) { open = null; return; }
+        open = i; b.classList.add('is-on');
+        reader = html('div', { class: 'cd-plan-open', style: '--sw:' + COLOR[r.id] }, plansEl);
+        if (r.a.best_direction) html('div', { class: 'dir' }, reader, 'Hidden approach: ' + r.a.best_direction);
+        html('div', null, reader, r.a.best_plan);
+      });
+      return b;
+    });
+  })();
+
+  // ── Figure 10: NCP coverage ──────────────────────────────────────────────
+
+  (function fig10() {
+    var fig = document.getElementById('fig-coverage'), FD = window.CD_FIGDATA;
+    if (!fig || !FD) return;
+    var order = ['vs', 'groot', 'iid', 'base'], model = 'qwen', drawn10 = false;
+    // Qwen stops at k = 32 like the paper: its trained arms have ~64 draws per section, so
+    // near k = 64 sections drop out of the estimate. Nemotron's design fixes 64 per section.
+    var CFG = {
+      qwen: { data: FD.coverage, kmax: 32, yDomain: [0, 4.5], yTicks: [0, 1, 2, 3, 4],
+              xTicks: [1, 2, 4, 8, 16, 32], xTicksLinear: [1, 8, 16, 24, 32], dec: 2 },
+      n3n: { data: FD.coverage_n3n, kmax: 64, yDomain: [0, 25], yTicks: [0, 5, 10, 15, 20, 25],
+             xTicks: [1, 2, 4, 8, 16, 32, 64], xTicksLinear: [1, 16, 32, 48, 64], dec: 1 }
+    };
+    var host = fig.querySelector('.cd-chart');
+    var rerender10 = responsive(host, function (W) {
+      var cfg = CFG[model];
+      var keep = function (arr) { return arr && arr.filter(function (p) { return p[0] <= cfg.kmax; }); };
+      var series = (cfg.data || []).map(function (s) {
+        return { id: s.id, name: s.name.replace('-16', ''), points: keep(s.points), band: keep(s.band), dash: s.id === 'base' ? '5 4' : null };
+      }).sort(function (a, b) { return order.indexOf(a.id) - order.indexOf(b.id); });
+      lineChart(host, W, {
+        series: series, log2: true, xDomain: [1, cfg.kmax], yDomain: cfg.yDomain, yTicks: cfg.yTicks,
+        xTicks: cfg.xTicks, xTicksLinear: cfg.xTicksLinear, markerAt: cfg.xTicks,
+        xLabel: 'plans sampled per section, k (log scale)', yLabel: 'coverage (%)', xName: 'k =',
+        markers: true, rightPad: 96, dec: cfg.dec, height: 290,
+        aria: 'NCP coverage at the 15% bar versus number of sampled plans',
+        animate: !drawn10 ? true : series.map(function (s) { return s.id; }), immediate: drawn10
+      });
+      drawn10 = true;
+    });
+    onKScale(function () { drawn10 = false; rerender10(); drawn10 = true; });
+    segmented(fig, 'data-model', function (m) { if (m === model) return; model = m; rerender10(); });
+  })();
+  // ── Video: a slim control bar under the video (so the burned-in captions stay
+  // visible), click to play/pause, and space / k / arrows when the video is in view.
+  (function videoPlayer() {
+    var fig = document.querySelector('.cd-video'), v = fig && fig.querySelector('video');
+    if (!v) return;
+    v.removeAttribute('controls');
+    var bar = html('div', { class: 'cd-vbar' });
+    fig.insertBefore(bar, v.nextSibling);
+    var play = html('button', { type: 'button', class: 'cd-vbtn', 'aria-label': 'Play' }, bar);
+    var track = html('div', { class: 'cd-vtrack', role: 'slider', 'aria-label': 'Seek', tabindex: 0 }, bar);
+    var fill = html('div', { class: 'cd-vfill' }, track);
+    var time = html('span', { class: 'cd-vtime' }, bar, '0:00');
+    var full = html('button', { type: 'button', class: 'cd-vbtn', 'aria-label': 'Full screen' }, bar);
+    full.innerHTML = '<svg viewBox="0 0 16 16" width="15" height="15"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+    var PLAY = '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>';
+    var PAUSE = '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z" fill="currentColor"/></svg>';
+    function mmss(x) { x = Math.max(0, Math.floor(x || 0)); return Math.floor(x / 60) + ':' + ('0' + x % 60).slice(-2); }
+    function sync() {
+      play.innerHTML = v.paused ? PLAY : PAUSE;
+      play.setAttribute('aria-label', v.paused ? 'Play' : 'Pause');
+      fig.classList.toggle('is-playing', !v.paused);
+    }
+    function tick() {
+      var d = v.duration || 0;
+      fill.style.width = d ? (v.currentTime / d * 100) + '%' : '0';
+      time.textContent = mmss(v.currentTime) + ' / ' + mmss(d);
+    }
+    function toggle() { if (v.paused) v.play(); else v.pause(); }
+    play.addEventListener('click', toggle);
+    v.addEventListener('click', toggle);
+    ['play', 'pause', 'ended'].forEach(function (e) { v.addEventListener(e, sync); });
+    ['timeupdate', 'loadedmetadata', 'seeked'].forEach(function (e) { v.addEventListener(e, tick); });
+    function seekTo(ev) {
+      var r = track.getBoundingClientRect(), f = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width));
+      if (v.duration) v.currentTime = f * v.duration;
+    }
+    track.addEventListener('pointerdown', function (ev) {
+      seekTo(ev);
+      track.setPointerCapture(ev.pointerId);
+      function move(e) { seekTo(e); }
+      function up() { track.removeEventListener('pointermove', move); track.removeEventListener('pointerup', up); }
+      track.addEventListener('pointermove', move);
+      track.addEventListener('pointerup', up);
+    });
+    full.addEventListener('click', function () {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (v.requestFullscreen) v.requestFullscreen();
+    });
+    // Keyboard: space or k toggles, arrows seek 5 s, while the video is mostly in view
+    var inView = false;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { inView = es[0].intersectionRatio >= 0.5; }, { threshold: [0, 0.5, 1] }).observe(v);
+    document.addEventListener('keydown', function (e) {
+      if (!inView || e.metaKey || e.ctrlKey || e.altKey) return;
+      var tag = (document.activeElement && document.activeElement.tagName) || '';
+      if (/INPUT|TEXTAREA|SELECT/.test(tag) || (document.activeElement && document.activeElement.isContentEditable)) return;
+      if (e.key === ' ' || e.key === 'k') { e.preventDefault(); toggle(); }
+      else if (e.key === 'ArrowRight' && document.activeElement === track) { v.currentTime = Math.min(v.duration || 0, v.currentTime + 5); }
+      else if (e.key === 'ArrowLeft' && document.activeElement === track) { v.currentTime = Math.max(0, v.currentTime - 5); }
+    });
+    sync(); tick();
+  })();
+
+  // ── Section bar: sticky links to each section, current one underlined ──
+
+  (function sectionNav() {
+    var targets = Array.prototype.slice.call(document.querySelectorAll('.cd-page [data-nav]'));
+    var hero = document.querySelector('.cd-project .project-hero');
+    if (targets.length < 3 || !hero) return;
+    var bar = html('nav', { class: 'cd-secnav', 'aria-label': 'Sections' }, document.body);
+    var inner = html('div', { class: 'cd-secnav-inner' }, bar);
+    var links = targets.map(function (el) {
+      var a = html('a', { href: '#' + el.id }, inner, el.getAttribute('data-nav'));
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + el.id);
+      });
+      return a;
+    });
+    // Sit just below the site's fixed navbar
+    function place() {
+      var nav = document.querySelector('.navbar.fixed-top, header .navbar, .navbar');
+      var h = nav ? nav.getBoundingClientRect().height : 56;
+      bar.style.top = h + 'px';
+      document.documentElement.style.setProperty('--cd-secnav-offset', (h + 44) + 'px');
+    }
+    place();
+    window.addEventListener('resize', place);
+    // Show once the header has scrolled away
+    new IntersectionObserver(function (es) { bar.classList.toggle('is-shown', !es[0].isIntersecting); }, { threshold: 0 }).observe(hero);
+    // Scrollspy: the last section whose top has passed ~35% of the viewport
+    var current = -1, ticking = false;
+    function spy() {
+      ticking = false;
+      var line = window.innerHeight * 0.35, idx = 0;
+      for (var i = 0; i < targets.length; i++) if (targets[i].getBoundingClientRect().top <= line) idx = i;
+      if (idx === current) return;
+      current = idx;
+      links.forEach(function (a, i) { a.classList.toggle('is-on', i === idx); });
+      var on = links[idx];
+      if (inner.scrollWidth > inner.clientWidth) inner.scrollTo({ left: on.offsetLeft - inner.clientWidth / 2 + on.offsetWidth / 2, behavior: 'smooth' });
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+    spy();
+  })();
+
+  // ── Ornament: peepal leaf ────────────────────────────────────────────────
+
+  // Heart-shaped leaf with a drawn-out tip, base at (0,0), tip along -y.
+  var PEEPAL = 'M0,0 C-0.45,-0.05 -0.62,-0.55 -0.3,-0.82 C-0.16,-0.94 -0.05,-1.0 0,-1.3 ' +
+               'C0.05,-1.0 0.16,-0.94 0.3,-0.82 C0.62,-0.55 0.45,-0.05 0,0 Z';
+  function leaf(parent, x, y, angle, size, cls) {
+    // Outer group places the leaf; the inner group is free for CSS transforms.
+    var outer = svg('g', { transform: 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ') rotate(' + (angle * 180 / Math.PI + 90).toFixed(1) + ') scale(' + size + ')' }, parent);
+    var g = svg('g', null, outer);
+    svg('path', { d: PEEPAL, class: cls || 'lf', style: 'stroke-width:' + (0.8 / size).toFixed(3) }, g);
+    // Midrib plus short paired veins, as in Madhubani kachni line work
+    svg('path', { d: 'M0,-0.05 L0,-1.05 M0,-0.36 L-0.26,-0.56 M0,-0.36 L0.26,-0.56 M0,-0.66 L-0.17,-0.82 M0,-0.66 L0.17,-0.82',
+      class: 'rib', style: 'stroke-width:' + (0.5 / size).toFixed(3) }, g);
+    return g;
+  }
+
+  function seeded(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = Math.imul(a ^ (a >>> 15), a | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ── Hero: a banyan; IID samples stay in one corner, GROOT and VS spread ──
+
+  (function heroTree() {
+    var hero = document.querySelector('.cd-project .project-hero');
+    if (!hero) return;
+    // Keep "Self-Training" on one line
+    var title = hero.querySelector('.project-title');
+    if (title) title.innerHTML = title.innerHTML.replace('Self-Training', '<span style="white-space:nowrap">Self-Training</span>');
+    var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Two stacked layers: the canopy (its own compositor layer, so swaying never
+    // repaints hundreds of leaves) and a static base with the ground and legend.
+    var root = html('div', { class: 'cd-hero-tree cd-grow', 'aria-hidden': 'true' }, hero);
+    var gust = html('div', { class: 'cd-tree-gust' }, root);
+    var canopySvg = svg('svg', { class: 'cd-tree-canopy', viewBox: '0 0 320 372' }, gust);
+    var baseSvg = svg('svg', { class: 'cd-tree-base', viewBox: '0 0 320 372' }, root);
+    var r = seeded(14164), GROUND = 318, MAXD = 5, BASEX = 160;
+    var LEN = [74, 54, 40, 30, 22, 16], SPREAD = [0, 1.0, 0.74, 0.62, 0.54, 0.46];
+    var TINTS = ['t1', 't2', 't3', 't4'];
+    var canopy = svg('g', { class: 'canopy' }, canopySvg);
+    var roots = svg('g', null, canopy), branches = svg('g', null, canopy), leaves = svg('g', null, canopy), paths = svg('g', null, canopy), topLeaves = svg('g', null, canopy);
+    var terminals = [], nodeId = 0, rootSpots = [];
+
+    var SPEED = 170;   // px of branch per second: children start exactly when the parent arrives
+    var tEnd = 0;
+    function sprout(x, y, ang, size, delay, cls) {
+      var g = leaf(leaves, x, y, ang, size, 'lf ' + (cls || (r() < 0.06 ? 't5' : TINTS[Math.floor(r() * TINTS.length)])));
+      g.classList.add('pop');
+      g.style.transitionDelay = delay.toFixed(2) + 's';
+      return g;
+    }
+
+    function grow(x, y, ang, depth, trail, anc, t0) {
+      var len = LEN[depth] * (0.85 + r() * 0.3), dur = len / SPEED;
+      var ex = x + Math.cos(ang) * len, ey = y + Math.sin(ang) * len;
+      var bend = (r() - 0.5) * 0.35 * len;
+      var cx = (x + ex) / 2 - Math.sin(ang) * bend, cy = (y + ey) / 2 + Math.cos(ang) * bend;
+      var seg = 'Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + ex.toFixed(1) + ',' + ey.toFixed(1);
+      var el = svg('path', { d: 'M' + x.toFixed(1) + ',' + y.toFixed(1) + ' ' + seg, class: 'br gr', pathLength: 1,
+        'stroke-width': Math.max(0.8, 7.5 * Math.pow(0.6, depth)).toFixed(2) }, branches);
+      el.style.transition = 'stroke-dashoffset ' + dur.toFixed(2) + 's linear ' + t0.toFixed(2) + 's';
+      var t1 = t0 + dur;
+      tEnd = Math.max(tEnd, t1);
+      var id = nodeId++;
+      trail = trail.concat([seg]);
+      anc = anc.concat([id]);
+      if (depth >= 1 && depth <= 3 && Math.abs(ex - BASEX) > 26) rootSpots.push({ x: ex, y: ey, depth: depth, t: t1 });
+      // Extra foliage along the outer limbs
+      if (depth >= 3 && r() < 0.2) {
+        var t = 0.55;
+        sprout(x + (ex - x) * t, y + (ey - y) * t, ang + (r() < 0.5 ? -1 : 1) * (0.9 + r() * 0.4), 8.5 + r() * 2.5, t0 + dur * t);
+      }
+      if (depth === MAXD) {
+        terminals.push({ x: ex, y: ey, ang: ang, trail: trail, anc: anc, t: t1 });
+        return;
+      }
+      var n = depth === 0 ? 3 : (r() < 0.3 ? 3 : 2);
+      for (var i = 0; i < n; i++) {
+        var a = ang + SPREAD[depth + 1] * (i - (n - 1) / 2) + (r() - 0.5) * 0.25;
+        grow(ex, ey, a, depth + 1, trail, anc, t1);
+      }
+    }
+    grow(BASEX, GROUND, -Math.PI / 2, 0, ['M' + BASEX + ',' + GROUND], [], 0);
+
+    // Aerial roots: many thin strands, a few thickening into pillar trunks.
+    rootSpots.sort(function (a, b) { return Math.abs(b.x - BASEX) - Math.abs(a.x - BASEX); });
+    rootSpots.forEach(function (sp, k) {
+      if (k > 13 || (k > 5 && r() < 0.35)) return;
+      var strands = sp.depth === 1 ? 1 : (r() < 0.5 ? 2 : 1);
+      for (var s2 = 0; s2 < strands; s2++) {
+        var ox = sp.x + (s2 ? 3 : 0) + (r() - 0.5) * 3, sway = (r() - 0.5) * 12;
+        var pillar = false;
+        var end = pillar ? GROUND : GROUND - (r() < 0.45 ? 30 + r() * 60 : 0);
+        var d = 'M' + ox.toFixed(1) + ',' + sp.y.toFixed(1) + ' C' + (ox + sway).toFixed(1) + ',' + ((sp.y + end) / 2).toFixed(1) + ' ' +
+          (ox - sway).toFixed(1) + ',' + ((sp.y + end) / 2 + 18).toFixed(1) + ' ' + (ox + sway / 3).toFixed(1) + ',' + end.toFixed(1);
+        var rt = svg('path', { d: d, class: 'root gr' + (pillar ? ' pillar' : ''), pathLength: 1 }, roots);
+        rt.style.transition = 'stroke-dashoffset ' + (pillar ? 1.3 : 1.0) + 's ease-in ' + (sp.t + 0.1 + r() * 0.4).toFixed(2) + 's';
+      }
+    });
+
+    // Leaves at every branch tip
+    terminals.forEach(function (t) {
+      var k = r() < 0.4 ? 2 : 1;
+      for (var j2 = 0; j2 < k; j2++) {
+        var off = (j2 - (k - 1) / 2) * 0.7 + (r() - 0.5) * 0.2;
+        t.leaves = (t.leaves || []).concat([sprout(t.x, t.y, t.ang + off, 10.5 + r() * 3, t.t + j2 * 0.06)]);
+      }
+    });
+
+    // Ground line with a row of dots
+    svg('line', { x1: 30, x2: 290, y1: GROUND + 1, y2: GROUND + 1, class: 'ground' }, baseSvg);
+    for (var x = 38; x <= 282; x += 9) svg('circle', { cx: x, cy: GROUND + 8, r: 1.2, class: 'dot' }, baseSvg);
+
+    // ── Samples through the tree ──
+    // IID: every sample ends in the same small subtree. GROOT and VS: spread
+    // across different top-level subtrees.
+    function groupBy(level) {
+      var g = {};
+      terminals.forEach(function (t) { var key = t.anc[level]; (g[key] = g[key] || []).push(t); });
+      return g;
+    }
+    var byD3 = groupBy(3), keys3 = Object.keys(byD3);
+    var iidKey = keys3.sort(function (a, b) { return byD3[b].length - byD3[a].length; })[0];
+    var iidSet = byD3[iidKey].slice(0, 6);
+    // Each spread sampler takes paths from different depth-2 subtrees, never IID's
+    // subtree, and never a tip another sampler already used.
+    var iidSub = iidSet[0].anc[2], taken = [];
+    function spread(qs) {
+      var used = {};
+      used[iidSub] = true;
+      return qs.map(function (q) {
+        var cand = terminals.filter(function (t) { return !used[t.anc[2]] && taken.indexOf(t) < 0; })
+          .sort(function (a, b) { return a.x - b.x; });
+        if (!cand.length) cand = terminals.filter(function (t) { return t.anc[2] !== iidSub && taken.indexOf(t) < 0; });
+        var t = cand[Math.round(q * (cand.length - 1))];
+        used[t.anc[2]] = true;
+        taken.push(t);
+        return t;
+      });
+    }
+    var grootSet = spread([0.0, 0.34, 0.66, 1.0]);
+    var vsSet = spread([0.12, 0.45, 0.58, 0.9]);
+
+    var METHODS = [
+      { key: 'iid', label: 'IID', set: iidSet, dx: -1.6, at: tEnd + 0.6 },
+      { key: 'groot', label: 'GROOT', set: grootSet, dx: 0, at: tEnd + 1.7 },
+      { key: 'vs', label: 'VS', set: vsSet, dx: 1.6, at: tEnd + 2.8 }
+    ];
+    METHODS.forEach(function (m) {
+      m.els = [];
+      m.set.forEach(function (t, i) {
+        var el = svg('path', { d: t.trail.join(' '), class: 'path gr p-' + m.key, pathLength: 1, transform: 'translate(' + m.dx + ',0)' }, paths);
+        el.style.transition = 'stroke-dashoffset 0.9s ease-in-out ' + (m.at + i * 0.14).toFixed(2) + 's, opacity 0.25s';
+        m.els.push(el);
+        (t.leaves || []).forEach(function (lg) {
+          // Lift sampled leaves above everything else and make them a little larger
+          var outer = lg.parentNode;
+          outer.setAttribute('transform', outer.getAttribute('transform').replace(/scale\(([\d.]+)\)/, function (_, v) { return 'scale(' + (parseFloat(v) * 1.3).toFixed(2) + ')'; }));
+          topLeaves.appendChild(outer);
+          var p = lg.querySelector('.lf');
+          p.classList.add('m-' + m.key);
+          p.style.transitionDelay = (m.at + 0.8) + 's';
+        });
+      });
+    });
+
+    // Legend: hover to isolate a method, click to replay its paths
+    var legendG = svg('g', { class: 'legend' }, baseSvg);
+    var lx = 160 - (3 * 40 + 10 * 9.6 + 20) / 2;
+    METHODS.forEach(function (m) {
+      var w = m.label.length * 9.6 + 40;
+      var g = svg('g', { class: 'item', transform: 'translate(' + lx + ',330)', tabindex: 0, 'aria-label': 'Show ' + m.label + ' paths' }, legendG);
+      svg('rect', { x: 0, y: 0, width: w, height: 25, rx: 12.5, class: 'lchip' }, g);
+      svg('line', { x1: 11, x2: 25, y1: 12.5, y2: 12.5, class: 'p-' + m.key, 'stroke-width': 3 }, g);
+      svg('text', { x: 31, y: 17.5 }, g, m.label);
+      g.addEventListener('focus', function () { root.setAttribute('data-focus', m.key); });
+      g.addEventListener('blur', function () { root.removeAttribute('data-focus'); });
+      g.addEventListener('mouseenter', function () { root.setAttribute('data-focus', m.key); });
+      g.addEventListener('mouseleave', function () { root.removeAttribute('data-focus'); });
+      g.addEventListener('click', function () {
+        m.els.forEach(function (el, i) {
+          el.style.transition = 'none';
+          el.style.strokeDashoffset = '1';
+          el.getBoundingClientRect();
+          el.style.transition = 'stroke-dashoffset 0.9s ease-in-out ' + (i * 0.14) + 's, opacity 0.25s';
+          el.style.strokeDashoffset = '0';
+        });
+      });
+      lx += w + 10;
+    });
+
+    // Start only once fonts and layout have settled, so nothing jumps mid-growth.
+    var loaded = new Promise(function (res) { if (document.readyState === 'complete') res(); else window.addEventListener('load', res); });
+    var fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    Promise.all([loaded, fonts]).then(function () {
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        root.classList.add('is-grown');
+        document.documentElement.dispatchEvent(new CustomEvent('cd-tree-start', { detail: { duration: tEnd + 3.8 } }));
+        // After the reveal, drop the staggered delays so hover changes respond instantly.
+        setTimeout(function () {
+          root.querySelectorAll('.lf, .path').forEach(function (el) { el.style.transitionDelay = '0s'; });
+          root.classList.add('is-settled');
+        }, (tEnd + 4.2) * 1000);
+        if (!REDUCE) setTimeout(function gustLoop() {
+          if (visible && !document.hidden) blow();
+          setTimeout(gustLoop, 10000 + Math.random() * 7000);
+        }, (tEnd + 11) * 1000);
+      }); });
+    });
+    if (REDUCE) return;
+
+    // Only animate while the tree is on screen.
+    var visible = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        visible = es[0].isIntersecting;
+        root.classList.toggle('is-paused', !visible);
+        if (!visible) rest();
+      }).observe(root);
+    }
+
+    // Wind: a gust of a few drawn strokes blows across now and then; the canopy
+    // leans with it and wiggles back to rest.
+    // One rAF loop, running only while the canopy is moving.
+    var wind = svg('svg', { class: 'cd-tree-wind', viewBox: '0 0 320 372' }, root);
+    [
+      'M-40,118 C20,106 70,130 130,116 S205,102 236,114 C258,123 258,98 242,102 C231,105 236,118 252,117 S320,110 362,113',
+      'M-40,186 C30,176 92,198 152,186 S252,174 362,182',
+      'M-40,236 C12,229 60,243 108,233 C134,228 138,209 122,211 C110,213 116,229 134,229 S250,225 362,229'
+    ].forEach(function (d, i) {
+      var st = svg('path', { d: d, class: 'streak', pathLength: 1 }, wind);
+      st.style.animationDelay = (i * 0.18) + 's';
+    });
+    function blow() {
+      root.classList.remove('is-windy');
+      void wind.getBoundingClientRect();
+      root.classList.add('is-windy');
+      setTimeout(function () { kick(0.42); }, 450);
+      setTimeout(function () { kick(0.22); }, 850);
+      setTimeout(function () { root.classList.remove('is-windy'); }, 2400);
+    }
+    // Damped spring in real time (degrees, seconds), so its motion doesn't depend
+    // on frame rate or dropped frames. The tilt is hard-limited to a few degrees.
+    var angle = 0, vel = 0, raf = 0, lastT = 0, MAX_TILT = 3;
+    function rest() { angle = 0; vel = 0; lastT = 0; if (raf) cancelAnimationFrame(raf); raf = 0; gust.style.transform = ''; }
+    function kick(v) {
+      if (document.hidden || !visible) return;
+      vel += v * 60;                          // impulse, in degrees per second
+      if (!raf) { lastT = 0; raf = requestAnimationFrame(step); }
+    }
+    function step(now) {
+      var dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 1 / 60;
+      lastT = now;
+      // Sub-step so large frame gaps stay stable
+      for (var n = 0; n < 4; n++) {
+        var h = dt / 4;
+        vel += (-angle * 160 - vel * 4.2) * h;   // stiffness, damping
+        angle += vel * h;
+      }
+      angle = Math.max(-MAX_TILT, Math.min(MAX_TILT, angle));
+      gust.style.transform = 'rotate(' + angle.toFixed(3) + 'deg)';
+      if (Math.abs(angle) > 0.01 || Math.abs(vel) > 0.05) raf = requestAnimationFrame(step);
+      else rest();
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) rest(); });
+
+  })();
+
+  // ── Vine dividers between sections ───────────────────────────────────────
+
+  (function vines() {
+    var heads = document.querySelectorAll('.cd-page h2');
+    function curl(g, x, y, dir) {
+      // A small spiral tendril at the end of the stem
+      svg('path', { d: 'M' + x + ',' + y + ' c' + (-5 * dir) + ',-1 ' + (-8 * dir) + ',-6 ' + (-4 * dir) + ',-9 c' + (3 * dir) + ',-2 ' + (6 * dir) + ',1 ' + (4 * dir) + ',4 c' + (-1 * dir) + ',2 ' + (-3 * dir) + ',1 ' + (-3 * dir) + ',0', class: 'tendril' }, g);
+    }
+    heads.forEach(function (h, i) {
+      if (i === 0) return;
+      var v = svg('svg', { class: 'cd-vine', viewBox: '0 0 240 34', 'aria-hidden': 'true' });
+      svg('path', { d: 'M14,18 C44,9 74,27 120,18 S196,9 226,18', class: 'stem' }, v);
+      curl(v, 14, 18, 1); curl(v, 226, 18, -1);
+      // Leaves in pairs and singles, mirrored about the centre
+      [[36, 14, -2.2, 6.5, 't2'], [52, 19, 2.0, 6, 't1'], [80, 22, 1.2, 7, 't3'], [94, 20, -1.0, 5.5, 't4']].forEach(function (l) {
+        leaf(v, l[0], l[1], l[2], l[3], 'lf ' + l[4]);
+        leaf(v, 240 - l[0], l[1], Math.PI - l[2], l[3], 'lf ' + l[4]);
+      });
+      // Buds and a dot row
+      [[64, 14], [176, 14], [44, 24], [196, 24]].forEach(function (d) { svg('circle', { cx: d[0], cy: d[1], r: 1.7, class: 'bud' }, v); });
+      [112, 120, 128].forEach(function (x) { svg('circle', { cx: x, cy: 29, r: 1.1, class: 'dotrow' }, v); });
+      // Centre: a peepal leaf flanked by two small ones
+      leaf(v, 120, 18, -Math.PI / 2, 9.5, 'lf t2');
+      leaf(v, 117, 19, -2.5, 5.5, 'lf t3');
+      leaf(v, 123, 19, -0.64, 5.5, 'lf t3');
+      h.parentNode.insertBefore(v, h);
+    });
+  })();
+})();

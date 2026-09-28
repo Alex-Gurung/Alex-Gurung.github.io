@@ -1,1 +1,53 @@
-.cd-project{position:relative}.vxa-vines{--vxa-ink:#2a2420;--vxa-paper:#fff;--vxa-crimson:#962c2f;--vxa-turmeric:#d9a21b;position:absolute;top:0;pointer-events:none;overflow:visible;z-index:0}.vxa-stem{fill:none;stroke:var(--vxa-ink);stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}.vxa-strand{fill:none;stroke:var(--vxa-ink);stroke-width:.55;stroke-linecap:round;stroke-opacity:.8}.vxa-vines .lf{fill:#b7c65a;stroke:var(--vxa-ink);stroke-width:.8}.vxa-vines .c2 .lf{fill:#9cb84a}.vxa-vines .c3 .lf{fill:#cbd67a}.vxa-vines .c4 .lf{fill:#7fa23f}.vxa-vines .ct .lf{fill:#e0b43c}.vxa-vines .rib{fill:none;stroke:var(--vxa-ink);stroke-width:.5;stroke-linecap:round}.vxa-vines .vxa-end .lf{fill:var(--vxa-ink)}.vxa-vines .vxa-end .rib{stroke:var(--vxa-paper)}.vxa-vines .pt{fill:var(--vxa-paper);stroke:var(--vxa-ink);stroke-width:.7}.vxa-vines .ctr{fill:var(--vxa-crimson)}.vxa-vines .bud{fill:var(--vxa-crimson);stroke:var(--vxa-ink);stroke-width:.6}.vxa-dot{fill:var(--vxa-ink);fill-opacity:.9}.vxa-dot.tur{fill:var(--vxa-turmeric);fill-opacity:1}.vxa-grow{fill:none;stroke:var(--vxa-ink);stroke-linecap:round;stroke-dasharray:1}.vxa-stalk{stroke-width:.75}.vxa-curl{stroke-width:.7}.vxa-tendril{stroke-width:.85}@media(max-width:1195.98px){.vxa-vines:not(.vxa-compact){display:none}}
+/* Climbing margin vines (see assets/js/diversity/vines.js).
+   Madhubani kachni line work: warm near-black ink, flat yellow-green leaves
+   with ink veins, Dhaka crimson for buds and flower hearts, turmeric accents.
+   Nothing here animates: stems grow, leaves unfurl and stalks draw via SVG
+   attributes set from JS, once, and nothing runs at rest. (Avoid CSS opacity
+   here: each element with it gets its own effect node, which slows repaints.) */
+
+.cd-project { position: relative; }
+
+.vxa-vines {
+  --vxa-ink: #2a2420;
+  --vxa-paper: #ffffff;
+  --vxa-crimson: #962c2f;
+  --vxa-turmeric: #d9a21b;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.vxa-stem { fill: none; stroke: var(--vxa-ink); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
+.vxa-strand { fill: none; stroke: var(--vxa-ink); stroke-width: 0.55; stroke-linecap: round; stroke-opacity: 0.8; }
+
+/* Leaves: flat fills, yellow-leaning so they stay apart from VS's bluish green */
+.vxa-vines .lf { fill: #b7c65a; stroke: var(--vxa-ink); stroke-width: 0.8; }
+.vxa-vines .c2 .lf { fill: #9cb84a; }
+.vxa-vines .c3 .lf { fill: #cbd67a; }
+.vxa-vines .c4 .lf { fill: #7fa23f; }
+.vxa-vines .ct .lf { fill: #e0b43c; }
+.vxa-vines .rib { fill: none; stroke: var(--vxa-ink); stroke-width: 0.5; stroke-linecap: round; }
+.vxa-vines .vxa-end .lf { fill: var(--vxa-ink); }
+.vxa-vines .vxa-end .rib { stroke: var(--vxa-paper); }
+
+/* Flowers and buds */
+.vxa-vines .pt { fill: var(--vxa-paper); stroke: var(--vxa-ink); stroke-width: 0.7; }
+.vxa-vines .ctr { fill: var(--vxa-crimson); }
+.vxa-vines .bud { fill: var(--vxa-crimson); stroke: var(--vxa-ink); stroke-width: 0.6; }
+
+/* Dot rows */
+.vxa-dot { fill: var(--vxa-ink); fill-opacity: 0.9; }
+.vxa-dot.tur { fill: var(--vxa-turmeric); fill-opacity: 1; }
+
+/* Stalks, curls and heading tendrils (drawn once from JS via stroke-dashoffset) */
+.vxa-grow { fill: none; stroke: var(--vxa-ink); stroke-linecap: round; stroke-dasharray: 1; }
+.vxa-stalk { stroke-width: 0.75; }
+.vxa-curl { stroke-width: 0.7; }
+.vxa-tendril { stroke-width: 0.85; }
+
+/* The vines need real margins; below this only the hero creeper remains. */
+@media (max-width: 1195.98px) {
+  .vxa-vines:not(.vxa-compact) { display: none; }
+}

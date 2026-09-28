@@ -1,1 +1,219 @@
-!function(){function t(t,e){if(0===e||e===u-1)return"d";var r=e-1,i=Math.abs(t-3)+Math.abs(r-3);if(3===i)return"d";if(2===i)return"c";if(1===i)return"r";if(0===i)return"m";var n=Math.min(Math.abs(t-7),Math.abs(t+1));return n+r<=1||n+(6-r)<=1?"d":"r"}function e(t,e){if(0===t||0===e||t===u-1||e===u-1)return"d";var r=Math.abs(t-4),i=Math.abs(e-4),n=r+i;return 0===n?"m":n<=2&&(0===r||0===i)?"c":3===n?"d":1===t&&1===e||7===t&&1===e||1===t&&7===e||7===t&&7===e?"c":"r"}function r(t,e,r){var i=document.createElementNS(o,t);if(e)for(var n in e)i.setAttribute(n,e[n]);return r&&r.appendChild(i),i}function i(t,e,i,n,a){for(var h=0;h<i;h++)for(var s=null,o=0,d=0;d<=e;d++){var u=d<e?n(d,h):null;u!==s&&(s&&r("rect",{x:o*a,y:h*a,width:(d-o)*a,height:a,fill:f[s]},t),s=u,o=d)}}function n(e){var n=String(e).replace(".","_");if(!b[n]){b[n]=!0;var a=r("pattern",{id:"dkb-h-"+n,patternUnits:"userSpaceOnUse",width:l*e,height:u*e},v);i(r("g",null,a),l,u,t,e);var h=r("pattern",{id:"dkb-v-"+n,patternUnits:"userSpaceOnUse",width:u*e,height:l*e},v);i(r("g",null,h),u,l,function(e,r){return t(r,e)},e)}return n}function a(t){this.box=t,this.revealed=d,this.svg=r("svg",{class:"dkb-frame","aria-hidden":"true","shape-rendering":"crispEdges"}),t.insertBefore(this.svg,t.firstChild),t.classList.add("dkb"),this.key=""}function h(){clearTimeout(g),g=setTimeout(function(){w.forEach(function(t){t.build()})},80)}var s=document.querySelectorAll(".cd-box");if(s.length){var o="http://www.w3.org/2000/svg",d=window.matchMedia("(prefers-reduced-motion: reduce)").matches,f={d:"#3b2a20",r:"#962c2f",c:"#f6ecd6",m:"#c49a3a"},u=9,l=8,c=r("svg",{"aria-hidden":"true",width:0,height:0,style:"position:absolute;width:0;height:0;overflow:hidden"}),v=r("defs",null,c);document.body.appendChild(c);var b={};a.prototype.build=function(){function t(t,e,i,n){var a=Math.max(1,Math.floor(n/w))*w,h=Math.floor((n-a)/2/v)*v;t?(r("rect",{x:e,y:i,width:n,height:b,fill:f.d},M),r("rect",{x:e,y:i+v,width:n,height:b-2*v,fill:f.r},M),r("rect",{width:a,height:b,fill:"url(#dkb-h-"+x+")",transform:"translate("+(e+h)+","+i+")"},M)):(r("rect",{x:e,y:i,width:b,height:n,fill:f.d},M),r("rect",{x:e+v,y:i,width:b-2*v,height:n,fill:f.r},M),r("rect",{width:b,height:a,fill:"url(#dkb-v-"+x+")",transform:"translate("+e+","+(i+h)+")"},M))}function a(t,n){i(r("g",{transform:"translate("+t+","+n+")"},M),u,u,e,v)}function h(t){var e=t*q;U.forEach(function(r){var i=Math.max(0,Math.min(r.len,e-r.at));i=t>=1?r.len:Math.round(i/v)*v,"x"===r.axis?(r.r.setAttribute("y",r.y),r.r.setAttribute("height",r.h),r.r.setAttribute("width",i),r.r.setAttribute("x","start"===r.from?r.x:r.x+r.w-i)):(r.r.setAttribute("x",r.x),r.r.setAttribute("width",r.w),r.r.setAttribute("height",i),r.r.setAttribute("y","start"===r.from?r.y:r.y+r.h-i))})}var s=this.box,o=s.offsetWidth,d=s.offsetHeight,c=window.innerWidth<500,v=c?1.5:2,b=u*v,w=l*v,g=[o,d,v].join(",");if(g!==this.key){this.key=g,s.style.setProperty("--dkb-f",b+"px"),s.classList.toggle("dkb-narrow",c);for(var m=this.svg,x=n(v);m.firstChild;)m.removeChild(m.firstChild);m.setAttribute("width",o),m.setAttribute("height",d),m.setAttribute("viewBox","0 0 "+o+" "+d);var p="dkb-clip-"+Math.random().toString(36).slice(2,8),y=r("clipPath",{id:p},r("defs",null,m)),M=r("g",{"clip-path":"url(#"+p+")"},m),A=o-2*b,E=d-2*b,k=o-b,C=d-b,O=o/2,S=c?1.5:b;c?(t(!0,0,0,o),t(!0,0,d-b,o),r("rect",{x:0,y:b,width:S,height:E,fill:f.d},M),r("rect",{x:o-S,y:b,width:S,height:E,fill:f.d},M)):(a(0,0),t(!0,b,0,A),a(k,0),t(!1,k,b,E),a(k,C),t(!0,b,C,A),a(0,C),t(!1,0,b,E));var U=[];[-1,1].forEach(function(t){var e=t<0;U.push({x:e?0:O,y:0,w:O,h:b,axis:"x",from:e?"end":"start",len:O}),U.push({x:e?0:o-S,y:b,w:S,h:E,axis:"y",from:"start",len:E}),U.push({x:e?0:O,y:d-b,w:O,h:b,axis:"x",from:e?"start":"end",len:O})});var q=O+E+O;U.forEach(function(t,e){var i=e%3;t.at=0===i?0:1===i?O:O+E,t.r=r("rect",{x:t.x,y:t.y,width:0,height:0},y)}),this.set=h,h(this.revealed?1:0)}},a.prototype.reveal=function(){function t(n){null===r&&(r=n);var a=Math.min(1,(n-r)/i);e.set(1-Math.pow(1-a,2)),a<1&&requestAnimationFrame(t)}if(!this.revealed){this.revealed=!0;var e=this,r=null,i=1600;requestAnimationFrame(t)}};var w=Array.prototype.map.call(s,function(t){return new a(t)});w.forEach(function(t){t.build()});var g=null;if("ResizeObserver"in window&&w.forEach(function(t){new ResizeObserver(h).observe(t.box)}),window.addEventListener("resize",h),document.fonts&&document.fonts.ready&&document.fonts.ready.then(h),!d&&"IntersectionObserver"in window){var m=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(w.forEach(function(e){e.box===t.target&&e.reveal()}),m.unobserve(t.target))})},{threshold:.35});w.forEach(function(t){m.observe(t.box)})}else w.forEach(function(t){t.revealed=!0,t.set(1)})}}();
+// Dhaka frame for the Key-takeaways box (.cd-box).
+// Replaces the double rule with a woven Dhaka border: a crimson ground with
+// cream stepped diamonds, umber outlines and mustard eyes, framed by umber
+// edge threads, with a separate motif in each corner. The pattern is built
+// cell by cell as SVG, so it stays crisp at any size, and it is recomputed
+// whenever the box resizes. Phones get the top and bottom bands only.
+(function () {
+  var boxes = document.querySelectorAll('.cd-box');
+  if (!boxes.length) return;
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var INK = { d: '#3b2a20', r: '#962c2f', c: '#f6ecd6', m: '#c49a3a' };
+  var ROWS = 9;          // cells across the band
+  var TILE = 8;          // cells along the band per repeat
+
+  // Band cross-section (y = 0..8 across, x = 0..7 along): umber edge threads,
+  // crimson ground, a stepped diamond with a mustard eye, and small stepped
+  // teeth reaching in from both edges between the diamonds.
+  function band(x, y) {
+    if (y === 0 || y === ROWS - 1) return 'd';
+    var yy = y - 1;                        // 0..6 inside the edges
+    var d = Math.abs(x - 3) + Math.abs(yy - 3);
+    if (d === 3) return 'd';
+    if (d === 2) return 'c';
+    if (d === 1) return 'r';
+    if (d === 0) return 'm';
+    var dx = Math.min(Math.abs(x - 7), Math.abs(x + 1));   // distance to the tooth column (wraps)
+    if (dx + yy <= 1 || dx + (6 - yy) <= 1) return 'd';
+    return 'r';
+  }
+  // Corner square: an umber-edged block with a stepped cross.
+  function corner(x, y) {
+    if (x === 0 || y === 0 || x === ROWS - 1 || y === ROWS - 1) return 'd';
+    var ax = Math.abs(x - 4), ay = Math.abs(y - 4), d = ax + ay;
+    if (d === 0) return 'm';
+    if (d <= 2 && (ax === 0 || ay === 0)) return 'c';
+    if (d === 3) return 'd';
+    if (x === 1 && y === 1 || x === 7 && y === 1 || x === 1 && y === 7 || x === 7 && y === 7) return 'c';
+    return 'r';
+  }
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  // Paint a w x h bitmap into g, merging runs of equal colour into one rect.
+  function paint(g, w, h, f, cell) {
+    for (var y = 0; y < h; y++) {
+      var run = null, start = 0;
+      for (var x = 0; x <= w; x++) {
+        var c = x < w ? f(x, y) : null;
+        if (c !== run) {
+          if (run) el('rect', { x: start * cell, y: y * cell, width: (x - start) * cell, height: cell, fill: INK[run] }, g);
+          run = c; start = x;
+        }
+      }
+    }
+  }
+
+  var defsSvg = el('svg', { 'aria-hidden': 'true', width: 0, height: 0, style: 'position:absolute;width:0;height:0;overflow:hidden' });
+  var defs = el('defs', null, defsSvg);
+  document.body.appendChild(defsSvg);
+  var made = {};
+  function patterns(cell) {
+    var key = String(cell).replace('.', '_');
+    if (!made[key]) {
+      made[key] = true;
+      var ph = el('pattern', { id: 'dkb-h-' + key, patternUnits: 'userSpaceOnUse', width: TILE * cell, height: ROWS * cell }, defs);
+      paint(el('g', null, ph), TILE, ROWS, band, cell);
+      var pv = el('pattern', { id: 'dkb-v-' + key, patternUnits: 'userSpaceOnUse', width: ROWS * cell, height: TILE * cell }, defs);
+      paint(el('g', null, pv), ROWS, TILE, function (x, y) { return band(y, x); }, cell);
+    }
+    return key;
+  }
+
+  function Frame(box) {
+    this.box = box;
+    this.revealed = reduce;
+    this.svg = el('svg', { class: 'dkb-frame', 'aria-hidden': 'true', 'shape-rendering': 'crispEdges' });
+    box.insertBefore(this.svg, box.firstChild);
+    box.classList.add('dkb');
+    this.key = '';
+  }
+
+  Frame.prototype.build = function () {
+    var box = this.box, W = box.offsetWidth, H = box.offsetHeight;
+    var narrow = window.innerWidth < 500;
+    var cell = narrow ? 1.5 : 2, F = ROWS * cell, T = TILE * cell;
+    var key = [W, H, cell].join(',');
+    if (key === this.key) return;
+    this.key = key;
+    box.style.setProperty('--dkb-f', F + 'px');
+    box.classList.toggle('dkb-narrow', narrow);
+
+    var svg = this.svg, id = patterns(cell);
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+    var clipId = 'dkb-clip-' + Math.random().toString(36).slice(2, 8);
+    var cp = el('clipPath', { id: clipId }, el('defs', null, svg));
+    var g = el('g', { 'clip-path': 'url(#' + clipId + ')' }, svg);
+
+    // A band from a to b along one side. Tiles are centred, so both ends
+    // meet the corners symmetrically; any remainder is plain ground.
+    function run(horizontal, x0, y0, len) {
+      var n = Math.max(1, Math.floor(len / T)), used = n * T, off = Math.floor((len - used) / 2 / cell) * cell;
+      if (horizontal) {
+        el('rect', { x: x0, y: y0, width: len, height: F, fill: INK.d }, g);
+        el('rect', { x: x0, y: y0 + cell, width: len, height: F - 2 * cell, fill: INK.r }, g);
+        el('rect', { width: used, height: F, fill: 'url(#dkb-h-' + id + ')', transform: 'translate(' + (x0 + off) + ',' + y0 + ')' }, g);
+      } else {
+        el('rect', { x: x0, y: y0, width: F, height: len, fill: INK.d }, g);
+        el('rect', { x: x0 + cell, y: y0, width: F - 2 * cell, height: len, fill: INK.r }, g);
+        el('rect', { width: F, height: used, fill: 'url(#dkb-v-' + id + ')', transform: 'translate(' + x0 + ',' + (y0 + off) + ')' }, g);
+      }
+    }
+    function cornerAt(x, y) {
+      paint(el('g', { transform: 'translate(' + x + ',' + y + ')' }, g), ROWS, ROWS, corner, cell);
+    }
+
+    var innerW = W - 2 * F, innerH = H - 2 * F, right = W - F, bottom = H - F, mid = W / 2;
+    var sideW = narrow ? 1.5 : F;     // width of the side run (a thread on phones)
+    if (narrow) {
+      run(true, 0, 0, W);
+      run(true, 0, H - F, W);
+      // the sides keep a single umber thread
+      el('rect', { x: 0, y: F, width: sideW, height: innerH, fill: INK.d }, g);
+      el('rect', { x: W - sideW, y: F, width: sideW, height: innerH, fill: INK.d }, g);
+    } else {
+      cornerAt(0, 0);
+      run(true, F, 0, innerW);
+      cornerAt(right, 0);
+      run(false, right, F, innerH);
+      cornerAt(right, bottom);
+      run(true, F, bottom, innerW);
+      cornerAt(0, bottom);
+      run(false, 0, F, innerH);
+    }
+
+    // Weave-in: two threads leave the title at the top centre, run out along
+    // the top band, down the left and right sides together, and meet in the
+    // middle of the bottom band. Each piece grows along one axis from `from`.
+    var pieces = [];
+    [-1, 1].forEach(function (side) {
+      var left = side < 0;
+      // top band: from the centre out to the edge (corner included)
+      pieces.push({ x: left ? 0 : mid, y: 0, w: mid, h: F, axis: 'x', from: left ? 'end' : 'start', len: mid });
+      // side: down from under the top band to the bottom band
+      pieces.push({ x: left ? 0 : W - sideW, y: F, w: sideW, h: innerH, axis: 'y', from: 'start', len: innerH });
+      // bottom band: from the edge (corner included) in to the centre
+      pieces.push({ x: left ? 0 : mid, y: H - F, w: mid, h: F, axis: 'x', from: left ? 'start' : 'end', len: mid });
+    });
+    var perSide = mid + innerH + mid;
+    pieces.forEach(function (pc, i) {
+      var k = i % 3;
+      pc.at = k === 0 ? 0 : k === 1 ? mid : mid + innerH;   // distance along the thread where it starts
+      pc.r = el('rect', { x: pc.x, y: pc.y, width: 0, height: 0 }, cp);
+    });
+    function set(p) {
+      var dist = p * perSide;
+      pieces.forEach(function (pc) {
+        var l = Math.max(0, Math.min(pc.len, dist - pc.at));
+        l = p >= 1 ? pc.len : Math.round(l / cell) * cell;   // advance a cell at a time
+        if (pc.axis === 'x') {
+          pc.r.setAttribute('y', pc.y); pc.r.setAttribute('height', pc.h);
+          pc.r.setAttribute('width', l);
+          pc.r.setAttribute('x', pc.from === 'start' ? pc.x : pc.x + pc.w - l);
+        } else {
+          pc.r.setAttribute('x', pc.x); pc.r.setAttribute('width', pc.w);
+          pc.r.setAttribute('height', l);
+          pc.r.setAttribute('y', pc.from === 'start' ? pc.y : pc.y + pc.h - l);
+        }
+      });
+    }
+    this.set = set;
+    set(this.revealed ? 1 : 0);
+  };
+
+  Frame.prototype.reveal = function () {
+    if (this.revealed) return;
+    this.revealed = true;
+    var self = this, t0 = null, DUR = 1600;
+    function tick(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / DUR);
+      self.set(1 - Math.pow(1 - p, 2));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  };
+
+  var frames = Array.prototype.map.call(boxes, function (b) { return new Frame(b); });
+  frames.forEach(function (f) { f.build(); });
+
+  var timer = null;
+  function rebuild() { clearTimeout(timer); timer = setTimeout(function () { frames.forEach(function (f) { f.build(); }); }, 80); }
+  if ('ResizeObserver' in window) frames.forEach(function (f) { new ResizeObserver(rebuild).observe(f.box); });
+  window.addEventListener('resize', rebuild);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(rebuild);
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    frames.forEach(function (f) { f.revealed = true; f.set(1); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      frames.forEach(function (f) { if (f.box === e.target) f.reveal(); });
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.35 });
+  frames.forEach(function (f) { io.observe(f.box); });
+})();
