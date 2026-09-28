@@ -200,7 +200,7 @@ class GrootPipeline(Scene):
                 tick = Line([X(k), PY0, 0], [X(k), PY0 - 0.1, 0], color=INK, stroke_width=2.4)
                 lab = txt(str(k), 24, MUTED).move_to([X(k), PY0 - 0.36, 0])
                 x_ticks.add(VGroup(tick, lab))
-            x_title = txt("tries per problem (k)", 26, MUTED).move_to([X(8), PY0 - 0.82, 0])
+            x_title = txt("samples k", 26, MUTED).move_to([X(8), PY0 - 0.82, 0])
             y_title = txt("% of problems solved", 26, MUTED)
             y_title.move_to([PX0 - 0.6 + y_title.width / 2, Y(20) + 0.5, 0])
             model = txt("Qwen3-4B-Instruct", 24, MUTED)

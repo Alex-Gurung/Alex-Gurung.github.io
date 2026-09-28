@@ -1,13 +1,8 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/diversity/page.css?v=20260928b">
-
 <div class="cd-page">
 
 <p class="cd-lede">Self-training data is usually built by sampling a model's answers independently and keeping the correct ones (RFT). We instead ask the model for several <em>distinct approaches</em> first, as a tree (<b class="t-groot">GROOT</b>) or a list (<b class="t-vs">Verbalized Sampling</b>), then have it solve the problem once per approach.</p>
 
-<aside class="cd-box" id="takeaways" data-nav="Takeaways" aria-label="Key takeaways">
+<aside class="cd-box dkb" id="takeaways" data-nav="Takeaways" aria-label="Key takeaways">
   <div class="cd-box-title">Key takeaways</div>
   <ol>
     <li><b>Elicit distinct approaches rather than sampling more.</b> GROOT with 4 samples beats IID with 64 samples at T = 1.5: held-out pass@64 of 15.5 vs 7.9 on hard coding problems.</li>
@@ -18,7 +13,7 @@
 </aside>
 
 <figure class="cd-video">
-  <video playsinline muted preload="metadata" poster="/assets/img/diversity/groot-pipeline-poster.jpg?v=20260928" aria-label="Captioned animation: self-training on IID samples barely helps on frontier LiveCodeBench and OJBench problems; GROOT samples distinct strategies and triples pass@64, even beating a 235B teacher.">
+  <video playsinline muted preload="none" data-duration="41.6" poster="/assets/img/diversity/groot-pipeline-poster.jpg?v=20260928" aria-label="Captioned animation: self-training on IID samples barely helps on frontier LiveCodeBench and OJBench problems; GROOT samples distinct strategies and triples pass@64, even beating a 235B teacher.">
     <source src="/assets/video/diversity/groot-pipeline.mp4?v=20260928" type="video/mp4">
   </video>
 </figure>
@@ -199,7 +194,5 @@
 <script src="/assets/js/diversity/passk.js?v=20260928"></script>
 <script src="/assets/js/diversity/rlcurves.js?v=20260928"></script>
 <script src="/assets/js/diversity/page.js?v=20260928"></script>
-<link rel="stylesheet" href="/assets/css/diversity/dhaka-box.css">
 <script src="/assets/js/diversity/dhaka-box.js"></script>
-<link rel="stylesheet" href="/assets/css/diversity/vines.css">
 <script src="/assets/js/diversity/vines.js"></script>

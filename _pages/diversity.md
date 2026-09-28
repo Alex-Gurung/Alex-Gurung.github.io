@@ -1,5 +1,7 @@
 ---
 layout: project_page
+head_include: diversity/head.html
+enable_math: false
 project_class: cd-project
 title: "Strategically Diverse Sampling for Self-Training"
 permalink: /diversity/

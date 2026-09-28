@@ -67,12 +67,13 @@ for the site:
 ```bash
 ffmpeg -i .manim_review/diversity_pipeline/videos/diversity_pipeline/2160p30/GrootPipeline.mp4 \
   -vf "scale=1280:720:flags=lanczos,fps=30" \
-  -c:v libx264 -preset veryslow -tune animation -crf 28 -g 150 -pix_fmt yuv420p \
+  -c:v libx264 -preset veryslow -tune animation -crf 30 -g 300 -pix_fmt yuv420p \
   -movflags +faststart -an \
   assets/video/diversity/groot-pipeline.mp4
 ```
 
-This 720p delivery encode is about 0.7 MB, and the captions stay crisp.
+This 720p delivery encode is about 0.53 MB. CRF 30 with a 10 s keyframe interval gave
+the same caption sharpness as CRF 28 with `-g 150`, which was about 0.74 MB.
 
 The poster is a 1280x720 JPEG (quality 85) of the fully drawn plot with all seven
 curves and the all-wrong caption (t = 29.9 s):
