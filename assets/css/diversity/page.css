@@ -464,6 +464,9 @@ body:has(.cd-project) { background: #ffffff; }
 /* Divider between data options and the k-axis scale switch */
 .cd-vsep { color: #c8c8c8; font-family: var(--cd-tex); padding: 0 0.1rem; align-self: center; }
 
+/* Reserve room for charts that haven't been drawn yet (they render lazily) */
+.cd-fig .cd-chart:empty { min-height: 300px; }
+
 /* ── Section bar ───────────────────────────────────────────────────────── */
 
 .cd-secnav {

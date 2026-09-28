@@ -162,8 +162,22 @@
 
   // Re-render registered figures when their width changes.
   var renderers = [];
+  // Charts render lazily so none of them competes with the first paint: each one is
+  // drawn in its own idle slot after load, or straight away if it scrolls near the
+  // viewport first. Re-renders on resize or toggles are immediate.
+  var idleQueue = [], idleScheduled = false;
+  var ric = window.requestIdleCallback || function (f) { return setTimeout(function () { f({ timeRemaining: function () { return 8; } }); }, 60); };
+  function drainIdle() {
+    idleScheduled = false;
+    var job = idleQueue.shift();
+    if (job) job();
+    if (idleQueue.length) { idleScheduled = true; ric(drainIdle, { timeout: 1500 }); }
+  }
+  function whenReady(f) {
+    if (document.readyState === 'complete') f(); else window.addEventListener('load', f);
+  }
   function responsive(host, render) {
-    var last = 0;
+    var last = 0, started = false;
     function run() {
       var w = widthOf(host);
       if (w === last) return;
@@ -171,9 +185,21 @@
       host.innerHTML = '';
       render(w);
     }
-    renderers.push(run);
-    run();
-    return function () { last = 0; run(); };
+    function start() {
+      if (started) return;
+      started = true;
+      renderers.push(run);
+      run();
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); start(); }
+      }, { rootMargin: '100% 0px' });
+      io.observe(host);
+      idleQueue.push(function () { io.disconnect(); start(); });
+      whenReady(function () { if (!idleScheduled && idleQueue.length) { idleScheduled = true; ric(drainIdle, { timeout: 1500 }); } });
+    } else start();
+    return function () { if (!started) { start(); return; } last = 0; run(); };
   }
   var resizeTimer;
   window.addEventListener('resize', function () {
@@ -823,6 +849,7 @@
     segmented(fig, 'data-bench', function (b) {
       if (b === bench) return;
       bench = b;
+      if (!chart) { rerender5(); return; }   // not drawn yet: draw it for the new benchmark
       chart.update(seriesFor(b), [0, YMAX[b]], ticksFor(b), 700);
     });
   })();
@@ -1347,7 +1374,7 @@
       fig.classList.toggle('is-playing', !v.paused);
     }
     function tick() {
-      var d = v.duration || 0;
+      var d = v.duration || parseFloat(v.getAttribute('data-duration')) || 0;
       fill.style.width = d ? (v.currentTime / d * 100) + '%' : '0';
       time.textContent = mmss(v.currentTime) + ' / ' + mmss(d);
     }
@@ -1414,12 +1441,18 @@
     window.addEventListener('resize', place);
     // Show once the header has scrolled away
     new IntersectionObserver(function (es) { bar.classList.toggle('is-shown', !es[0].isIntersecting); }, { threshold: 0 }).observe(hero);
-    // Scrollspy: the last section whose top has passed ~35% of the viewport
-    var current = -1, ticking = false;
+    // Scrollspy: the last section whose top has passed ~35% of the viewport. Section
+    // positions are cached and only re-measured when the page's height changes, so
+    // scrolling itself never forces a layout.
+    var current = -1, ticking = false, tops = [];
+    function measure() { tops = targets.map(function (t) { return t.getBoundingClientRect().top + window.scrollY; }); }
+    measure();
+    if ('ResizeObserver' in window) new ResizeObserver(function () { measure(); spy(); }).observe(document.querySelector('.cd-page'));
+    window.addEventListener('load', measure);
     function spy() {
       ticking = false;
-      var line = window.innerHeight * 0.35, idx = 0;
-      for (var i = 0; i < targets.length; i++) if (targets[i].getBoundingClientRect().top <= line) idx = i;
+      var line = window.scrollY + window.innerHeight * 0.35, idx = 0;
+      for (var i = 0; i < tops.length; i++) if (tops[i] <= line) idx = i;
       if (idx === current) return;
       current = idx;
       links.forEach(function (a, i) { a.classList.toggle('is-on', i === idx); });
