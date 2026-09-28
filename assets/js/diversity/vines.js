@@ -627,9 +627,9 @@
     project.insertBefore(svg, project.firstChild);
   }
   // Settled records go into the tile's merged paths. Rewriting a merged path
-  // is the costly part, so it happens at most every FLUSH_MS; a settled piece
-  // keeps its own element until then.
-  var FLUSH_MS = 220, lastFlush = 0, parked = [];
+  // is the costly part, so it waits until the vines are at rest (in idle
+  // time, never mid-unfurl); a settled piece keeps its own element until then.
+  var PARK_MAX = 1500, parked = [], flushPending = 0;
   function settleInto(it) {
     var t = it.tile, add = function (k, d) { t.settled[k].push(d); t.dirty[k] = true; };
     if (it.kind === 'leaf') { add('lf-' + it.tint, it.d); add('rib-' + it.tint, it.v); }
@@ -640,10 +640,8 @@
     if (t.svg && dirtyTiles.indexOf(t) < 0) dirtyTiles.push(t);
   }
   var dirtyTiles = [];
-  function flushTiles(now, force) {
+  function flushTiles() {
     if (!dirtyTiles.length && !parked.length) return;
-    if (!force && now - lastFlush < FLUSH_MS) return;
-    lastFlush = now;
     for (var i = 0; i < dirtyTiles.length; i++) {
       var t = dirtyTiles[i];
       if (t.paths) for (var k in t.dirty) t.paths[k].setAttribute('d', t.settled[k].join(''));
@@ -661,11 +659,8 @@
   function about(it, inner) {
     return 'translate(' + it.x.toFixed(2) + ' ' + it.y.toFixed(2) + ') ' + inner + ' translate(' + (-it.x).toFixed(2) + ' ' + (-it.y).toFixed(2) + ')';
   }
-  // At most this many pieces animate at once; when the vine races to catch
-  // up with a fast scroll, the rest simply appear.
-  var MAX_ANIMS = 40;
   function reveal(it, jump) {
-    if (jump || reduce.matches || !it.tile.svg || anims.length >= MAX_ANIMS) { settleInto(it); return; }
+    if (jump || reduce.matches || !it.tile.svg) { settleInto(it); return; }
     var parent = it.tile.anim, n;
     if (it.kind === 'leaf') {
       n = el('g', { transform: about(it, 'rotate(-50) scale(0)') }, parent);
@@ -715,8 +710,17 @@
       keep.push(it);
     }
     anims = keep;
-    flushTiles(now, !anims.length);
-    return anims.length > 0 || parked.length > 0;
+    if (parked.length > PARK_MAX) flushTiles();
+    return anims.length > 0;
+  }
+  // Merge once everything has settled, in idle time.
+  function flushWhenIdle() {
+    if (flushPending || (!dirtyTiles.length && !parked.length)) return;
+    flushPending = idle(function () {
+      flushPending = 0;
+      if (anims.length || raf) return;
+      flushTiles();
+    });
   }
 
   // ── Growth ─────────────────────────────────────────────────────────────
@@ -755,7 +759,7 @@
       reached = Math.min(reached, v.shown <= 0 ? -Infinity : (v.shown >= v.total ? Infinity : v.key[lo]));
     });
     state.shownY = reached;
-    flushTiles(performance.now(), jump);
+    if (jump) flushTiles();
     return any;
   }
 
@@ -789,9 +793,10 @@
   function tick(now) {
     raf = 0;
     if (!state) return;
-    if (tilesDue) { tilesDue = false; ensureTiles(); }
+    if (tilesDue) { tilesDue = false; idle(ensureTiles); }
     var more = started && render(state.targetY, false);
     if (stepAnims(now) || more) raf = requestAnimationFrame(tick);
+    else flushWhenIdle();
   }
   function schedule(force) {
     if (!raf && state && (started || force)) raf = requestAnimationFrame(tick);
