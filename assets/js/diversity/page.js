@@ -1217,7 +1217,7 @@
       { name: 'GROOT-4', s: 'groot', v: [[3.5, 10.4], [2.1, 7.0], [1.5, 4.5]] },
       { name: 'VS-4', s: 'vs', v: [[4.2, 10.6], [2.3, 7.9], [1.5, 5.3]] }
     ];
-    // Held-out is the mean of LCB and OJBench, as elsewhere on the page
+    // Held-out is the macro-average (mean) of LCB and OJBench, as elsewhere on the page
     rows.forEach(function (r) { r.v[3] = [0, 1].map(function (j) { return Math.round((r.v[1][j] + r.v[2][j]) * 5 + 1e-9) / 10; }); });
     var rerender = responsive(host, function (W) {
       var xmax = [12, 10, 6, 8][bench], step = [2, 2, 1, 2][bench], ticks = [];
