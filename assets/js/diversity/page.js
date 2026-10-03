@@ -827,8 +827,8 @@
     var DEFS = [
       { key: 'vs', id: 'vs', arm: 'VS-4', name: 'VS-4' },
       { key: 'groot', id: 'groot', arm: 'GROOT-4', name: 'GROOT-4' },
-      { key: 'vs-anti', id: 'vs', arm: 'VS-4 (ANTI)', name: 'VS-4, incorrect only', endName: 'VS-4 incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
-      { key: 'groot-anti', id: 'groot', arm: 'GROOT-4 (ANTI)', name: 'GROOT-4, incorrect only', endName: 'GROOT-4 incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
+      { key: 'vs-anti', id: 'vs', arm: 'VS-4 (ANTI)', name: 'VS-4, Incorrect only', endName: 'VS-4 Incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
+      { key: 'groot-anti', id: 'groot', arm: 'GROOT-4 (ANTI)', name: 'GROOT-4, Incorrect only', endName: 'GROOT-4 Incorrect', dash: '1.5 3', dotted: true, noMarkers: true },
       { key: 'iidhot', id: 'iidhot', arm: 'IID-64 (T=1.5)', name: 'IID-64 (T=1.5)' },
       { key: 'iid', id: 'iid', arm: 'IID-4', name: 'IID-4' },
       { key: 'base', id: 'base', arm: 'Base', name: 'Base', dash: '5 4' }
