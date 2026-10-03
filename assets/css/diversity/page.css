@@ -510,41 +510,12 @@ body:has(.cd-project) { background: #ffffff; }
 
 /* ── NCP example ───────────────────────────────────────────────────────── */
 
-.cd-plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem 1rem; margin-top: 0.4rem; font-family: var(--cd-tex); }
-.cd-plans button {
-  font: inherit;
-  font-size: 1rem;
-  text-align: left;
-  background: none;
-  border: none;
-  border-top: 2.5px solid var(--sw);
-  padding: 0.4rem 0 0;
-  cursor: pointer;
-  color: var(--cd-ink);
-}
-.cd-plans button span { display: block; font-size: 0.88rem; color: var(--cd-muted); }
-.cd-plans button.is-on span { color: var(--cd-ink); }
-.cd-plan-open {
-  grid-column: 1 / -1;
-  font-family: var(--cd-serif);
-  font-size: 0.98rem;
-  line-height: 1.6;
-  color: var(--cd-ink-2);
-  border-left: 3px solid var(--sw);
-  padding: 0.1rem 0 0.1rem 1rem;
-  margin-top: 0.5rem;
-}
-.cd-plan-open .dir { font-size: 0.9rem; color: var(--cd-muted); margin-bottom: 0.5rem; white-space: pre-line; }
 
-.cd-passage { margin-top: 1rem; font-family: var(--cd-sans); font-size: 0.95rem; }
-.cd-passage summary { cursor: pointer; color: var(--cd-ink-2); }
-.cd-passage div { font-family: var(--cd-serif); font-size: 0.98rem; line-height: 1.65; color: var(--cd-ink-2); white-space: pre-line; padding: 0.6rem 0 0 1rem; border-left: 3px solid var(--cd-rule); margin-top: 0.5rem; }
 
 /* ── Small screens ─────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
   .cd-page { font-size: 1.05rem; }
   .cd-page h2 { font-size: 1.4rem; margin-top: 2.6rem; }
-  .cd-plans { grid-template-columns: 1fr; }
   .cd-iid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }

@@ -447,7 +447,10 @@
   (function fig1() {
     var fig = document.getElementById('fig-passk');
     if (!fig) return;
-    var host = fig.querySelector('.cd-chart'), show = 'iid', model = 'qwen', first = true, fresh = null;
+    var host = fig.querySelector('.cd-chart'), show = 'iid', model = 'qwen', bench = 'macro', first = true, fresh = null, chart = null;
+    var YMAX = { qwen: { macro: 20, cobalt: 35, lcb: 25, ojbench: 15 }, n3n: { macro: 25, cobalt: 40, lcb: 25, ojbench: 20 } };
+    function ymax() { return YMAX[model][bench]; }
+    function ticks() { var m = ymax(), st = m > 25 ? 10 : 5, out = []; for (var t = 0; t <= m; t += st) out.push(t); return out; }
     // Listed front to back; drawn and animated back to front: Base, IID, GROOT, then VS.
     var defs = [
       { id: 'vs', name: 'VS-4', row: 'VS-4', strategic: true },
@@ -456,26 +459,28 @@
       { id: 'iid', name: 'IID-4', row: 'IID-4' },
       { id: 'base', name: 'Base', row: 'Base', dash: '5 4' }
     ];
-    var rerender = responsive(host, function (W) {
-      // Qwen3-4B: Table 2 curves. Nemotron3-Nano-4B: its own frontier (Table 7 curves);
-      // arms without a full curve there are left out rather than drawn from 3 points.
+    // Qwen3-4B: Table 2 curves. Nemotron-3-Nano-4B: its own frontier (Table 7 curves);
+    // arms without a full curve there are left out rather than drawn from 3 points.
+    function seriesFor() {
       var C = window.CD_PASSK, N = window.CD_N3N_PRE;
-      var series = defs.filter(function (d) { return show === 'all' || !d.strategic; }).map(function (d) {
+      return defs.filter(function (d) { return show === 'all' || !d.strategic; }).map(function (d) {
         var pts = null;
         if (model === 'qwen') {
-          if (C) pts = C.ks.map(function (kk, i) { return [kk, C.table2[d.row].macro[i]]; });
-          else { var v = passkRow(d.row); pts = [[1, v[0]], [8, v[1]], [64, v[2]]]; }
+          if (C) pts = C.ks.map(function (kk, i) { return [kk, C.table2[d.row][bench][i]]; });
+          else if (bench === 'macro') { var v = passkRow(d.row); pts = [[1, v[0]], [8, v[1]], [64, v[2]]]; }
         } else {
           var arm = d.row === 'IID-64 (T=1.5)' ? 'IID-64' : d.row;
-          if (N && N[arm]) pts = N[arm].macro.map(function (y, i) { return [i + 1, y]; });
+          if (N && N[arm]) pts = N[arm][bench].map(function (y, i) { return [i + 1, y]; });
         }
         return pts && { id: model === 'n3n' && d.id === 'iidhot' ? 'iid64' : d.id, name: model === 'n3n' && d.row === 'IID-64 (T=1.5)' ? 'IID-64' : d.name, dash: d.dash, points: pts };
       }).filter(Boolean);
-      lineChart(host, W, {
-        series: series, log2: true, xDomain: [1, 64], yDomain: [0, model === 'qwen' ? 20 : 25], yTicks: model === 'qwen' ? [0, 5, 10, 15, 20] : [0, 5, 10, 15, 20, 25],
+    }
+    var rerender = responsive(host, function (W) {
+      chart = lineChart(host, W, {
+        series: seriesFor(), log2: true, xDomain: [1, 64], yDomain: [0, ymax()], yTicks: ticks(),
         xTicks: [1, 2, 4, 8, 16, 32, 64], xTicksLinear: [1, 16, 32, 48, 64], xLabel: 'samples k (log scale)', yLabel: 'pass@k (%)', xName: 'k =', markers: true,
         markerAt: [1, 2, 4, 8, 16, 32, 64],
-        rightPad: 130, height: 300, aria: 'Held-out pass@k at k = 1, 8, 64 for the base model and self-trained models',
+        rightPad: 130, height: 300, aria: 'Frontier pass@k for the base model and self-trained models',
         animate: first ? true : (fresh || []), immediate: !first
       });
       first = false; fresh = null;
@@ -490,6 +495,12 @@
       if (v === show) return;
       fresh = v === 'all' ? ['groot', 'vs'] : [];
       show = v; rerender();
+    });
+    segmented(fig, 'data-bench', function (b) {
+      if (b === bench) return;
+      bench = b;
+      if (!chart) { rerender(); return; }   // not drawn yet
+      chart.update(seriesFor(), [0, ymax()], ticks(), 700);
     });
   })();
 
@@ -861,7 +872,7 @@
     if (!fig) return;
     var host = fig.querySelector('.cd-chart');
     // Held-out frontier macro [p@1, p@8, p@64]. Qwen3-4B: Table 3 (16k cap), teacher
-    // Qwen3-235B-A22B. Nemotron3-Nano-4B: Table 12, teacher Nemotron3-Super-120B-A12B.
+    // Qwen3-235B-A22B. Nemotron-3-Nano-4B: Table 12, teacher Nemotron-3-Super-120B-A12B.
     var DATA = {
       qwen: { teacher: '235B', xmax: 25, rows: [
         { name: 'IID-4', s: 'iid', self: [0.2, 1.3, 5.8], teach: [0.7, 4.5, 13.4] },
@@ -1021,7 +1032,7 @@
     if (!fig) return;
     var host = fig.querySelector('.cd-chart'), bench = 'macro', model = 'qwen', drawn = false, replay = false;
     // Frontier [pass@1, pass@8, pass@64] before and after RL. Qwen3-4B: Table 6.
-    // Nemotron3-Nano-4B: Table 8 (frontier defined on Nemotron's own base model).
+    // Nemotron-3-Nano-4B: Table 8 (frontier defined on Nemotron's own base model).
     var N3N = {
       'Base':    { s: 'base',  before: { macro: [0.3, 2.0, 9.8],  lcb: [0.5, 3.5, 15.7], cobalt: [0.8, 5.3, 22.4] },  after: { macro: [6.1, 17.8, 30.3], lcb: [7.0, 20.3, 35.7], cobalt: [11.7, 35.9, 57.4] } },
       'IID-4':   { s: 'iid',   before: { macro: [0.3, 2.1, 8.8],  lcb: [0.5, 3.2, 12.7], cobalt: [0.9, 6.0, 23.0] },  after: { macro: [7.5, 20.9, 33.3], lcb: [8.9, 24.5, 40.3], cobalt: [13.0, 37.0, 57.4] } },
@@ -1207,7 +1218,7 @@
       { name: 'VS-4', s: 'vs', v: [[4.2, 10.6], [2.3, 7.9], [1.5, 5.3]] }
     ];
     // Held-out is the mean of LCB and OJBench, as elsewhere on the page
-    rows.forEach(function (r) { r.v[3] = [0, 1].map(function (j) { return (r.v[1][j] + r.v[2][j]) / 2; }); });
+    rows.forEach(function (r) { r.v[3] = [0, 1].map(function (j) { return Math.round((r.v[1][j] + r.v[2][j]) * 5 + 1e-9) / 10; }); });
     var rerender = responsive(host, function (W) {
       var xmax = [12, 10, 6, 8][bench], step = [2, 2, 1, 2][bench], ticks = [];
       for (var t = 0; t <= xmax; t += step) ticks.push(t);
@@ -1233,7 +1244,7 @@
         }
         var hit = svg('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }, root);
         hover(hit, function () {
-          return sw(c) + '<b>' + r.name + '</b><br>' + ['Cobalt', 'LiveCodeBench', 'OJBench', 'Held-out'][bench] + ' frontier pass@1<br>' + v[0].toFixed(2).replace(/0$/, '') + ' → ' + v[1].toFixed(2).replace(/0$/, '');
+          return sw(c) + '<b>' + r.name + '</b><br>' + ['Cobalt', 'LiveCodeBench', 'OJBench', 'Held-out'][bench] + ' frontier pass@1<br>' + v[0] + ' → ' + v[1];
         });
       });
     });
@@ -1246,9 +1257,8 @@
   (function fig9() {
     var fig = document.getElementById('fig-ncp'), EX = window.CD_EXAMPLES;
     if (!fig || !EX) return;
-    var N = EX.ncp, host = fig.querySelector('.cd-chart'), plansEl = fig.querySelector('.cd-plans');
+    var N = EX.ncp, host = fig.querySelector('.cd-chart');
     var slider = fig.querySelector('input[type="range"]'), sliderVal = fig.querySelector('.cd-slider span');
-    fig.querySelector('.cd-passage div').textContent = N.true_passage;
     var arms = [
       { id: 'groot', name: 'GROOT', a: N.arms.groot },
       { id: 'vs', name: 'VS', a: N.arms.vs },
@@ -1283,7 +1293,7 @@
           var dot = svg('circle', { cx: x, cy: cy + off, r: best ? 5.5 : 4, stroke: c, 'stroke-width': best ? 2.2 : 1.3, fill: '#fff' }, root);
           if (best) svg('circle', { cx: x, cy: cy + off, r: 9, fill: 'none', stroke: c, 'stroke-width': 1 }, root);
           hover(dot, function () {
-            return sw(c) + '<b>' + r.name + ' plan</b>: ' + (v >= 0 ? '+' : '') + v.toFixed(1) + '%' + (best ? '<br>best of 32 (read it below)' : '');
+            return sw(c) + '<b>' + r.name + ' plan</b>: ' + (v >= 0 ? '+' : '') + v.toFixed(1) + '%' + (best ? '<br>best of 32' : '');
           });
           dots.push({ el: dot, v: v });
         });
@@ -1303,23 +1313,6 @@
       update();
     });
     slider.addEventListener('input', function () { update(); });
-
-    // Best plan per sampler
-    var open = null, reader = null;
-    var btns = arms.map(function (r, i) {
-      var b = html('button', { type: 'button', style: '--sw:' + COLOR[r.id] }, plansEl, r.name + ' best: +' + r.a.best_pct.toFixed(1) + '%');
-      html('span', null, b, 'read the plan');
-      b.addEventListener('click', function () {
-        if (reader) reader.remove();
-        btns.forEach(function (o) { o.classList.remove('is-on'); });
-        if (open === i) { open = null; return; }
-        open = i; b.classList.add('is-on');
-        reader = html('div', { class: 'cd-plan-open', style: '--sw:' + COLOR[r.id] }, plansEl);
-        if (r.a.best_direction) html('div', { class: 'dir' }, reader, 'Hidden approach: ' + r.a.best_direction);
-        html('div', null, reader, r.a.best_plan);
-      });
-      return b;
-    });
   })();
 
   // ── Figure 10: NCP coverage ──────────────────────────────────────────────
