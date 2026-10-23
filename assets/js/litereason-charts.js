@@ -17,22 +17,13 @@
   /* ── Palette ─────────────────────────────────────────────────────────────── */
 
   var METHOD_COLORS = {
-    'Qwen2.5-7B':    '#4F81BD',
+    'Qwen2.5-7B':    '#687b88',
     'MoI':           '#F79646',
     'Soft Thinking':  '#9BBB59',
     'COCONUT':        '#C0504D',
     'CoLaR':          '#9F4C7C',
-    'LiteReason':     '#8B4513',
-    'RL-Trained':     '#C04080'
-  };
-
-  var BAR_COLORS = {
-    'Default':     '#bbb',
-    'MoI':         '#F79646',
-    'CoLaR':       '#9F4C7C',
-    'COCONUT':     '#C0504D',
-    'RL-Trained':  '#4F81BD',
-    'LiteReason':  '#8B4513'
+    'LiteReason':     '#087e83',
+    'RL-Trained':     '#a95d35'
   };
 
   var prefersReducedMotion = window.matchMedia &&
@@ -40,18 +31,36 @@
   var scatterStates = {};
   var DEFAULT_LATENT_LABELS = ['MoI', 'Soft Thinking', 'COCONUT', 'CoLaR'];
 
+  var SCATTER_HEIGHT = 480;
+  var SCATTER_PADDING = { t: 40, r: 35, b: 66, l: 76 };
+
   /* ── Canvas helper ───────────────────────────────────────────────────────── */
+
+  function canvasWidth(canvas) {
+    var style = getComputedStyle(canvas.parentElement);
+    return Math.max(1, canvas.parentElement.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0));
+  }
+
+  function scatterLayout(canvas) {
+    var width = canvasWidth(canvas);
+    var compact = width < 620;
+    return { width: width, height: compact ? 500 : SCATTER_HEIGHT, compact: compact,
+      pad: compact ? { t: 36, r: 20, b: 130, l: 56 } : SCATTER_PADDING };
+  }
 
   function setupCanvas(canvas, height) {
     var dpr = window.devicePixelRatio || 1;
-    var width = canvas.parentElement.clientWidth - 32;
-    if (width < 200) width = canvas.parentElement.clientWidth;
-    canvas.width  = width * dpr;
-    canvas.height = height * dpr;
-    canvas.style.width  = width + 'px';
+    var width = canvasWidth(canvas);
+    // Resizing the backing store every frame clears context state and reallocates
+    // the canvas. Only resize when the actual dimensions change.
+    var pixelWidth = Math.round(width * dpr), pixelHeight = Math.round(height * dpr);
+    if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+    if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+    canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
     var ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
     return { ctx: ctx, w: width, h: height };
   }
 
@@ -63,42 +72,8 @@
     return a + (b - a) * t;
   }
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  }
-
-  function easeOutBack(t) {
-    var c1 = 1.70158;
-    var c3 = c1 + 1;
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-  }
-
-  function wrapTextLines(ctx, text, maxWidth) {
-    if (!text) return [];
-    if (!maxWidth) return [text];
-
-    var words = text.split(/\s+/).filter(Boolean);
-    if (!words.length) return [];
-
-    var lines = [];
-    var current = words[0];
-
-    for (var i = 1; i < words.length; i++) {
-      var candidate = current + ' ' + words[i];
-      if (ctx.measureText(candidate).width <= maxWidth) {
-        current = candidate;
-      } else {
-        lines.push(current);
-        current = words[i];
-      }
-    }
-
-    lines.push(current);
-    return lines;
   }
 
   function getScatterState(canvasId) {
@@ -122,18 +97,6 @@
     if (!value) return null;
     if (typeof value === 'string') return { detail: value };
     return value;
-  }
-
-  function projectScatterPoint(canvas, opts, x, y) {
-    var W = canvas.clientWidth || Math.max(canvas.parentElement.clientWidth - 32, 200);
-    var H = 360;
-    var pad = { t: 25, r: 30, b: 55, l: 65 };
-    var dw = W - pad.l - pad.r;
-    var dh = H - pad.t - pad.b;
-    return {
-      px: pad.l + (x - opts.xMin) / (opts.xMax - opts.xMin) * dw,
-      py: pad.t + dh - (y - opts.yMin) / (opts.yMax - opts.yMin) * dh
-    };
   }
 
   function routePoint(start, end, progress) {
@@ -281,104 +244,6 @@
 
   /* ── Scatter plot ────────────────────────────────────────────────────────── */
 
-  function drawScatterCallout(ctx, point, bounds, note) {
-    if (!note || !note.title || note.alpha <= 0) return;
-
-    var rows = [];
-    var boxPadX = 15;
-    var boxPadY = 13;
-    var lineHeight = 17;
-    var blockGap = 4;
-    var wrapWidth = note.maxWidth || 230;
-
-    function pushWrappedLines(text, font, fill, alpha, rise) {
-      if (!text || alpha <= 0) return;
-      ctx.font = font;
-      wrapTextLines(ctx, text, wrapWidth).forEach(function (line) {
-        rows.push({
-          text: line,
-          font: font,
-          fill: fill,
-          alpha: alpha,
-          rise: rise
-        });
-      });
-    }
-
-    pushWrappedLines(note.title, '600 14.5px -apple-system, BlinkMacSystemFont, sans-serif', '#16212b', note.alpha, 0);
-    if (note.detail) {
-      var detailProgress = clamp(note.detailProgress == null ? 1 : note.detailProgress, 0, 1);
-      if (rows.length) rows.push({ spacer: true, size: blockGap });
-      pushWrappedLines(
-        note.detail,
-        '13px -apple-system, BlinkMacSystemFont, sans-serif',
-        'rgba(22, 33, 43, 0.78)',
-        note.alpha * detailProgress,
-        6 * (1 - detailProgress)
-      );
-    }
-
-    if (note.accent) {
-      var accentProgress = clamp(note.accentProgress == null ? 1 : note.accentProgress, 0, 1);
-      if (rows.length) rows.push({ spacer: true, size: blockGap });
-      pushWrappedLines(
-        note.accent,
-        '700 13px -apple-system, BlinkMacSystemFont, sans-serif',
-        note.accentColor || '#8B4513',
-        note.alpha * accentProgress,
-        6 * (1 - accentProgress)
-      );
-    }
-
-    ctx.save();
-    var maxWidth = 0;
-    var contentHeight = 0;
-    rows.forEach(function (line) {
-      if (line.spacer) {
-        contentHeight += line.size;
-        return;
-      }
-      ctx.font = line.font;
-      maxWidth = Math.max(maxWidth, ctx.measureText(line.text).width);
-      contentHeight += lineHeight;
-    });
-
-    var boxW = maxWidth + boxPadX * 2;
-    var boxH = boxPadY * 2 + Math.max(contentHeight, lineHeight);
-    var placement = resolveCalloutPlacement(point.px, point.py, bounds, boxW, boxH, note);
-    var bx = placement.left;
-    var by = placement.top;
-    ctx.globalAlpha = note.alpha;
-    ctx.shadowColor = 'rgba(27, 39, 51, 0.08)';
-    ctx.shadowBlur = 16;
-    ctx.shadowOffsetY = 10;
-    ctx.beginPath();
-    ctx.roundRect(bx, by, boxW, boxH, [13]);
-    ctx.fillStyle = 'rgba(255, 255, 252, 0.985)';
-    ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(27, 39, 51, 0.1)';
-    ctx.stroke();
-
-    ctx.textAlign = 'left';
-    var cursorY = by + boxPadY + 12;
-    rows.forEach(function (line) {
-      if (line.spacer) {
-        cursorY += line.size;
-        return;
-      }
-      if (line.alpha <= 0) return;
-      ctx.globalAlpha = line.alpha;
-      ctx.fillStyle = line.fill;
-      ctx.font = line.font;
-      ctx.fillText(line.text, bx + boxPadX, cursorY - line.rise);
-      cursorY += lineHeight;
-    });
-
-    ctx.restore();
-  }
-
   function drawScatterGroupHighlight(ctx, points, group) {
     if (!group || !points || !points.length) return;
     var ellipse = getGroupEllipse(points, group);
@@ -392,7 +257,7 @@
     ctx.fill();
     ctx.globalAlpha = group.strokeAlpha == null ? 0.24 : group.strokeAlpha;
     ctx.lineWidth = 1.2;
-    ctx.strokeStyle = group.stroke || '#8B4513';
+    ctx.strokeStyle = group.stroke || '#087e83';
     ctx.stroke();
     ctx.restore();
   }
@@ -432,7 +297,7 @@
 
     ctx.save();
     ctx.globalAlpha = guide.alpha == null ? 0.5 : guide.alpha;
-    ctx.strokeStyle = guide.color || '#8B4513';
+    ctx.strokeStyle = guide.color || '#087e83';
     ctx.lineWidth = guide.width || 1.5;
     ctx.setLineDash(guide.dash || [5, 5]);
     ctx.beginPath();
@@ -473,7 +338,7 @@
       ctx.strokeStyle = 'rgba(139, 69, 19, 0.16)';
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = guide.labelColor || '#8B4513';
+      ctx.fillStyle = guide.labelColor || '#087e83';
       ctx.textAlign = 'center';
       ctx.fillText(guide.label, midX, midY + 3);
     }
@@ -490,9 +355,10 @@
     var activeLatentLabels = activeHighlight && activeHighlight.latentLabels ? activeHighlight.latentLabels : DEFAULT_LATENT_LABELS;
     var latentLabelSet = {};
     activeLatentLabels.forEach(function (label) { latentLabelSet[label] = true; });
-    var s = setupCanvas(canvas, 360);
+    var layout = scatterLayout(canvas);
+    var s = setupCanvas(canvas, layout.height);
     var ctx = s.ctx, W = s.w, H = s.h;
-    var pad = { t: 25, r: 30, b: 55, l: 65 };
+    var pad = layout.pad;
     var dw = W - pad.l - pad.r, dh = H - pad.t - pad.b;
 
     var xMin = opts.xMin, xMax = opts.xMax, yMin = opts.yMin, yMax = opts.yMax;
@@ -504,7 +370,7 @@
 
     ctx.strokeStyle = '#f0f0f0';
     ctx.lineWidth = 1;
-    var ticks = 5, i, v, p;
+    var ticks = layout.compact ? 3 : 5, i, v, p;
     for (i = 0; i <= ticks; i++) {
       v = yMin + (yMax - yMin) * i / ticks;
       p = yPx(v);
@@ -513,7 +379,7 @@
       ctx.lineTo(W - pad.r, p);
       ctx.stroke();
       ctx.fillStyle = '#888';
-      ctx.font = '13.5px -apple-system, sans-serif';
+      ctx.font = '14.5px -apple-system, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(Math.round(v), pad.l - 8, p + 4);
     }
@@ -525,7 +391,7 @@
       ctx.lineTo(p, H - pad.b);
       ctx.stroke();
       ctx.fillStyle = '#888';
-      ctx.font = '13.5px -apple-system, sans-serif';
+      ctx.font = '14.5px -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(opts.xFmt ? opts.xFmt(v) : v.toFixed(1), p, H - pad.b + 18);
     }
@@ -539,9 +405,9 @@
     ctx.stroke();
 
     ctx.fillStyle = '#555';
-    ctx.font = '15.5px -apple-system, sans-serif';
+    ctx.font = (layout.compact ? '14px' : '17px') + ' -apple-system, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(opts.xLabel, pad.l + dw / 2, H - 8);
+    ctx.fillText(opts.xLabel, pad.l + dw / 2, H - pad.b + 52);
     ctx.save();
     ctx.translate(16, pad.t + dh / 2);
     ctx.rotate(-Math.PI / 2);
@@ -594,12 +460,13 @@
       });
     }
 
+    var labelBoxes = [];
     data.forEach(function (d) {
       var pointState = pointStates[d.label];
       var r = d.hl ? 8 : 6;
       var c = METHOD_COLORS[d.label] || '#999';
 
-      hoverPoints.push({
+      if (pointState.alpha > 0.1) hoverPoints.push({
         label: d.label,
         x: d.x,
         y: d.y,
@@ -612,7 +479,7 @@
       ctx.save();
       ctx.globalAlpha = pointState.alpha;
       ctx.beginPath();
-      ctx.arc(pointState.px, pointState.py, r, 0, Math.PI * 2);
+      drawMarker(ctx, d.label, pointState.px, pointState.py, r);
       ctx.fillStyle = c;
       ctx.fill();
       if (pointState.haloAlpha > 0 && pointState.haloRadius > 0) {
@@ -630,39 +497,41 @@
         ctx.arc(pointState.px, pointState.py, r + 3, 0, Math.PI * 2);
         ctx.stroke();
       }
-      if (pointState.showLabel) {
+      if (pointState.showLabel && (!layout.compact || !latentLabelSet[d.label])) {
         ctx.globalAlpha = pointState.labelAlpha;
         ctx.fillStyle = '#333';
-        ctx.font = (d.hl ? 'bold ' : '') + '13.5px -apple-system, sans-serif';
-        ctx.textAlign = d.ta || 'center';
-        ctx.fillText(d.label, pointState.px + (d.ox || 0), pointState.py + (d.oy || -14));
+        ctx.font = (d.hl ? 'bold ' : '') + '14.5px -apple-system, sans-serif';
+        var placement = scatterLabelPlacement(canvasId, d.label);
+        var value = canvasId === 'scatter-ff' ? d.x.toFixed(2) + '%' : d.x.toFixed(3);
+        var detail = d.label === 'LiteReason' || d.label === 'RL-Trained' ? value + ' · ' + d.y.toFixed(2) + ' tokens' : '';
+        if (layout.compact) {
+          drawCompactLabel(ctx, pointState, d.label, detail, pointStates, labelBoxes, { left: pad.l + 4, right: W - pad.r - 4, top: pad.t + 6, bottom: H - pad.b - 6 });
+        } else {
+          ctx.textAlign = placement.align;
+          // An opaque halo keeps grid and animated guide lines out of the type.
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.lineJoin = 'round';
+          ctx.strokeText(d.label, pointState.px + placement.x, pointState.py + placement.y);
+          ctx.fillText(d.label, pointState.px + placement.x, pointState.py + placement.y);
+          if (detail) {
+            ctx.font = '13px -apple-system, sans-serif'; ctx.fillStyle = '#59666c';
+            ctx.strokeText(detail, pointState.px + placement.x, pointState.py + placement.y + 18);
+            ctx.fillText(detail, pointState.px + placement.x, pointState.py + placement.y + 18);
+          }
+        }
       }
       ctx.restore();
     });
 
-    if (scene && scene.callout) {
-      var calloutPoint = scene.callout.point;
-      if (!calloutPoint && scene.callout.anchor) {
-        if (scene.callout.anchor.label && pointStates[scene.callout.anchor.label]) {
-          calloutPoint = {
-            px: pointStates[scene.callout.anchor.label].px,
-            py: pointStates[scene.callout.anchor.label].py
-          };
-        } else if (scene.callout.anchor.x != null && scene.callout.anchor.y != null) {
-          calloutPoint = {
-            px: xPx(scene.callout.anchor.x),
-            py: yPx(scene.callout.anchor.y)
-          };
-        }
-      }
-      if (calloutPoint) {
-        drawScatterCallout(ctx, calloutPoint, {
-        left: pad.l,
-        right: W - pad.r,
-        top: pad.t,
-        bottom: H - pad.b
-        }, scene.callout);
-      }
+    // Keep narration in a stable space below the plot, away from the data.
+    renderScatterNarration(canvas, scene && scene.callout);
+    if (layout.compact) {
+      activeLatentLabels.forEach(function (label, index) {
+        var px = 18 + (index % 2) * (W / 2), py = H - 43 + Math.floor(index / 2) * 24;
+        ctx.beginPath(); drawMarker(ctx, label, px, py, 4);
+        ctx.fillStyle = METHOD_COLORS[label]; ctx.fill();
+        ctx.fillStyle = '#59666c'; ctx.font = '12px -apple-system, sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(label, px + 12, py + 4);
+      });
     }
 
     if (activeHighlight && latentRegionMeta) {
@@ -693,6 +562,7 @@
     ctx.fillText('\u2193 better', pad.l + 2, pad.t - 6);
     ctx.restore();
 
+    canvas._lastScene = scene;
     canvas._cd = { points: hoverPoints, regions: hoverRegions };
     canvas._scatterSpec = {
       data: data,
@@ -700,6 +570,104 @@
       highlight: canvas._scatterSpec && canvas._scatterSpec.highlight
     };
     return canvas;
+  }
+
+  function renderScatterNarration(canvas, note) {
+    var narration = canvas.parentElement.querySelector('.chart-narration');
+    if (!narration) {
+      narration = document.createElement('div');
+      narration.className = 'chart-narration';
+      narration.setAttribute('aria-live', 'polite');
+      narration.setAttribute('aria-atomic', 'true');
+      canvas.after(narration);
+    }
+    if (note && note.title) {
+      var key = [note.title, note.detail || '', note.accent || ''].join('|');
+      if (narration.dataset.note !== key) {
+        narration.dataset.note = key;
+        renderTooltipHtml(narration, note);
+      }
+    }
+    narration.style.opacity = note ? note.alpha : 0;
+  }
+
+  function drawCompactLabel(ctx, point, label, detail, points, placed, bounds) {
+    var titleFont = (label === 'LiteReason' ? '600 ' : '') + '13px -apple-system, sans-serif';
+    ctx.font = titleFont;
+    var width = ctx.measureText(label).width;
+    ctx.font = '11.5px -apple-system, sans-serif';
+    if (detail) width = Math.max(width, ctx.measureText(detail).width);
+    width += 10;
+    var height = detail ? 37 : 23;
+    var x = point.px, y = point.py;
+    var candidates = [
+      { x: x - width - 16, y: y - height / 2 },
+      { x: x + 16, y: y - height / 2 },
+      { x: x - width / 2, y: y - height - 17 },
+      { x: x - width / 2, y: y + 17 },
+      { x: x - width - 16, y: y - height - 12 },
+      { x: x + 16, y: y - height - 12 }
+    ];
+    if (label === 'Qwen2.5-7B') candidates.reverse();
+    function overlaps(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+    candidates.forEach(function (box, index) {
+      box.x = clamp(box.x, bounds.left, bounds.right - width);
+      box.y = clamp(box.y, bounds.top, bounds.bottom - height);
+      box.w = width; box.h = height;
+      box.score = index * .1 + Math.hypot(x - clamp(x, box.x, box.x + width), y - clamp(y, box.y, box.y + height));
+      Object.keys(points).forEach(function (key) {
+        var p = points[key];
+        if (p.alpha > .1 && overlaps(box, { x: p.px - 14, y: p.py - 14, w: 28, h: 28 })) box.score += 1000;
+      });
+      placed.forEach(function (previous) { if (overlaps(box, previous)) box.score += 2000; });
+    });
+    candidates.sort(function (a, b) { return a.score - b.score; });
+    var box = candidates[0]; placed.push(box);
+    // Short leader lines keep each label visibly attached to its marker.
+    var endX = clamp(x, box.x, box.x + width), endY = clamp(y, box.y, box.y + height);
+    var distance = Math.hypot(endX - x, endY - y);
+    if (distance > 13) {
+      ctx.beginPath(); ctx.moveTo(x + (endX - x) * 12 / distance, y + (endY - y) * 12 / distance); ctx.lineTo(endX, endY);
+      ctx.strokeStyle = METHOD_COLORS[label]; ctx.lineWidth = .8; ctx.stroke();
+    }
+    ctx.fillStyle = '#fff'; ctx.fillRect(box.x, box.y, width, height);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#333'; ctx.font = titleFont;
+    ctx.fillText(label, box.x + 5, box.y + 15);
+    if (detail) { ctx.font = '11.5px -apple-system, sans-serif'; ctx.fillStyle = '#59666c'; ctx.fillText(detail, box.x + 5, box.y + 30); }
+  }
+
+  function scatterLabelPlacement(canvasId, label) {
+    var layouts = {
+      'scatter-ff': {
+        'Qwen2.5-7B': [-16, -20, 'right'], 'MoI': [16, 4, 'left'],
+        'Soft Thinking': [14, 24, 'left'], 'COCONUT': [-14, -18, 'right'],
+        'CoLaR': [14, 22, 'left'], 'RL-Trained': [-16, -36, 'right'],
+        'LiteReason': [-16, 0, 'right']
+      },
+      'scatter-ncp': {
+        'Qwen2.5-7B': [16, -22, 'left'], 'MoI': [-14, 22, 'right'],
+        'Soft Thinking': [14, -16, 'left'], 'COCONUT': [14, -16, 'left'],
+        'CoLaR': [14, 24, 'left'], 'RL-Trained': [-16, -34, 'right'],
+        'LiteReason': [14, -22, 'left']
+      }
+    };
+    var p = (layouts[canvasId] || {})[label] || [0, -16, 'center'];
+    return { x: p[0], y: p[1], align: p[2] };
+  }
+
+  function drawMarker(ctx, label, x, y, r) {
+    if (label === 'COCONUT') { ctx.rect(x - r, y - r, r * 2, r * 2); return; }
+    if (label === 'RL-Trained' || label === 'Soft Thinking') {
+      ctx.moveTo(x, y - r * 1.3); ctx.lineTo(x + r * 1.3, y);
+      ctx.lineTo(x, y + r * 1.3); ctx.lineTo(x - r * 1.3, y); ctx.closePath(); return;
+    }
+    if (label === 'MoI' || label === 'CoLaR') {
+      var direction = label === 'MoI' ? -1 : 1;
+      ctx.moveTo(x, y + direction * r * 1.3);
+      ctx.lineTo(x + r * 1.2, y - direction * r);
+      ctx.lineTo(x - r * 1.2, y - direction * r); ctx.closePath(); return;
+    }
+    ctx.arc(x, y, r, 0, Math.PI * 2);
   }
 
   function setReplayReady(canvasId, ready) {
@@ -810,7 +778,15 @@
 
     var state = getScatterState(canvasId);
     canvas._scatterSpec = { data: data, opts: opts, highlight: highlight };
-    canvas = renderScatter(canvasId, data, opts, buildScatterPreviewScene(data, highlight));
+    var initialScene = buildScatterPreviewScene(data, highlight);
+    // A settled chart must stay complete after resizing or with reduced motion.
+    if (initialScene && (prefersReducedMotion || state.hasAutoPlayed)) initialScene.pointOverrides = {};
+    if (initialScene && (prefersReducedMotion || state.hasAutoPlayed)) {
+      var lite = findDatum(data, 'LiteReason'), rl = findDatum(data, 'RL-Trained');
+      initialScene.callout = { title: highlight.finalTitle, detail: highlight.finalDetail,
+        accent: Math.round((1 - lite.y / rl.y) * 100) + '% fewer tokens', alpha: 1 };
+    }
+    canvas = renderScatter(canvasId, data, opts, initialScene);
 
     if (!highlight || prefersReducedMotion) {
       state.ready = false;
@@ -855,6 +831,8 @@
 
     cancelAnimationFrame(state.raf);
     state.playing = true;
+    var tooltip = canvas.parentElement.querySelector('.chart-tooltip');
+    if (tooltip) tooltip.classList.remove('visible');
     setReplayReady(canvasId, false);
 
     var startTime = 0;
@@ -867,14 +845,13 @@
     var latentHold = 1450 * readingScale;
     var latentFadeOut = 170;
     var rlMoveMs = 1400;
-    var rlHoldMs = 1400;
     var rlCalloutFadeIn = 200;
     var rlCalloutHold = 1400 * readingScale;
     var rlCalloutFadeOut = 180;
     var liteMoveMs = 1550;
     var finalFadeIn = 210;
     var finalHold = 1900 * readingScale;
-    var finalFadeOut = 220;
+    var finalFadeOut = 300;
     var tokenReduction = Math.round((1 - lite.y / rl.y) * 100);
     var tokenText = highlight.tokenText || (tokenReduction + '% fewer tokens');
     var latentAnchor = latentPoints.length ? {
@@ -894,7 +871,7 @@
     var baseStart = introHold;
     var latentStart = baseStart + baseFadeIn + baseHold + baseFadeOut;
     var rlStart = latentStart + latentFadeIn + latentHold + latentFadeOut;
-    var liteStart = rlStart + rlMoveMs + rlHoldMs;
+    var liteStart = rlStart + rlMoveMs - 40 + rlCalloutFadeIn + rlCalloutHold + rlCalloutFadeOut + 100;
     var finalStart = liteStart + liteMoveMs + 40;
     var totalMs = finalStart + finalFadeIn + finalHold + finalFadeOut;
 
@@ -1004,7 +981,7 @@
 
         scene = {
           dimOthers: true,
-          otherAlpha: 0.5,
+          otherAlpha: 0.82,
           pointOverrides: latentOverrides,
           groupHighlight: latentPoints.length ? {
             labels: latentLabels,
@@ -1044,14 +1021,14 @@
           haloAlpha: 0.2,
           haloRadius: 7,
           haloWidth: 1.3,
-          showLabel: rlProgress > 0.82,
-          labelAlpha: clamp((rlProgress - 0.58) / 0.42, 0, 1)
+          showLabel: true,
+          labelAlpha: clamp((elapsed - rlStart - rlMoveMs) / 220, 0, 1)
         };
         rlPointOverrides[lite.label] = hidePoint(lite.label);
 
         scene = {
           dimOthers: true,
-          otherAlpha: 0.58,
+          otherAlpha: 0.82,
           pointOverrides: rlPointOverrides,
           groupHighlight: persistentHull,
           guides: [{
@@ -1076,10 +1053,11 @@
           } : null
         };
       } else {
+        var guideFade = clamp((totalMs - elapsed) / finalFadeOut, 0, 1);
         var liteElapsed = clamp(elapsed - liteStart, 0, liteMoveMs);
         var liteProgress = clamp(liteElapsed / liteMoveMs, 0, 1);
         var litePoint = routePoint(base, lite, liteProgress);
-        var finalAlpha = stageAlpha(elapsed, finalStart, finalFadeIn, finalHold, finalFadeOut);
+        var finalAlpha = clamp((elapsed - finalStart) / finalFadeIn, 0, 1);
         var connectorAlpha = finalAlpha * clamp((elapsed - finalStart + 40) / 180, 0, 1);
         var litePointOverrides = makeBaseOverride();
         litePointOverrides[rl.label] = {
@@ -1101,25 +1079,25 @@
           haloAlpha: 0.28,
           haloRadius: 9,
           haloWidth: 1.35,
-          showLabel: liteProgress > 0.84,
-          labelAlpha: clamp((liteProgress - 0.54) / 0.46, 0, 1)
+          showLabel: true,
+          labelAlpha: clamp((elapsed - liteStart - liteMoveMs) / 220, 0, 1)
         };
 
         scene = {
           dimOthers: true,
-          otherAlpha: 0.62,
+          otherAlpha: 0.82,
           pointOverrides: litePointOverrides,
           groupHighlight: persistentHull,
           guides: [
             {
               points: routeGuidePoints(base, rl, 1),
-              alpha: 0.2,
+              alpha: 0.2 * guideFade,
               color: METHOD_COLORS[rl.label],
               dash: [6, 5]
             },
             {
               points: routeGuidePoints(base, lite, liteProgress),
-              alpha: 0.58,
+              alpha: 0.58 * guideFade,
               color: METHOD_COLORS[lite.label],
               dash: [6, 5]
             },
@@ -1141,7 +1119,7 @@
             alpha: finalAlpha,
             detailProgress: clamp((elapsed - finalStart - 70) / 220, 0, 1),
             accentProgress: clamp((elapsed - finalStart - 260) / 220, 0, 1),
-            accentColor: highlight.accentColor || '#8B4513',
+            accentColor: highlight.accentColor || '#087e83',
             side: highlight.finalSide || 'left',
             gap: highlight.finalGap,
             dx: highlight.finalDx,
@@ -1162,81 +1140,13 @@
 
       state.playing = false;
       state.raf = 0;
-      renderScatter(canvasId, spec.data, spec.opts, settledScene());
+      var finalScene = settledScene();
+      finalScene.callout = { title: highlight.finalTitle, detail: highlight.finalDetail, accent: tokenText, alpha: 1 };
+      renderScatter(canvasId, spec.data, spec.opts, finalScene);
       setReplayReady(canvasId, true);
     }
 
     state.raf = requestAnimationFrame(frame);
-  }
-
-  /* ── Bar chart ───────────────────────────────────────────────────────────── */
-
-  function drawBars(canvasId, data, opts) {
-    var canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    var s = setupCanvas(canvas, 320);
-    var ctx = s.ctx, W = s.w, H = s.h;
-    var pad = { t: 25, r: 20, b: 65, l: 55 };
-    var dw = W - pad.l - pad.r, dh = H - pad.t - pad.b;
-
-    var cats = data.categories, meths = data.methods;
-    var nC = cats.length, nM = meths.length;
-    var yMin = opts.yMin || 0, yMax = opts.yMax || 5;
-    var gw = dw / nC, bw = (gw * 0.75) / nM, gPad = gw * 0.125;
-
-    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
-
-    // y grid
-    var ticks = 5, i, v, p;
-    for (i = 0; i <= ticks; i++) {
-      v = yMin + (yMax - yMin) * i / ticks; p = pad.t + dh - (v - yMin) / (yMax - yMin) * dh;
-      ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(pad.l, p); ctx.lineTo(W - pad.r, p); ctx.stroke();
-      ctx.fillStyle = '#888'; ctx.font = '13px -apple-system, sans-serif';
-      ctx.textAlign = 'right'; ctx.fillText(v.toFixed(1), pad.l - 8, p + 4);
-    }
-
-    // axes
-    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(pad.l, pad.t);
-    ctx.lineTo(pad.l, H - pad.b); ctx.lineTo(W - pad.r, H - pad.b); ctx.stroke();
-
-    // bars
-    var baseline = pad.t + dh;
-    meths.forEach(function (m, mi) {
-      var c = BAR_COLORS[m.name] || '#999';
-      cats.forEach(function (cat, ci) {
-        var val = m.values[ci];
-        var x = pad.l + ci * gw + gPad + mi * bw;
-        var barH = (val - yMin) / (yMax - yMin) * dh;
-        ctx.fillStyle = c;
-        ctx.beginPath();
-        ctx.roundRect(x, baseline - barH, bw - 1, barH, [3, 3, 0, 0]);
-        ctx.fill();
-      });
-    });
-
-    // category labels
-    ctx.fillStyle = '#555'; ctx.font = '13px -apple-system, sans-serif'; ctx.textAlign = 'center';
-    cats.forEach(function (c, ci) { ctx.fillText(c, pad.l + ci * gw + gw / 2, H - pad.b + 18); });
-
-    // y label
-    ctx.fillStyle = '#555'; ctx.font = '15.5px -apple-system, sans-serif';
-    ctx.save(); ctx.translate(14, pad.t + dh / 2); ctx.rotate(-Math.PI / 2);
-    ctx.fillText(opts.yLabel || '', 0, 0); ctx.restore();
-
-    // legend
-    var leg = document.getElementById(opts.legendId);
-    if (leg) {
-      leg.innerHTML = '';
-      meths.forEach(function (m) {
-        var el = document.createElement('span'); el.className = 'legend-item';
-        el.innerHTML = '<span class="legend-swatch" style="background:' + (BAR_COLORS[m.name] || '#999') + '"></span>' + m.name;
-        leg.appendChild(el);
-      });
-    }
-
-    canvas._bd = { cats: cats, meths: meths, pad: pad, gw: gw, bw: bw, gPad: gPad, dh: dh, yMin: yMin, yMax: yMax };
   }
 
   /* ── Hover helpers ───────────────────────────────────────────────────────── */
@@ -1257,8 +1167,8 @@
         right: c.clientWidth,
         bottom: c.clientHeight
       }, width, height, spec);
-      t.style.left = placement.left + 'px';
-      t.style.top = placement.top + 'px';
+      t.style.left = (c.offsetLeft + placement.left) + 'px';
+      t.style.top = (c.offsetTop + placement.top) + 'px';
     }
 
     function showTooltip(meta, anchorX, anchorY) {
@@ -1276,6 +1186,7 @@
     }
 
     c.addEventListener('mousemove', function (e) {
+      if (getScatterState(canvasId).playing) return;
       var r = c.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
       var cd = c._cd; if (!cd) return;
       var best = null, minD = 18;
@@ -1314,204 +1225,6 @@
     c.addEventListener('mouseleave', function () { hideTooltip(); });
   }
 
-  function hoverBars(canvasId, tipId) {
-    var c = document.getElementById(canvasId), t = document.getElementById(tipId);
-    if (!c || !t || c._barHoverBound) return;
-    c._barHoverBound = true;
-    c.addEventListener('mousemove', function (e) {
-      var r = c.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-      var bd = c._bd; if (!bd) return;
-      var ci = Math.floor((mx - bd.pad.l) / bd.gw);
-      if (ci < 0 || ci >= bd.cats.length) { t.classList.remove('visible'); return; }
-      var inG = mx - bd.pad.l - ci * bd.gw - bd.gPad;
-      var mi = Math.floor(inG / bd.bw);
-      if (mi < 0 || mi >= bd.meths.length) { t.classList.remove('visible'); return; }
-      renderTooltipHtml(t, {
-        title: bd.meths[mi].name,
-        detail: bd.cats[ci] + ': ' + bd.meths[mi].values[ci].toFixed(2)
-      });
-      t.style.left = mx + 'px'; t.style.top = (my - 35) + 'px';
-      t.classList.add('visible');
-    });
-    c.addEventListener('mouseleave', function () { t.classList.remove('visible'); });
-  }
-
-  /* ── Generation animation ────────────────────────────────────────────────── */
-
-  var animGen = 0; // generation counter for safe cancellation
-
-  function initGenAnimation() {
-    var output = document.getElementById('gen-output');
-    if (!output) return;
-    var cursor = document.getElementById('gen-cursor');
-
-    // Flawed Fictions-style reasoning trace with <implicit_thought> tags
-    var seq = [
-      { t: 'd', w: ['Let', 'me', 'analyze', 'the', 'story', 'for', 'continuity', 'errors.'] },
-      { t: 'd', w: ['The', 'story', 'establishes', 'that', 'Marcus', 'works', 'as', 'a', 'carpenter', 'in', 'paragraph', '1.'] },
-      { t: 'l', n: 3 },
-      { t: 'd', w: ['In', 'paragraph', '4,', 'his', 'wife', 'refers', 'to', '"his', 'job', 'at', 'the', 'hospital."'] },
-      { t: 'd', w: ['This', 'directly', 'contradicts', 'the', 'earlier', 'established', 'occupation.'] },
-      { t: 'l', n: 2 },
-      { t: 'a', text: '\\boxed{Yes}' }
-    ];
-
-    function resetOutput() {
-      output.innerHTML = '';
-      cursor = document.createElement('span');
-      cursor.id = 'gen-cursor';
-      cursor.className = 'gen-cursor';
-      output.appendChild(cursor);
-    }
-
-    function appendBeforeCursor(node) {
-      output.insertBefore(node, cursor);
-    }
-
-    function hasGeneratedText() {
-      return output.textContent.length > 0;
-    }
-
-    function setButtonPaused(paused) {
-      var btn = document.getElementById('gen-play-pause');
-      if (!btn) return;
-      btn.dataset.paused = paused ? '1' : '0';
-      btn.textContent = paused ? '▶' : '⏸';
-    }
-
-    // Static render of the full trace for prefers-reduced-motion.
-    function renderStatic() {
-      animGen++;
-      resetOutput();
-      seq.forEach(function (seg) {
-        var s = document.createElement('span');
-        if (seg.t === 'd') {
-          s.className = 'gen-token discrete visible';
-          s.textContent = (hasGeneratedText() ? ' ' : '') + seg.w.join(' ');
-        } else if (seg.t === 'l') {
-          s.className = 'gen-thought-tag visible';
-          s.textContent = ' <implicit_thought>' + seg.n + '</implicit_thought>';
-        } else {
-          s.className = 'gen-token discrete visible';
-          s.textContent = ' ' + seg.text;
-          s.style.fontWeight = 'bold';
-        }
-        appendBeforeCursor(s);
-      });
-      cursor.classList.add('is-hidden');
-    }
-
-    function run() {
-      var thisGen = ++animGen;
-      resetOutput();
-      var delay = 0;
-      var SPEED_SCALE = 1.1;
-      var TOKEN_MS = 90 * SPEED_SCALE;
-      var TAG_MS = 60 * SPEED_SCALE;
-      var LATENT_STEP_MS = 400 * SPEED_SCALE;
-
-      function schedule(ms, fn) {
-        delay += ms;
-        setTimeout(function () {
-          if (animGen !== thisGen) return;
-          fn();
-        }, delay);
-      }
-
-      seq.forEach(function (seg) {
-        if (seg.t === 'd') {
-          seg.w.forEach(function (word) {
-            schedule(TOKEN_MS, function () {
-              var s = document.createElement('span');
-              s.className = 'gen-token discrete';
-              s.textContent = (hasGeneratedText() ? ' ' : '') + word;
-              appendBeforeCursor(s);
-              requestAnimationFrame(function () { s.classList.add('visible'); });
-            });
-          });
-        } else if (seg.t === 'l') {
-          var latentIndicator = null;
-          // Render the <implicit_thought> opening tag
-          schedule(TOKEN_MS, function () {
-            var tag = document.createElement('span');
-            tag.className = 'gen-thought-tag';
-            tag.textContent = ' <implicit_thought>';
-            appendBeforeCursor(tag);
-            requestAnimationFrame(function () { tag.classList.add('visible'); });
-          });
-          // Render the number
-          schedule(TAG_MS, function () {
-            var num = document.createElement('span');
-            num.className = 'gen-thought-tag';
-            num.textContent = String(seg.n);
-            appendBeforeCursor(num);
-            requestAnimationFrame(function () { num.classList.add('visible'); });
-          });
-          // Render closing tag
-          schedule(TAG_MS, function () {
-            var ctag = document.createElement('span');
-            ctag.className = 'gen-thought-tag';
-            ctag.textContent = '</implicit_thought>';
-            appendBeforeCursor(ctag);
-            requestAnimationFrame(function () { ctag.classList.add('visible'); });
-          });
-          // Show pulsing latent dots
-          schedule(100 * SPEED_SCALE, function () {
-            var indicator = document.createElement('span');
-            indicator.className = 'gen-latent-indicator';
-            for (var i = 0; i < seg.n; i++) {
-              var dot = document.createElement('span');
-              dot.className = 'gen-latent-dot';
-              indicator.appendChild(dot);
-            }
-            latentIndicator = indicator;
-            appendBeforeCursor(indicator);
-          });
-          // Wait for latent steps to "complete"
-          delay += seg.n * LATENT_STEP_MS;
-          schedule(0, function () {
-            // Remove the pulsing dots after latent reasoning completes
-            if (latentIndicator && latentIndicator.parentNode) latentIndicator.remove();
-          });
-        } else if (seg.t === 'a') {
-          schedule(TOKEN_MS * 2, function () {
-            var s = document.createElement('span');
-            s.className = 'gen-token discrete';
-            s.textContent = ' ' + seg.text;
-            s.style.fontWeight = 'bold';
-            appendBeforeCursor(s);
-            requestAnimationFrame(function () { s.classList.add('visible'); });
-          });
-        }
-      });
-
-      // Finish: hide the cursor and offer replay instead of looping forever.
-      schedule(900 * SPEED_SCALE, function () {
-        cursor.classList.add('is-hidden');
-        setButtonPaused(true);
-      });
-    }
-
-    window.toggleAnimation = function () {
-      var btn = document.getElementById('gen-play-pause');
-      if (btn.dataset.paused === '1') {
-        setButtonPaused(false);
-        run();
-      } else {
-        setButtonPaused(true);
-        animGen++; // invalidate all pending callbacks
-        if (cursor) cursor.classList.add('is-hidden');
-      }
-    };
-
-    if (prefersReducedMotion) {
-      renderStatic();
-      setButtonPaused(true);
-    } else {
-      run();
-    }
-  }
-
   /* ── Chart draw functions ────────────────────────────────────────────────── */
 
   function drawFF() {
@@ -1546,8 +1259,8 @@
       rlMaxWidth: 220,
       finalTitle: 'LiteReason achieves near RL performance',
       finalDetail: 'using latent reasoning during RL',
-      finalSlotX: 0.6,
-      finalSlotY: 0.6,
+      finalSlotX: 0.65,
+      finalSlotY: 0.3,
       finalMaxWidth: 220,
       hoverText: {
         'latent-cluster': {
@@ -1572,8 +1285,8 @@
           title: 'LiteReason achieves near RL performance',
           detail: 'using latent reasoning during RL',
           accent: '70% fewer tokens',
-          slotX: 0.6,
-          slotY: 0.6
+          slotX: 0.65,
+          slotY: 0.3
         }
       }
     });
@@ -1653,8 +1366,7 @@
   function initObserver() {
     var handler = {
       'scatter-ff':     drawFF,
-      'scatter-ncp':    drawNCP,
-      'gen-animation':  initGenAnimation
+      'scatter-ncp':    drawNCP
     };
 
     var obs = new IntersectionObserver(function (entries) {
@@ -1674,22 +1386,27 @@
 
   /* ── Resize ──────────────────────────────────────────────────────────────── */
 
-  var resizeTimer;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      Object.keys(scatterStates).forEach(function (id) {
-        var state = scatterStates[id];
-        if (state && state.raf) {
-          cancelAnimationFrame(state.raf);
-          state.raf = 0;
-          state.playing = false;
-        }
+  function resizeChart(canvas) {
+    var spec = canvas._scatterSpec;
+    if (!spec || Math.abs(parseFloat(canvas.style.width) - canvasWidth(canvas)) < 1) return;
+    var state = getScatterState(canvas.id);
+    // The next animation frame uses the new dimensions without restarting time.
+    if (state.playing) return;
+    renderScatter(canvas.id, spec.data, spec.opts, canvas._lastScene);
+  }
+  if ('ResizeObserver' in window) {
+    var resizeObserver = new ResizeObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var canvas = entry.target.querySelector('canvas');
+        if (canvas) resizeChart(canvas);
       });
-      if (drawn['scatter-ff'])  drawFF();
-      if (drawn['scatter-ncp']) drawNCP();
-    }, 200);
-  });
+    });
+    document.querySelectorAll('.chart-wrapper').forEach(function (wrapper) { resizeObserver.observe(wrapper); });
+  } else {
+    window.addEventListener('resize', function () {
+      document.querySelectorAll('.chart-wrapper canvas').forEach(resizeChart);
+    });
+  }
 
   /* ── Boot ────────────────────────────────────────────────────────────────── */
 

@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
-<div class="project-page{% if page.project_class %} {{ page.project_class }}{% endif %}">
+<div class="project-page{% if page.project_class %} {{ page.project_class }}{% endif %}"{% if page.project_style %} data-lr-style="{{ page.project_style }}"{% endif %}{% if page.hero_design %} data-lr-hero="{{ page.hero_design }}"{% endif %}>
   <section class="project-hero text-center">
+    {% if page.hero_include %}{% include {{ page.hero_include }} %}{% endif %}
     <h1 class="project-title">{{ page.title }}</h1>
 
     <div class="project-authors">
