@@ -29,7 +29,7 @@ links:
   - text: Code
     url: "https://github.com/Alex-Gurung/LiteReason"
     icon: "fab fa-github"
-charts_js: "/assets/js/litereason-charts.js?v=20261024"
+charts_js: "/assets/js/litereason-charts.js?v=20261024e"
 bibtex: |
   @article{gurung2026lightweightlatentreasoning,
     title     = {Lightweight Latent Reasoning for Narrative Tasks},
@@ -278,13 +278,175 @@ A DAPO-style length penalty improves both standard RL and LiteReason on Flawed F
 
 ## LiteReason Retains General Model Capabilities
 
-On GSM-Hard, AIME25, and MMLU-Redux, LiteReason and the RL-Trained baseline largely retain the abilities of Qwen2.5-7B. LiteReason models also reason more concisely, consistently producing fewer tokens than the base model and RL-Trained variants. The full table in our paper also compares latent-inference modes and non-LiteReason latent baselines.
+On GSM-Hard, AIME25, and MMLU-Redux, LiteReason and the RL-Trained baseline largely retain the abilities of Qwen2.5-7B. LiteReason models also reason more concisely, consistently producing fewer tokens than the base model and RL-Trained variants.
 
-<p class="litereason-table-caption">Cross-task generalization with standard token inference (latent mode off). Values are mean accuracy (%) and generated tokens from Table 10.</p>
+<p class="litereason-table-caption">Cross-task generalization for Qwen2.5-7B (Table 10). ✓ uses each method’s latent-inference pipeline; × uses standard token inference. Values are mean accuracy (%) and generated tokens.</p>
 <div aria-label="Cross-task generalization results" class="litereason-table-wrap lr-wide-wrap" role="region" tabindex="0">
 <table class="litereason-table is-compact lr-data-table lr-generalization">
-<thead><tr><th rowspan="2" scope="col">Task</th><th rowspan="2" scope="col">Method</th><th colspan="2" scope="colgroup">GSM-Hard</th><th colspan="2" scope="colgroup">AIME25</th><th colspan="2" scope="colgroup">MMLU-Redux</th></tr>
-<tr><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th></tr></thead><tbody><tr><th colspan="2" scope="row">No finetuning</th><td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td><td data-label="Tokens ↓">371.4</td><td data-label="Acc. (%) ↑"><strong class="lr-best">11.3</strong></td><td data-label="Tokens ↓">891.1</td><td data-label="Acc. (%) ↑">78.7</td><td data-label="Tokens ↓">317.0</td></tr></tbody><tbody><tr><th class="lr-task-group" rowspan="3" scope="rowgroup">FF</th><th scope="row">RL-Trained</th><td data-label="Acc. (%) ↑">27.2</td><td data-label="Tokens ↓">359.1</td><td data-label="Acc. (%) ↑">10.0</td><td data-label="Tokens ↓">857.3</td><td data-label="Acc. (%) ↑"><strong class="lr-best">79.0</strong></td><td data-label="Tokens ↓">300.5</td></tr><tr class="lr-result-row"><th scope="row">LiteReason</th><td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td><td data-label="Tokens ↓">349.7</td><td data-label="Acc. (%) ↑">10.7</td><td data-label="Tokens ↓">834.7</td><td data-label="Acc. (%) ↑">78.8</td><td data-label="Tokens ↓">283.4</td></tr><tr><th scope="row">CoLaR</th><td data-label="Acc. (%) ↑">27.1</td><td data-label="Tokens ↓">372.2</td><td data-label="Acc. (%) ↑">8.0</td><td data-label="Tokens ↓">876.1</td><td data-label="Acc. (%) ↑">78.9</td><td data-label="Tokens ↓">328.4</td></tr></tbody><tbody><tr><th class="lr-task-group" rowspan="3" scope="rowgroup">NCP</th><th scope="row">RL-Trained</th><td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td><td data-label="Tokens ↓">365.0</td><td data-label="Acc. (%) ↑">10.0</td><td data-label="Tokens ↓">912.7</td><td data-label="Acc. (%) ↑">78.8</td><td data-label="Tokens ↓">297.9</td></tr><tr class="lr-result-row"><th scope="row">LiteReason</th><td data-label="Acc. (%) ↑">26.5</td><td data-label="Tokens ↓"><strong class="lr-best">334.4</strong></td><td data-label="Acc. (%) ↑">4.0</td><td data-label="Tokens ↓">737.2</td><td data-label="Acc. (%) ↑">78.2</td><td data-label="Tokens ↓"><strong class="lr-best">250.0</strong></td></tr><tr><th scope="row">CoLaR</th><td data-label="Acc. (%) ↑">5.9</td><td data-label="Tokens ↓">716.0</td><td data-label="Acc. (%) ↑">0.7</td><td data-label="Tokens ↓"><strong class="lr-best">655.0</strong></td><td data-label="Acc. (%) ↑">26.9</td><td data-label="Tokens ↓">424.0</td></tr></tbody></table></div>
+  <thead>
+    <tr><th rowspan="2" scope="col">Task</th><th rowspan="2" scope="col">Method</th><th rowspan="2" scope="col">Latent</th><th colspan="2" scope="colgroup">GSM-Hard</th><th colspan="2" scope="colgroup">AIME25</th><th colspan="2" scope="colgroup">MMLU-Redux</th></tr>
+    <tr><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th><th scope="col">Acc. (%) ↑</th><th scope="col">Tokens ↓</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th colspan="2" scope="row">No finetuning</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td>
+      <td data-label="Tokens ↓">371.4</td>
+      <td data-label="Acc. (%) ↑"><strong class="lr-best">11.3</strong></td>
+      <td data-label="Tokens ↓">891.1</td>
+      <td data-label="Acc. (%) ↑">78.7</td>
+      <td data-label="Tokens ↓">317.0</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th class="lr-task-group" rowspan="7" scope="rowgroup">FF</th>
+      <th scope="row">RL-Trained</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">27.2</td>
+      <td data-label="Tokens ↓">359.1</td>
+      <td data-label="Acc. (%) ↑">10.0</td>
+      <td data-label="Tokens ↓">857.3</td>
+      <td data-label="Acc. (%) ↑"><strong class="lr-best">79.0</strong></td>
+      <td data-label="Tokens ↓">300.5</td>
+    </tr>
+    <tr class="lr-result-row">
+      <th scope="row">LiteReason</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td>
+      <td data-label="Tokens ↓">349.7</td>
+      <td data-label="Acc. (%) ↑">10.7</td>
+      <td data-label="Tokens ↓">834.7</td>
+      <td data-label="Acc. (%) ↑">78.8</td>
+      <td data-label="Tokens ↓">283.4</td>
+    </tr>
+    <tr class="lr-result-row">
+      <th scope="row">LiteReason</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">26.9</td>
+      <td data-label="Tokens ↓">316.3</td>
+      <td data-label="Acc. (%) ↑">4.7</td>
+      <td data-label="Tokens ↓">857.4</td>
+      <td data-label="Acc. (%) ↑">78.6</td>
+      <td data-label="Tokens ↓">273.4</td>
+    </tr>
+    <tr>
+      <th scope="row">CoLaR</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">27.1</td>
+      <td data-label="Tokens ↓">372.2</td>
+      <td data-label="Acc. (%) ↑">8.0</td>
+      <td data-label="Tokens ↓">876.1</td>
+      <td data-label="Acc. (%) ↑">78.9</td>
+      <td data-label="Tokens ↓">328.4</td>
+    </tr>
+    <tr>
+      <th scope="row">CoLaR</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">26.9</td>
+      <td data-label="Tokens ↓">338.8</td>
+      <td data-label="Acc. (%) ↑">8.0</td>
+      <td data-label="Tokens ↓">865.8</td>
+      <td data-label="Acc. (%) ↑">78.2</td>
+      <td data-label="Tokens ↓">208.6</td>
+    </tr>
+    <tr>
+      <th scope="row">COCONUT</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">7.9</td>
+      <td data-label="Tokens ↓">461.1</td>
+      <td data-label="Acc. (%) ↑">0.0</td>
+      <td data-label="Tokens ↓"><strong class="lr-best">489.4</strong></td>
+      <td data-label="Acc. (%) ↑">29.9</td>
+      <td data-label="Tokens ↓">404.6</td>
+    </tr>
+    <tr>
+      <th scope="row">COCONUT</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">12.2</td>
+      <td data-label="Tokens ↓">393.4</td>
+      <td data-label="Acc. (%) ↑">0.7</td>
+      <td data-label="Tokens ↓">660.0</td>
+      <td data-label="Acc. (%) ↑">35.7</td>
+      <td data-label="Tokens ↓">344.2</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th class="lr-task-group" rowspan="7" scope="rowgroup">NCP</th>
+      <th scope="row">RL-Trained</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑"><strong class="lr-best">27.3</strong></td>
+      <td data-label="Tokens ↓">365.0</td>
+      <td data-label="Acc. (%) ↑">10.0</td>
+      <td data-label="Tokens ↓">912.7</td>
+      <td data-label="Acc. (%) ↑">78.8</td>
+      <td data-label="Tokens ↓">297.9</td>
+    </tr>
+    <tr class="lr-result-row">
+      <th scope="row">LiteReason</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">26.5</td>
+      <td data-label="Tokens ↓">334.4</td>
+      <td data-label="Acc. (%) ↑">4.0</td>
+      <td data-label="Tokens ↓">737.2</td>
+      <td data-label="Acc. (%) ↑">78.2</td>
+      <td data-label="Tokens ↓">250.0</td>
+    </tr>
+    <tr class="lr-result-row">
+      <th scope="row">LiteReason</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">26.5</td>
+      <td data-label="Tokens ↓"><strong class="lr-best">301.1</strong></td>
+      <td data-label="Acc. (%) ↑">7.3</td>
+      <td data-label="Tokens ↓">617.1</td>
+      <td data-label="Acc. (%) ↑">76.7</td>
+      <td data-label="Tokens ↓"><strong class="lr-best">186.9</strong></td>
+    </tr>
+    <tr>
+      <th scope="row">CoLaR</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">5.9</td>
+      <td data-label="Tokens ↓">716.0</td>
+      <td data-label="Acc. (%) ↑">0.7</td>
+      <td data-label="Tokens ↓">655.0</td>
+      <td data-label="Acc. (%) ↑">26.9</td>
+      <td data-label="Tokens ↓">424.0</td>
+    </tr>
+    <tr>
+      <th scope="row">CoLaR</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">1.3</td>
+      <td data-label="Tokens ↓">674.9</td>
+      <td data-label="Acc. (%) ↑">0.7</td>
+      <td data-label="Tokens ↓">516.9</td>
+      <td data-label="Acc. (%) ↑">29.4</td>
+      <td data-label="Tokens ↓">660.3</td>
+    </tr>
+    <tr>
+      <th scope="row">COCONUT</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning disabled">×</td>
+      <td data-label="Acc. (%) ↑">19.4</td>
+      <td data-label="Tokens ↓">349.1</td>
+      <td data-label="Acc. (%) ↑">2.0</td>
+      <td data-label="Tokens ↓">783.5</td>
+      <td data-label="Acc. (%) ↑">43.1</td>
+      <td data-label="Tokens ↓">274.8</td>
+    </tr>
+    <tr>
+      <th scope="row">COCONUT</th>
+      <td class="lr-latent-state" data-label="Latent" aria-label="Latent reasoning enabled">✓</td>
+      <td data-label="Acc. (%) ↑">15.2</td>
+      <td data-label="Tokens ↓">422.2</td>
+      <td data-label="Acc. (%) ↑">0.0</td>
+      <td data-label="Tokens ↓">829.6</td>
+      <td data-label="Acc. (%) ↑">38.9</td>
+      <td data-label="Tokens ↓">376.5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 ## LiteReason Works Across Model Sizes and Families
 
@@ -299,19 +461,7 @@ On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy fro
 <th scope="col">Tokens ↓</th>
 </tr>
 </thead>
-<tbody><tr>
-<th data-label="Method" scope="row">Base</th>
-<td data-label="Accuracy (%) ↑">33.23</td>
-<td data-label="Tokens ↓">1709.86</td>
-</tr><tr>
-<th data-label="Method" scope="row">RL-Trained</th>
-<td data-label="Accuracy (%) ↑"><strong class="lr-best">64.84</strong></td>
-<td data-label="Tokens ↓">1078.57</td>
-</tr><tr class="lr-result-row">
-<th data-label="Method" scope="row">LiteReason</th>
-<td data-label="Accuracy (%) ↑">57.42</td>
-<td data-label="Tokens ↓"><strong class="lr-best">995.38</strong></td>
-</tr></tbody>
+<tbody><tr><th data-label="Method" scope="row">Base</th><td data-label="Accuracy (%) ↑">33.23</td><td data-label="Tokens ↓">1709.86</td></tr><tr><th data-label="Method" scope="row">RL-Trained</th><td data-label="Accuracy (%) ↑"><strong class="lr-best">64.84</strong></td><td data-label="Tokens ↓">1078.57</td></tr><tr class="lr-result-row"><th data-label="Method" scope="row">LiteReason</th><td data-label="Accuracy (%) ↑">57.42</td><td data-label="Tokens ↓">995.38</td></tr><tr><th data-label="Method" scope="row">CoLaR</th><td data-label="Accuracy (%) ↑">29.35</td><td data-label="Tokens ↓">336.49</td></tr><tr><th data-label="Method" scope="row">COCONUT</th><td data-label="Accuracy (%) ↑">28.55</td><td data-label="Tokens ↓"><strong class="lr-best">20.64</strong></td></tr></tbody>
 </table></div>
 <div class="litereason-table-wrap"><table class="litereason-table is-compact lr-data-table"><caption>GSM-Hard<span class="lr-table-subtitle">Gemma3-1B</span></caption>
 <thead>
@@ -321,21 +471,10 @@ On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy fro
 <th scope="col">Tokens ↓</th>
 </tr>
 </thead>
-<tbody><tr>
-<th data-label="Method" scope="row">Base</th>
-<td data-label="Accuracy (%) ↑">14.70</td>
-<td data-label="Tokens ↓">932.82</td>
-</tr><tr>
-<th data-label="Method" scope="row">RL-Trained</th>
-<td data-label="Accuracy (%) ↑"><strong class="lr-best">15.91</strong></td>
-<td data-label="Tokens ↓">941.13</td>
-</tr><tr class="lr-result-row">
-<th data-label="Method" scope="row">LiteReason</th>
-<td data-label="Accuracy (%) ↑">15.76</td>
-<td data-label="Tokens ↓"><strong class="lr-best">849.92</strong></td>
-</tr></tbody>
+<tbody><tr><th data-label="Method" scope="row">Base</th><td data-label="Accuracy (%) ↑">14.70</td><td data-label="Tokens ↓">932.82</td></tr><tr><th data-label="Method" scope="row">RL-Trained</th><td data-label="Accuracy (%) ↑"><strong class="lr-best">15.91</strong></td><td data-label="Tokens ↓">941.13</td></tr><tr class="lr-result-row"><th data-label="Method" scope="row">LiteReason</th><td data-label="Accuracy (%) ↑">15.76</td><td data-label="Tokens ↓">849.92</td></tr><tr><th data-label="Method" scope="row">CoLaR</th><td data-label="Accuracy (%) ↑">1.14</td><td data-label="Tokens ↓">978.24</td></tr><tr><th data-label="Method" scope="row">COCONUT</th><td data-label="Accuracy (%) ↑">1.52</td><td data-label="Tokens ↓"><strong class="lr-best">25.12</strong></td></tr></tbody>
 </table></div>
 </div>
+
 
 ## Takeaways
 

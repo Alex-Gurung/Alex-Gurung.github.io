@@ -1229,7 +1229,7 @@
 
   function drawFF() {
     drawScatterWithHighlight('scatter-ff', [
-      { label: 'Qwen2.5-7B',    x: 57.26, y: 400,    oy: -14 },
+      { label: 'Qwen2.5-7B',    x: 57.26, y: 400.04,    oy: -14 },
       { label: 'MoI',            x: 58.06, y: 401.73, oy: 18 },
       { label: 'Soft Thinking',  x: 57.42, y: 360.90, oy: -14 },
       { label: 'COCONUT',        x: 50.65, y: 268.07, oy: -14 },
