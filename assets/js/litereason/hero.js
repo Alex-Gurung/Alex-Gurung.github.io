@@ -10,9 +10,19 @@
   var model = scene.querySelector('.lr-model-turn');
   var pieces = Array.from(scene.querySelectorAll('.lr-model-piece'));
   var transcript = scene.querySelector('.lr-transcript');
-  var button = scene.querySelector('.lr-conversation-play');
-  var elapsed = 0, last = null, raf = 0, paused = false;
-  var glyphs = ['M0 0h8m5-3v6h7', 'M0-3h7v6H0m13-3h8', 'M0-3v6h7m6-3h9', 'M0 0h10m6-3v6', 'M0-3h8v6m6-3h6', 'M0 0h6v-3m7 0v6h7'];
+  var elapsed = 0, last = null, raf = 0;
+  // Original glyphs: broken organic rings and asymmetric branching strokes.
+  // Shared by the incoming question and outgoing transcript.
+  var glyphs = [
+    'M13-6C6-9 0-3 3 3S14 9 17 3M17 0C19-4 17-6 15-7M4 3L0 5M7 6L5 10M13-6L14-10M8-6L6-9',
+    'M5-5C-1 0 4 8 11 6S20-3 14-6M11-6C8-8 6-6 5-5M15 5L20 8M17 2L21 3M5-5L2-8M4 3L1 4',
+    'M16-4C12-9 4-6 3 0S9 9 15 5M17 3C19 0 18-2 16-4M6-5L5-9M3 0L0-1M10 6L9 10M15 5L18 8M9-3Q5 0 8 3',
+    'M8-6C0-5 0 4 7 6S18 3 17-3M14-6L11-7M2 0L-1 2M5 5L3 8M17-3L21-5M15 4L19 6M8-6L9-10',
+    'M4-3C0 3 7 9 13 5S20-5 12-6M9-6L6-5M4-3L1-5M7 6L7 10M16 2L21 1M15-5L17-8M12-3Q15-1 13 2',
+    'M16-2C16-8 5-8 3-1S8 8 14 6M16 4L18 1M4-4L1-7M3 1L0 3M12 6L14 10M16-2L20-3M7-5L6-9'
+  ];
+  input.forEach(function (mark, index) { mark.setAttribute('d', glyphs[index % glyphs.length]); });
+
   var budgets = {
     short: { duration: 1200, turns: 1 },
     long: { duration: 2100, turns: 2 }
@@ -77,9 +87,12 @@
       row.tokens.push({ node: node, delay: delay });
     }
     if (event.line.kind === 'answer') {
+      var answer = element('g', { 'class': 'lr-answer-box' }, row.node);
+      var box = element('rect', { x: 0, y: -11, width: 58, height: 24, rx: 3 }, answer);
+      row.tokens.push({ node: box, delay: 0 });
       ['Y', 'e', 's'].forEach(function (letter, index) {
-        var node = element('text', { x: [0, 9, 16][index], y: 4, 'class': 'lr-transcript-answer' }, row.node, letter);
-        row.tokens.push({ node: node, delay: index * 120 });
+        var node = element('text', { x: [17, 26, 33][index], y: 5, 'class': 'lr-transcript-answer' }, answer, letter);
+        row.tokens.push({ node: node, delay: 100 + index * 120 });
       });
     } else if (event.line.kind === 'tool') {
       glyph(0, 0, 1); glyph(32, 180, 3);
@@ -101,22 +114,23 @@
           response: response.id, lineIndex: index, responseAt: response.start + response.lines[0].at });
       });
     });
-    var latest = events[events.length - 1];
+    var latest = history[history.length - 1];
     var used = [];
     events.forEach(function (event, index) {
       var row = rows[((event.ordinal % rows.length) + rows.length) % rows.length];
       used.push(row);
       if (row.key !== event.ordinal) buildLine(row, event);
       var age = time - event.at;
-      // Append within a response from top to bottom. Only a new response
-      // pushes the preceding response down, preserving its reading order.
+      // Read top to bottom. Clear the completed response as the next input
+      // enters, before any of the next response's output begins.
       var entering = ease((time - event.responseAt) / 420);
-      var retiring = latest && event.response < latest.response;
-      var push = retiring ? 112 * ease((time - latest.responseAt) / 600) : 0;
+      var retiring = latest && event.response < latest.id;
+      var retirement = retiring ? ease((time - latest.start) / 240) : 0;
+      var push = 6 * retirement;
       var y = 140 + event.lineIndex * 26 + push - (1 - entering) * 26;
       row.node.setAttribute('data-order', event.ordinal);
       row.node.setAttribute('transform', 'translate(32 ' + y.toFixed(3) + ')');
-      row.node.setAttribute('opacity', (ease(age / 180) * (retiring ? 1 - ease((time - latest.responseAt) / 600) : 1)).toFixed(3));
+      row.node.setAttribute('opacity', (ease(age / 180) * (1 - retirement)).toFixed(3));
       row.tokens.forEach(function (token) {
         token.node.setAttribute('opacity', ease((age - token.delay) / 160).toFixed(3));
         if (token.call) token.node.setAttribute('data-active', age >= 550 && age < 550 + event.line.duration ? 'true' : 'false');
@@ -160,17 +174,14 @@
   }
   function frame(now) {
     raf = 0;
-    if (paused || reduced.matches || document.hidden) { last = null; return; }
+    if (reduced.matches || document.hidden) { last = null; return; }
     if (last !== null) elapsed += Math.min(now - last, 64);
     last = now; draw(elapsed); raf = requestAnimationFrame(frame);
   }
   function resume() {
     cancelAnimationFrame(raf); raf = 0; last = null;
-    if (!paused && !reduced.matches && !document.hidden) raf = requestAnimationFrame(frame);
-    button.textContent = paused ? '▶' : 'Ⅱ';
-    button.setAttribute('aria-label', (paused ? 'Play' : 'Pause') + ' illustrative generation');
+    if (!reduced.matches && !document.hidden) raf = requestAnimationFrame(frame);
   }
-  button.addEventListener('click', function () { paused = !paused; resume(); });
   document.addEventListener('visibilitychange', resume);
   reduced.addEventListener('change', function () { draw(reduced.matches ? staticResponse.end - 400 : elapsed); resume(); });
   root.querySelector('.lr-hero-art').setAttribute('aria-hidden', 'false');

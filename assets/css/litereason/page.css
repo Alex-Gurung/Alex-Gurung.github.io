@@ -212,8 +212,6 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
 .lr-tool-call[data-active='true'] rect { fill: var(--lr-call-tint); stroke: var(--lr-call-color); }
 .lr-tool-call[data-active='true'] .lr-tool-label { fill: var(--lr-call-color); }
 .lr-stream-input path { opacity: 0; }
-.lr-conversation-play { position: absolute; right: 0; bottom: 3px; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 3px; background: none; color: var(--lr-muted); font: 14px/1 var(--lr-sans); cursor: pointer; }
-.lr-conversation-play:hover { background: var(--lr-latent-soft); }
 @media (max-width: 760px) {
   .litereason-project[data-lr-hero='conversation'] .project-hero { padding-right: 225px; }
   .litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 210px; height: 168px; }
@@ -223,7 +221,6 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
   .litereason-project[data-lr-hero='conversation'] .lr-hero-art { float: none; width: 240px; height: 192px; top: auto; margin: 0 auto 18px; }
   .lr-hero-art .lr-tool-label { display: block; }
 }
-@media (prefers-reduced-motion: reduce) { .lr-conversation-play { display: none; } }
 
 /* The eight pieces persist in the browser's 3D scene, avoiding SVG face sorting. */
 .lr-model-viewport { position: absolute; left: 50%; top: 27.0833%; width: 0; height: 0; perspective: 500px; perspective-origin: 0 0; pointer-events: none; }
@@ -242,8 +239,9 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
 @media (max-width: 540px) { .lr-model-scale { transform: scale(.8); } }
 
 /* A compact transcript; the call is an inline token in the same output row. */
-.lr-transcript-glyph { fill: none; stroke: var(--lr-muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.lr-hero-art .lr-transcript-answer { display: block; font: 600 14px var(--lr-sans); fill: var(--lr-ink); }
+.lr-transcript-glyph { fill: none; stroke: var(--lr-muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.lr-answer-box rect { fill: #fbf4df; stroke: #b79849; stroke-width: 1; }
+.lr-hero-art .lr-transcript-answer { display: block; font: 600 14px var(--lr-sans); fill: #796024; }
 .litereason-project .project-title { font-size: clamp(32px, 3.2vw, 44px); line-height: 1.12; }
 .litereason-project .project-authors { font-size: 15px; }
 .litereason-project .project-affiliations { font-size: 13px; }
