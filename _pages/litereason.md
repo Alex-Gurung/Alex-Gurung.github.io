@@ -29,7 +29,7 @@ links:
   - text: Code
     url: "https://github.com/Alex-Gurung/LiteReason"
     icon: "fab fa-github"
-charts_js: "/assets/js/litereason-charts.js?v=20261024g"
+charts_js: "/assets/js/litereason-charts.js?v=20261024h"
 bibtex: |
   @article{gurung2026lightweightlatentreasoning,
     title     = {Lightweight Latent Reasoning for Narrative Tasks},

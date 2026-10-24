@@ -31,10 +31,11 @@
   var scatterStates = {};
   var DEFAULT_LATENT_LABELS = ['MoI', 'Soft Thinking', 'COCONUT', 'CoLaR'];
 
-  // Axis styling follows Matplotlib's default rcParams (default style).
+  // Matplotlib default axes and dash patterns; Seaborn whitegrid's grid gray.
   var AXIS_STYLE = { edge: '#000000', label: '#000000', tick: '#000000',
     lineWidth: 0.8, tickWidth: 0.8, majorLength: 3.5, minorLength: 2,
-    grid: false, gridColor: '#b0b0b0', gridWidth: 0.8 };
+    grid: true, gridColor: '#cccccc', gridWidth: 0.8, minorGridWidth: 0.4,
+    majorDash: [3.7, 1.6], minorDash: [1, 1.65] };
 
   var SCATTER_HEIGHT = 480;
   var SCATTER_PADDING = { t: 40, r: 35, b: 66, l: 76 };
@@ -383,12 +384,14 @@
         var v = Math.round(k * half * 1e10) / 1e10;
         var major = k % 2 === 0;
         var p = horizontal ? xPx(v) : yPx(v);
-        if (major && AXIS_STYLE.grid) {
-          ctx.strokeStyle = AXIS_STYLE.gridColor; ctx.lineWidth = AXIS_STYLE.gridWidth; ctx.beginPath();
+        if (AXIS_STYLE.grid) {
+          ctx.strokeStyle = AXIS_STYLE.gridColor; ctx.lineWidth = major ? AXIS_STYLE.gridWidth : AXIS_STYLE.minorGridWidth;
+          ctx.setLineDash(major ? AXIS_STYLE.majorDash : AXIS_STYLE.minorDash); ctx.beginPath();
           if (horizontal) { ctx.moveTo(p, pad.t); ctx.lineTo(p, H - pad.b); }
           else { ctx.moveTo(pad.l, p); ctx.lineTo(W - pad.r, p); }
           ctx.stroke();
         }
+        ctx.setLineDash([]);
         ctx.strokeStyle = AXIS_STYLE.tick; ctx.lineWidth = AXIS_STYLE.tickWidth; ctx.beginPath();
         var tickLength = major ? AXIS_STYLE.majorLength : AXIS_STYLE.minorLength;
         if (horizontal) { ctx.moveTo(p, H - pad.b); ctx.lineTo(p, H - pad.b + tickLength); }
@@ -518,6 +521,15 @@
         if (layout.compact) {
           drawCompactLabel(ctx, pointState, displayLabel, detail, pointStates, labelBoxes, { left: pad.l + 4, right: W - pad.r - 4, top: pad.t + 6, bottom: H - pad.b - 6 });
         } else {
+          var labelWidth = ctx.measureText(displayLabel).width;
+          if (detail) {
+            var labelFont = ctx.font; ctx.font = '13px -apple-system, sans-serif';
+            labelWidth = Math.max(labelWidth, ctx.measureText(detail).width); ctx.font = labelFont;
+          }
+          // At intermediate widths, use the other side rather than clipping a label.
+          if (placement.align === 'left' && pointState.px + placement.x + labelWidth > W - 8) {
+            placement = { x: -18, y: placement.y, align: 'right' };
+          }
           ctx.textAlign = placement.align;
           // An opaque halo keeps grid and animated guide lines out of the type.
           ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.lineJoin = 'round';
@@ -644,7 +656,7 @@
       'scatter-ff': {
         'Qwen2.5-7B': [-12, -5, 'right'], 'MoI': [12, 4, 'left'],
         'Soft Thinking': [12, 4, 'left'], 'COCONUT': [-12, 4, 'right'],
-        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-18, -5, 'right'],
+        'CoLaR': [12, 4, 'left'], 'RL-Trained': [18, -5, 'left'],
         'LiteReason': [-18, -5, 'right']
       },
       'scatter-ncp': {
