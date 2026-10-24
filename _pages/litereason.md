@@ -29,7 +29,7 @@ links:
   - text: Code
     url: "https://github.com/Alex-Gurung/LiteReason"
     icon: "fab fa-github"
-charts_js: "/assets/js/litereason-charts.js?v=20261024f"
+charts_js: "/assets/js/litereason-charts.js?v=20261024g"
 bibtex: |
   @article{gurung2026lightweightlatentreasoning,
     title     = {Lightweight Latent Reasoning for Narrative Tasks},
@@ -43,7 +43,7 @@ bibtex: |
 ## TL;DR
 
 <div class="tldr">
-<strong>LiteReason</strong> adds a lightweight <em>Reasoning Projector</em> to an LLM, letting RL-trained models interleave normal token generation with continuous latent reasoning. On narrative tasks, it reaches 69-96% of the gains from non-latent RL while cutting final reasoning traces by 70-73% and RL training tokens by about half. The savings come without hurting general capabilities (GSM-Hard, AIME25, MMLU-Redux), and stack with length-penalty reward shaping, producing the shortest <em>and</em> most performant model.
+<strong>LiteReason</strong> interleaves latent reasoning with standard token sampling. We initialize a lightweight <em>Reasoning Projector</em> from a small dataset of the model’s own reasoning traces, then use RL to improve task performance and learn when to use the projector. On narrative tasks, it reaches 69-96% of the gains from non-latent RL while cutting final reasoning traces by 70-73% and RL training tokens by about half. In contrast to other latent reasoning methods, LiteReason’s savings do not come at the cost of general capabilities (GSM-Hard, AIME25, and MMLU-Redux). Furthermore, LiteReason can be combined with length-penalty reward shaping, producing the shortest <em>and</em> most performant model on Flawed Fictions.
 </div>
 
 <div class="arch-diagram arch-video">
@@ -61,7 +61,7 @@ bibtex: |
 
 LiteReason keeps ordinary LM Head sampling but adds a Reasoning Projector. When the model emits an implicit-thought tag with a step budget, the projector predicts continuous token embeddings directly from the final hidden state before generation returns to text.
 
-We train in three stages: collect useful traces, initialize the projector with SFT, then run RL while treating only discrete token sampling as policy actions. After each RL epoch, we refresh the projector on trajectories from the current policy. See our paper for the full training recipe and inference procedure.
+We first sample reasoning traces from the model and retain those with positive reward. We replace selected reasoning sentences with implicit-thought tags and train the Reasoning Projector on the remaining text, keeping the rest of the LLM frozen. We then train the LLM with GRPO, treating only discrete token sampling steps as policy actions. After each RL epoch, we update the projector with SFT on reasoning traces generated during that epoch.
 
 <div class="gen-animation-container" id="gen-animation">
   <span class="gen-label">Example Generation</span>
@@ -75,7 +75,7 @@ We train in three stages: collect useful traces, initialize the projector with S
 
 ## Narrative Reasoning Requires Longer, More Varied Steps
 
-Most latent reasoning methods are developed on math and synthetic logic benchmarks, where a single reasoning step is short and formulaic: an equation, or a one-line rule. The narrative tasks we study are different. A reasoning step must track characters, plot constraints, and information spread across thousands of tokens of context, so steps are longer, more varied, and harder to compress into latent tokens.
+Compared with the benchmarks used in previous latent-reasoning work, our narrative tasks involve more varied and complex reasoning steps. For both Flawed Fictions and Next Chapter Prediction, the model has to cite and reason over story information in varied and diverse ways depending on the specific story. We hypothesize that these tasks provide a more difficult and realistic setting for latent reasoning.
 
 <p class="litereason-table-caption">
   <strong>Example reasoning steps.</strong> Steps from common latent-reasoning benchmarks (top) are short and formulaic; steps from our narrative tasks (bottom) are longer, reference long-range context, and vary in structure.
@@ -114,7 +114,7 @@ Most latent reasoning methods are developed on math and synthetic logic benchmar
 </table>
 </div>
 
-These narrative steps are what the Reasoning Projector must learn to skip: each latent thought stands in for a sentence-level step like the ones above, not a single short equation.
+During SFT, selected reasoning sentences are replaced with sequences of latent tokens. The projector is trained to produce embeddings that help the model generate the remaining reasoning text.
 
 ## LiteReason Approaches RL Performance with Fewer Tokens
 
@@ -245,7 +245,7 @@ Compared with RL-Trained, LiteReason produces traces 70% smaller on Flawed Ficti
 
 ## LiteReason Combines with Length-Based Reward Shaping
 
-A DAPO-style length penalty improves both standard RL and LiteReason on Flawed Fictions. LiteReason plus the penalty reaches 93.55% accuracy with 6.00 generated tokens on average, suggesting the method can combine cleanly with other RL reward shaping.
+We apply DAPO’s overlong reward shaping to both standard RL and LiteReason on Flawed Fictions. The length penalty improves performance and efficiency for both methods. On LiteReason, adding the length penalty produces the highest accuracy, 93.55%, and the fewest generated tokens, 6.00 on average.
 
 <div class="litereason-table-wrap">
 <table class="litereason-table is-compact lr-data-table lr-reward-table">
@@ -478,9 +478,7 @@ On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy fro
 
 ## Takeaways
 
-- A lightweight Reasoning Projector is enough to bring latent reasoning into RL: the policy decides when to switch into latent mode, and only discrete tokens are treated as policy actions.
-- On narrative tasks, LiteReason recovers 69-96% of non-latent RL's gains while producing 70-73% shorter final traces and using about half the RL training tokens.
-- The savings come without losing general capabilities, and stack with other reward shaping: with a DAPO-style length penalty, LiteReason reaches 93.55% accuracy on Flawed Fictions with just 6 generated tokens.
+LiteReason lets the model learn when to interleave latent reasoning with discrete token sampling during RL. On Flawed Fictions and Next Chapter Prediction, it comes closest to non-latent RL performance among the latent-reasoning methods tested, while generating substantially fewer tokens during training and inference. It also preserves general model capabilities and can be combined with length-based reward shaping.
 
 <script src="{{ "/assets/js/litereason/generation.js" | relative_url }}?v=20261024"></script>
 

@@ -31,6 +31,11 @@
   var scatterStates = {};
   var DEFAULT_LATENT_LABELS = ['MoI', 'Soft Thinking', 'COCONUT', 'CoLaR'];
 
+  // Axis styling follows Matplotlib's default rcParams (default style).
+  var AXIS_STYLE = { edge: '#000000', label: '#000000', tick: '#000000',
+    lineWidth: 0.8, tickWidth: 0.8, majorLength: 3.5, minorLength: 2,
+    grid: false, gridColor: '#b0b0b0', gridWidth: 0.8 };
+
   var SCATTER_HEIGHT = 480;
   var SCATTER_PADDING = { t: 40, r: 35, b: 66, l: 76 };
 
@@ -368,48 +373,52 @@
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
 
-    ctx.strokeStyle = '#f0f0f0';
-    ctx.lineWidth = 1;
-    var ticks = layout.compact ? 3 : 5, i, v, p;
-    for (i = 0; i <= ticks; i++) {
-      v = yMin + (yMax - yMin) * i / ticks;
-      p = yPx(v);
-      ctx.beginPath();
-      ctx.moveTo(pad.l, p);
-      ctx.lineTo(W - pad.r, p);
-      ctx.stroke();
-      ctx.fillStyle = '#888';
-      ctx.font = '14.5px -apple-system, sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText(Math.round(v), pad.l - 8, p + 4);
+    // Round major intervals, with an unlabeled tick halfway between each pair.
+    var xStep = layout.compact && opts.xCompactStep ? opts.xCompactStep : opts.xStep;
+    function drawAxisTicks(axis, step) {
+      var horizontal = axis === 'x';
+      var min = horizontal ? xMin : yMin, max = horizontal ? xMax : yMax;
+      var half = step / 2;
+      for (var k = Math.ceil(min / half - 1e-8); k <= Math.floor(max / half + 1e-8); k++) {
+        var v = Math.round(k * half * 1e10) / 1e10;
+        var major = k % 2 === 0;
+        var p = horizontal ? xPx(v) : yPx(v);
+        if (major && AXIS_STYLE.grid) {
+          ctx.strokeStyle = AXIS_STYLE.gridColor; ctx.lineWidth = AXIS_STYLE.gridWidth; ctx.beginPath();
+          if (horizontal) { ctx.moveTo(p, pad.t); ctx.lineTo(p, H - pad.b); }
+          else { ctx.moveTo(pad.l, p); ctx.lineTo(W - pad.r, p); }
+          ctx.stroke();
+        }
+        ctx.strokeStyle = AXIS_STYLE.tick; ctx.lineWidth = AXIS_STYLE.tickWidth; ctx.beginPath();
+        var tickLength = major ? AXIS_STYLE.majorLength : AXIS_STYLE.minorLength;
+        if (horizontal) { ctx.moveTo(p, H - pad.b); ctx.lineTo(p, H - pad.b + tickLength); }
+        else { ctx.moveTo(pad.l - tickLength, p); ctx.lineTo(pad.l, p); }
+        ctx.stroke();
+        if (major) {
+          ctx.fillStyle = AXIS_STYLE.tick; ctx.font = '14.5px -apple-system, sans-serif';
+          ctx.textAlign = horizontal ? 'center' : 'right';
+          var label = horizontal ? (opts.xFmt ? opts.xFmt(v) : v.toFixed(1)) : String(v);
+          ctx.fillText(label, horizontal ? p : pad.l - 9, horizontal ? H - pad.b + 22 : p + 4);
+        }
+      }
     }
-    for (i = 0; i <= ticks; i++) {
-      v = xMin + (xMax - xMin) * i / ticks;
-      p = xPx(v);
-      ctx.beginPath();
-      ctx.moveTo(p, pad.t);
-      ctx.lineTo(p, H - pad.b);
-      ctx.stroke();
-      ctx.fillStyle = '#888';
-      ctx.font = '14.5px -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(opts.xFmt ? opts.xFmt(v) : v.toFixed(1), p, H - pad.b + 18);
-    }
+    drawAxisTicks('y', opts.yStep);
+    drawAxisTicks('x', xStep);
 
-    ctx.strokeStyle = '#ccc';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = AXIS_STYLE.edge;
+    ctx.lineWidth = AXIS_STYLE.lineWidth;
     ctx.beginPath();
     ctx.moveTo(pad.l, pad.t);
     ctx.lineTo(pad.l, H - pad.b);
     ctx.lineTo(W - pad.r, H - pad.b);
     ctx.stroke();
 
-    ctx.fillStyle = '#555';
+    ctx.fillStyle = AXIS_STYLE.label;
     ctx.font = (layout.compact ? '14px' : '17px') + ' -apple-system, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(opts.xLabel, pad.l + dw / 2, H - pad.b + 52);
     ctx.save();
-    ctx.translate(16, pad.t + dh / 2);
+    ctx.translate(layout.compact ? 20 : 32, pad.t + dh / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(opts.yLabel, 0, 0);
     ctx.restore();
@@ -502,16 +511,18 @@
         ctx.fillStyle = '#333';
         ctx.font = (d.hl ? 'bold ' : '') + '14.5px -apple-system, sans-serif';
         var placement = scatterLabelPlacement(canvasId, d.label);
-        var value = canvasId === 'scatter-ff' ? d.x.toFixed(2) + '%' : d.x.toFixed(3);
-        var detail = d.label === 'LiteReason' || d.label === 'RL-Trained' ? value + ' · ' + d.y.toFixed(2) + ' tokens' : '';
+        var displayLabel = d.label === 'Qwen2.5-7B' ? 'Base' : d.label;
+        var value = canvasId === 'scatter-ff' ? d.x.toFixed(1) + '%' : d.x.toFixed(3);
+        var detail = d.label === 'Qwen2.5-7B' ? '(Qwen2.5-7B)' :
+          d.label === 'LiteReason' || d.label === 'RL-Trained' ? value + ', ' + d.y.toFixed(1) + ' tokens' : '';
         if (layout.compact) {
-          drawCompactLabel(ctx, pointState, d.label, detail, pointStates, labelBoxes, { left: pad.l + 4, right: W - pad.r - 4, top: pad.t + 6, bottom: H - pad.b - 6 });
+          drawCompactLabel(ctx, pointState, displayLabel, detail, pointStates, labelBoxes, { left: pad.l + 4, right: W - pad.r - 4, top: pad.t + 6, bottom: H - pad.b - 6 });
         } else {
           ctx.textAlign = placement.align;
           // An opaque halo keeps grid and animated guide lines out of the type.
           ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.lineJoin = 'round';
-          ctx.strokeText(d.label, pointState.px + placement.x, pointState.py + placement.y);
-          ctx.fillText(d.label, pointState.px + placement.x, pointState.py + placement.y);
+          ctx.strokeText(displayLabel, pointState.px + placement.x, pointState.py + placement.y);
+          ctx.fillText(displayLabel, pointState.px + placement.x, pointState.py + placement.y);
           if (detail) {
             ctx.font = '13px -apple-system, sans-serif'; ctx.fillStyle = '#59666c';
             ctx.strokeText(detail, pointState.px + placement.x, pointState.py + placement.y + 18);
@@ -553,14 +564,6 @@
       }
     }
 
-    ctx.save();
-    ctx.fillStyle = '#999';
-    ctx.font = 'italic 13px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('better \u2192', W - pad.r, H - pad.b + 36);
-    ctx.textAlign = 'left';
-    ctx.fillText('\u2193 better', pad.l + 2, pad.t - 6);
-    ctx.restore();
 
     canvas._lastScene = scene;
     canvas._cd = { points: hoverPoints, regions: hoverRegions };
@@ -608,7 +611,7 @@
       { x: x - width - 16, y: y - height - 12 },
       { x: x + 16, y: y - height - 12 }
     ];
-    if (label === 'Qwen2.5-7B') candidates.reverse();
+    if (label === 'Base') candidates.reverse();
     function overlaps(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
     candidates.forEach(function (box, index) {
       box.x = clamp(box.x, bounds.left, bounds.right - width);
@@ -628,7 +631,7 @@
     var distance = Math.hypot(endX - x, endY - y);
     if (distance > 13) {
       ctx.beginPath(); ctx.moveTo(x + (endX - x) * 12 / distance, y + (endY - y) * 12 / distance); ctx.lineTo(endX, endY);
-      ctx.strokeStyle = METHOD_COLORS[label]; ctx.lineWidth = .8; ctx.stroke();
+      ctx.strokeStyle = METHOD_COLORS[label === 'Base' ? 'Qwen2.5-7B' : label]; ctx.lineWidth = .8; ctx.stroke();
     }
     ctx.fillStyle = '#fff'; ctx.fillRect(box.x, box.y, width, height);
     ctx.textAlign = 'left'; ctx.fillStyle = '#333'; ctx.font = titleFont;
@@ -639,16 +642,16 @@
   function scatterLabelPlacement(canvasId, label) {
     var layouts = {
       'scatter-ff': {
-        'Qwen2.5-7B': [-16, -20, 'right'], 'MoI': [16, 4, 'left'],
-        'Soft Thinking': [14, 24, 'left'], 'COCONUT': [-12, 4, 'right'],
-        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-16, -36, 'right'],
-        'LiteReason': [-16, 0, 'right']
+        'Qwen2.5-7B': [-12, -5, 'right'], 'MoI': [12, 4, 'left'],
+        'Soft Thinking': [12, 4, 'left'], 'COCONUT': [-12, 4, 'right'],
+        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-18, -5, 'right'],
+        'LiteReason': [-18, -5, 'right']
       },
       'scatter-ncp': {
-        'Qwen2.5-7B': [16, -22, 'left'], 'MoI': [-14, 22, 'right'],
+        'Qwen2.5-7B': [14, -5, 'left'], 'MoI': [-14, 22, 'right'],
         'Soft Thinking': [14, -16, 'left'], 'COCONUT': [12, 4, 'left'],
-        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-16, -34, 'right'],
-        'LiteReason': [14, -22, 'left']
+        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-18, -5, 'right'],
+        'LiteReason': [14, -5, 'left']
       }
     };
     var p = (layouts[canvasId] || {})[label] || [0, -16, 'center'];
@@ -1239,6 +1242,7 @@
     ], {
       xLabel: 'Accuracy (%) →', yLabel: '← Generated Tokens',
       xMin: 40, xMax: 100, yMin: 0, yMax: 450,
+      xStep: 10, xCompactStep: 20, yStep: 100,
       xFmt: function (v) { return v.toFixed(0) + '%'; }
     }, {
       readingScale: 1.728,
@@ -1305,7 +1309,8 @@
     ], {
       xLabel: 'Contrastive Improvement →', yLabel: '← Generated Tokens',
       xMin: -0.05, xMax: 0.75, yMin: 0, yMax: 1050,
-      xFmt: function (v) { return v.toFixed(2); }
+      xStep: 0.2, yStep: 200,
+      xFmt: function (v) { return v.toFixed(1); }
     }, {
       readingScale: 1.728,
       baseTitle: 'Base model',
