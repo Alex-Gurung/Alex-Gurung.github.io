@@ -10,16 +10,18 @@
   var model = scene.querySelector('.lr-model-turn');
   var pieces = Array.from(scene.querySelectorAll('.lr-model-piece'));
   var transcript = scene.querySelector('.lr-transcript');
+  var latentRing = scene.querySelector('.lr-latent-ring');
+  var ringStrokes = Array.from(latentRing.querySelectorAll('path'));
   var elapsed = 0, last = null, raf = 0;
-  // Original glyphs: broken organic rings and asymmetric branching strokes.
-  // Shared by the incoming question and outgoing transcript.
+  // Small word-like strokes keep ordinary generation visually distinct from
+  // the circular marks drawn only while the latent tool is running.
   var glyphs = [
-    'M13-6C6-9 0-3 3 3S14 9 17 3M17 0C19-4 17-6 15-7M4 3L0 5M7 6L5 10M13-6L14-10M8-6L6-9',
-    'M5-5C-1 0 4 8 11 6S20-3 14-6M11-6C8-8 6-6 5-5M15 5L20 8M17 2L21 3M5-5L2-8M4 3L1 4',
-    'M16-4C12-9 4-6 3 0S9 9 15 5M17 3C19 0 18-2 16-4M6-5L5-9M3 0L0-1M10 6L9 10M15 5L18 8M9-3Q5 0 8 3',
-    'M8-6C0-5 0 4 7 6S18 3 17-3M14-6L11-7M2 0L-1 2M5 5L3 8M17-3L21-5M15 4L19 6M8-6L9-10',
-    'M4-3C0 3 7 9 13 5S20-5 12-6M9-6L6-5M4-3L1-5M7 6L7 10M16 2L21 1M15-5L17-8M12-3Q15-1 13 2',
-    'M16-2C16-8 5-8 3-1S8 8 14 6M16 4L18 1M4-4L1-7M3 1L0 3M12 6L14 10M16-2L20-3M7-5L6-9'
+    'M0 2v-7m0 5q2-4 4-1v3m3-2q0-3 3-3t3 3q0 3-3 3t-3-3m9-4v6m4-4v4',
+    'M0 0q0-3 3-3t3 3H0q0 4 6 2m4 0v-5m0 2q3-3 5 0v3m4-7v7',
+    'M0-3v3q0 4 4 2l1-5v5m4 0v-7m4 7v-5q4-3 5 1v4m4-4h3',
+    'M0 2v-5q2-2 4 0v5m0-5q3-2 5 1v4m4-2q0-4 4-3v5m0-3q-5-1-4 2t4 1m4-7v7',
+    'M0-5v7m-2-5h5m3 3q0-3 3-3t3 3q0 3-3 3t-3-3m10 2v-5q3-2 5 0',
+    'M0-2q3-2 5 0t-2 2q-4 0-2 3l4-1m4-5v4q0 3 4 1v-5m4 0v7m0-5q4-4 5 0t-5 2'
   ];
   input.forEach(function (mark, index) { mark.setAttribute('d', glyphs[index % glyphs.length]); });
 
@@ -88,11 +90,11 @@
     }
     if (event.line.kind === 'answer') {
       var answer = element('g', { 'class': 'lr-answer-box' }, row.node);
-      var box = element('rect', { x: 0, y: -11, width: 58, height: 24, rx: 3 }, answer);
+      var box = element('rect', { x: 0, y: -11, width: 78, height: 24, rx: 3 }, answer);
       row.tokens.push({ node: box, delay: 0 });
-      ['Y', 'e', 's'].forEach(function (letter, index) {
-        var node = element('text', { x: [17, 26, 33][index], y: 5, 'class': 'lr-transcript-answer' }, answer, letter);
-        row.tokens.push({ node: node, delay: 100 + index * 120 });
+      ['A', 'n', 's', 'w', 'e', 'r'].forEach(function (letter, index) {
+        var node = element('text', { x: [14, 24, 33, 40, 51, 59][index], y: 5, 'class': 'lr-transcript-answer' }, answer, letter);
+        row.tokens.push({ node: node, delay: 100 + index * 90 });
       });
     } else if (event.line.kind === 'tool') {
       glyph(0, 0, 1); glyph(32, 180, 3);
@@ -152,6 +154,15 @@
     scene.setAttribute('data-call-count', response.calls.length);
     scene.setAttribute('data-response', response.id);
     scene.setAttribute('data-budget', active ? call.budget : '');
+    // The ink stays in the screen plane while the black cube rotates inside it.
+    // Staggered strokes accumulate, then disappear before ordinary text resumes.
+    var inkOpacity = active ? ease(age / 160) * (1 - ease((age - call.duration + 220) / 220)) : 0;
+    latentRing.setAttribute('opacity', inkOpacity.toFixed(3));
+    ringStrokes.forEach(function (stroke, index) {
+      var start = index * (active ? (call.duration - 600) / ringStrokes.length : 0);
+      var ink = active ? ease((age - start) / 360) : 0;
+      stroke.setAttribute('stroke-dashoffset', (1 - ink).toFixed(4));
+    });
     input.forEach(function (mark, index) {
       var travel = (local - index * 210) / 1100;
       mark.style.opacity = index < 3 && travel >= 0 && travel <= 1 ? '1' : '0';

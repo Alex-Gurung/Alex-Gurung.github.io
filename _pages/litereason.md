@@ -347,4 +347,4 @@ On Flawed Fictions with Qwen3-4B-Instruct-2507, LiteReason improves accuracy fro
 
 <script src="{{ "/assets/js/litereason/page.js" | relative_url }}?v=20261024"></script>
 
-<script src="{{ "/assets/js/litereason/hero.js" | relative_url }}?v=20261024b"></script>
+<script src="{{ "/assets/js/litereason/hero.js" | relative_url }}?v=20261024c"></script>
