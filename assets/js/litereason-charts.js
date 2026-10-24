@@ -640,14 +640,14 @@
     var layouts = {
       'scatter-ff': {
         'Qwen2.5-7B': [-16, -20, 'right'], 'MoI': [16, 4, 'left'],
-        'Soft Thinking': [14, 24, 'left'], 'COCONUT': [-14, -18, 'right'],
-        'CoLaR': [14, 22, 'left'], 'RL-Trained': [-16, -36, 'right'],
+        'Soft Thinking': [14, 24, 'left'], 'COCONUT': [-12, 4, 'right'],
+        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-16, -36, 'right'],
         'LiteReason': [-16, 0, 'right']
       },
       'scatter-ncp': {
         'Qwen2.5-7B': [16, -22, 'left'], 'MoI': [-14, 22, 'right'],
-        'Soft Thinking': [14, -16, 'left'], 'COCONUT': [14, -16, 'left'],
-        'CoLaR': [14, 24, 'left'], 'RL-Trained': [-16, -34, 'right'],
+        'Soft Thinking': [14, -16, 'left'], 'COCONUT': [12, 4, 'left'],
+        'CoLaR': [12, 4, 'left'], 'RL-Trained': [-16, -34, 'right'],
         'LiteReason': [14, -22, 'left']
       }
     };
