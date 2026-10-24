@@ -203,7 +203,7 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
 .lr-hero-conversation { display: none; position: relative; width: 100%; height: 100%; }
 [data-lr-hero='conversation'] .lr-hero-conversation { display: block; }
 .litereason-project[data-lr-hero='conversation'] .project-hero { padding-right: 310px; }
-.litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 300px; height: 240px; top: 35px; }
+.litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 300px; height: 290px; top: 16px; }
 .lr-stream-scene { display: block; width: 100%; height: 100%; }
 .lr-hero-art .lr-tool-label { font: 12.5px var(--lr-sans); fill: var(--lr-muted); }
 .lr-tool-call rect { fill: var(--lr-paper); stroke: var(--lr-rule); stroke-width: 1; }
@@ -214,16 +214,16 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
 .lr-stream-input path { opacity: 0; }
 @media (max-width: 760px) {
   .litereason-project[data-lr-hero='conversation'] .project-hero { padding-right: 225px; }
-  .litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 210px; height: 168px; }
+  .litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 210px; height: 203px; }
 }
 @media (max-width: 540px) {
   .litereason-project[data-lr-hero='conversation'] .project-hero { padding-right: 0; }
-  .litereason-project[data-lr-hero='conversation'] .lr-hero-art { float: none; width: 240px; height: 192px; top: auto; margin: 0 auto 18px; }
+  .litereason-project[data-lr-hero='conversation'] .lr-hero-art { float: none; width: 240px; height: 232px; top: auto; margin: 0 auto 18px; }
   .lr-hero-art .lr-tool-label { display: block; }
 }
 
 /* The eight pieces persist in the browser's 3D scene, avoiding SVG face sorting. */
-.lr-model-viewport { position: absolute; left: 50%; top: 27.0833%; width: 0; height: 0; perspective: 500px; perspective-origin: 0 0; pointer-events: none; }
+.lr-model-viewport { position: absolute; left: 50%; top: 28.9655%; width: 0; height: 0; perspective: 500px; perspective-origin: 0 0; pointer-events: none; }
 .lr-model-scale, .lr-model-turn, .lr-model-piece { position: absolute; width: 0; height: 0; transform-style: preserve-3d; }
 .lr-model-scale { transform: scale(1); }
 .lr-model-turn { transform: rotateX(-20deg) rotateY(35deg) rotateZ(-3deg); will-change: transform; }

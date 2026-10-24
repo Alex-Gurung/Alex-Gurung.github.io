@@ -11,17 +11,16 @@
   var pieces = Array.from(scene.querySelectorAll('.lr-model-piece'));
   var transcript = scene.querySelector('.lr-transcript');
   var latentRing = scene.querySelector('.lr-latent-ring');
-  var ringStrokes = Array.from(latentRing.querySelectorAll('path'));
+  var ringStrokes = Array.from(latentRing.querySelectorAll('[data-ink-stroke]'));
   var elapsed = 0, last = null, raf = 0;
-  // Small word-like strokes keep ordinary generation visually distinct from
-  // the circular marks drawn only while the latent tool is running.
+  // Compact bracket-like tokens distinguish text from the latent ink drawing.
   var glyphs = [
-    'M0 2v-7m0 5q2-4 4-1v3m3-2q0-3 3-3t3 3q0 3-3 3t-3-3m9-4v6m4-4v4',
-    'M0 0q0-3 3-3t3 3H0q0 4 6 2m4 0v-5m0 2q3-3 5 0v3m4-7v7',
-    'M0-3v3q0 4 4 2l1-5v5m4 0v-7m4 7v-5q4-3 5 1v4m4-4h3',
-    'M0 2v-5q2-2 4 0v5m0-5q3-2 5 1v4m4-2q0-4 4-3v5m0-3q-5-1-4 2t4 1m4-7v7',
-    'M0-5v7m-2-5h5m3 3q0-3 3-3t3 3q0 3-3 3t-3-3m10 2v-5q3-2 5 0',
-    'M0-2q3-2 5 0t-2 2q-4 0-2 3l4-1m4-5v4q0 3 4 1v-5m4 0v7m0-5q4-4 5 0t-5 2'
+    'M4-4H0v8h4m5-4h8m-3-3v6',
+    'M0-3h7v6H0m12-7v8m4-5h6',
+    'M0-4v8h7m5-4h9m-3-3v6',
+    'M0 0h10m5-4h5v8h-5',
+    'M0-4h8v8m5-4h7m-4-3v6',
+    'M0 0h6v-4m7 0v8h7m-3-4h4'
   ];
   input.forEach(function (mark, index) { mark.setAttribute('d', glyphs[index % glyphs.length]); });
 
@@ -129,7 +128,7 @@
       var retiring = latest && event.response < latest.id;
       var retirement = retiring ? ease((time - latest.start) / 240) : 0;
       var push = 6 * retirement;
-      var y = 140 + event.lineIndex * 26 + push - (1 - entering) * 26;
+      var y = 186 + event.lineIndex * 26 + push - (1 - entering) * 26;
       row.node.setAttribute('data-order', event.ordinal);
       row.node.setAttribute('transform', 'translate(32 ' + y.toFixed(3) + ')');
       row.node.setAttribute('opacity', (ease(age / 180) * (1 - retirement)).toFixed(3));
@@ -158,20 +157,27 @@
     // Staggered strokes accumulate, then disappear before ordinary text resumes.
     var inkOpacity = active ? ease(age / 160) * (1 - ease((age - call.duration + 220) / 220)) : 0;
     latentRing.setAttribute('opacity', inkOpacity.toFixed(3));
-    ringStrokes.forEach(function (stroke, index) {
-      var start = index * (active ? (call.duration - 600) / ringStrokes.length : 0);
-      var ink = active ? ease((age - start) / 360) : 0;
+    var longCall = active && call.budget === 'long';
+    var spreadProgress = active ? ease(age / (call.duration * .65)) : 0;
+    var inkScaleX = 1.10 + (longCall ? .18 : .03) * spreadProgress;
+    var inkScaleY = 1.10 + (longCall ? .04 : .03) * spreadProgress;
+    latentRing.setAttribute('transform', 'translate(150 84) scale(' + inkScaleX.toFixed(4) + ' ' + inkScaleY.toFixed(4) + ')');
+    latentRing.setAttribute('data-budget', active ? call.budget : '');
+    ringStrokes.forEach(function (stroke) {
+      stroke.setAttribute('visibility', stroke.dataset.inkDetail === 'long' && !longCall ? 'hidden' : 'visible');
+      var progress = active ? age / (call.duration - 260) : 0;
+      var ink = active ? ease((progress - Number(stroke.dataset.inkStart)) / Number(stroke.dataset.inkSpan)) : 0;
       stroke.setAttribute('stroke-dashoffset', (1 - ink).toFixed(4));
     });
     input.forEach(function (mark, index) {
       var travel = (local - index * 210) / 1100;
       mark.style.opacity = index < 3 && travel >= 0 && travel <= 1 ? '1' : '0';
-      mark.setAttribute('transform', 'translate(' + (-24 + 132 * Math.max(0, Math.min(1, travel))).toFixed(3) + ' 65)');
+      mark.setAttribute('transform', 'translate(' + (-24 + 132 * Math.max(0, Math.min(1, travel))).toFixed(3) + ' 84)');
     });
     // A full revolution lands at the exact starting pose; all eight parts close
     // before text resumes. Neither the model nor the transcript resets at a loop.
     model.style.transform = 'rotateX(-20deg) rotateY(' + (35 + turn * 360 * (active ? budgets[call.budget].turns : 1)).toFixed(4) + 'deg) rotateZ(-3deg)';
-    var spread = 14 + 5 * opening;
+    var spread = 14 + (longCall ? 5 : 3.5) * opening;
     pieces.forEach(function (piece) {
       piece.style.transform = 'translate3d(' + (Number(piece.dataset.x) * spread).toFixed(4) + 'px,' + (Number(piece.dataset.y) * spread).toFixed(4) + 'px,' + (Number(piece.dataset.z) * spread).toFixed(4) + 'px)';
     });
@@ -179,7 +185,7 @@
     if (reduced.matches) {
       input.forEach(function (mark, index) {
         mark.style.opacity = index < 3 ? '1' : '0';
-        mark.setAttribute('transform', 'translate(' + (8 + index * 27) + ' 65)');
+        mark.setAttribute('transform', 'translate(' + (8 + index * 27) + ' 84)');
       });
     }
   }
