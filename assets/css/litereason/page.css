@@ -217,8 +217,16 @@ html body:has(.litereason-project[data-lr-style='studio']) { background: #fff; }
   .litereason-project[data-lr-hero='conversation'] .lr-hero-art { width: 210px; height: 203px; }
 }
 @media (max-width: 540px) {
-  .litereason-project[data-lr-hero='conversation'] .project-hero { padding-right: 0; }
-  .litereason-project[data-lr-hero='conversation'] .lr-hero-art { float: none; width: 240px; height: 232px; top: auto; margin: 0 auto 18px; }
+  .litereason-project[data-lr-hero='conversation'] .project-hero {
+    display: flex; flex-direction: column;
+    padding-right: 0; padding-bottom: 0; margin-bottom: 24px; border-bottom: 0;
+  }
+  .litereason-project[data-lr-hero='conversation'] .project-links {
+    padding-bottom: 24px; margin-bottom: 16px; border-bottom: 2px solid var(--lr-ink);
+  }
+  .litereason-project[data-lr-hero='conversation'] .lr-hero-art {
+    order: 1; float: none; width: 240px; height: 232px; top: auto; margin: 0 auto;
+  }
   .lr-hero-art .lr-tool-label { display: block; }
 }
 
