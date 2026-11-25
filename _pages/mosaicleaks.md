@@ -152,7 +152,7 @@ The prompt helps slightly for some models, but its effect is inconsistent and si
 
 We also investigate training exclusively for task performance. This improves strict chain success from 48.7% to 59.3%, but worsens privacy leakage from 34.0% to 51.8%, as the model learns to include more information in its web queries.
 
-To train long agent trajectories, we use <em>situational</em> rewards. Instead of giving every trainable call in a rollout the same outcome-level advantage, we group calls by hop, stage, and situation, then reward the behavior that is locally well defined. For example, a Plan call is rewarded for searching the correct source and retrieving the gold document; if the gold document is already available, not searching receives the maximum reward. This improves both outcome-based performance and training efficiency.
+To train long agent trajectories, we use <em>situational</em> rewards. Instead of giving every trainable call in a rollout the same outcome-level advantage, we group calls by hop, stage, and situation, then reward the behavior that is locally well defined. For example, a Plan call is rewarded for searching the correct source and retrieving the gold document; if the gold document is already available, not searching receives the maximum reward. Purely outcome-based rewards gave unstable training progress, we hypothesize because advantages are spread evenly across tokens, including those that did not contribute to the correct solution.
 
 PA-DR adds a learned privacy reward on top of the situational task reward. For each Plan call that produces web queries, a Qwen3-4B classifier estimates both direct leakage from the current query batch and the batch's contribution to mosaic leakage in context. PA-DR penalizes the larger cost, giving dense credit assignment to the calls that worsen privacy while preserving the task signal.
 
@@ -228,45 +228,35 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
   <thead>
     <tr>
       <th>Training reward</th>
-      <th>Generated samples <span class="mosaic-direction">&darr; better</span></th>
+      <th>Training samples (accepted + filtered)</th>
       <th>Strict success <span class="mosaic-direction">&uarr; better</span></th>
       <th>Privacy leakage <span class="mosaic-direction">&darr; better</span></th>
-      <th>Samples to 55% success <span class="mosaic-direction">&darr; better</span></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td data-label="Training reward">Outcome reward</td>
-      <td data-label="Generated samples">963k</td>
-      <td data-label="Strict success">55.4%</td>
-      <td data-label="Privacy leakage">49.0%</td>
-      <td data-label="Samples to 55% success">963k</td>
-    </tr>
-    <tr>
       <td data-label="Training reward">Situational task reward</td>
-      <td data-label="Generated samples">842k</td>
+      <td data-label="Training samples (accepted + filtered)">823k</td>
       <td data-label="Strict success"><strong>59.3%</strong></td>
       <td data-label="Privacy leakage">51.8%</td>
-      <td data-label="Samples to 55% success"><strong>146k</strong></td>
     </tr>
     <tr>
       <td data-label="Training reward">Task + PA-DR reward</td>
-      <td data-label="Generated samples"><strong>706k</strong></td>
+      <td data-label="Training samples (accepted + filtered)">624k</td>
       <td data-label="Strict success">58.1%</td>
       <td data-label="Privacy leakage"><strong>6.5%</strong></td>
-      <td data-label="Samples to 55% success">183k</td>
     </tr>
   </tbody>
 </table>
 
 <div class="mosaic-table-caption">
-  Training-efficiency summary. The final column reports how many generated samples each method needs to reach roughly 55% strict chain success. Lower values mean the method reaches the same task-performance target with fewer generated rollouts.
+  Training summary at the final checkpoint (step 100) of each run. Training samples count accepted plus filtered samples, the same definition for both runs.
 </div>
 
 <div class="mosaic-figure">
-  <img src="/assets/img/mosaicleaks/training-sample-efficiency.png" alt="Plots showing strict chain success and privacy leakage over generated training samples for outcome, task, and PA-DR rewards." loading="lazy">
+  <img src="/assets/img/mosaicleaks/training-sample-efficiency.png" alt="Plots showing strict chain success and privacy leakage at each training checkpoint, against accepted plus filtered training samples, for task-reward and PA-DR training." loading="lazy">
   <div class="mosaic-figure-caption">
-    Situational rewards reach outcome-reward-level task success using up to 6.6x fewer generated samples. PA-DR keeps most of the sample-efficiency benefit (5.2x fewer) while sharply reducing leakage.
+    Strict chain success (left, with standard error over three evaluation passes) and privacy leakage (right) for the base model and at checkpoints 20, 40, 60, 80 and 100 of each run, against accepted + filtered training samples. PA-DR achieves most of its privacy gains over the base model between steps 20 and 40, and continues to reduce leakage through step 100. Task-only training worsens privacy leakage considerably by step 20, and only sees a small drop in leakage late in training.
   </div>
 </div>
 
