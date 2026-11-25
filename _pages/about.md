@@ -57,7 +57,7 @@ I'm always interested in talking about my research and learning more about what 
     <img src="/assets/img/mosaicleaks/mosaic-effect.png" alt="MosaicLeaks mosaic-effect diagram" loading="lazy">
     <div class="featured-project-body">
       <h3>MosaicLeaks</h3>
-      <p>Measuring &mdash; and training away &mdash; privacy leakage from deep research agents' web queries. <span class="featured-project-venue">Preprint</span></p>
+      <p>Measuring &mdash; and training away &mdash; privacy leakage from deep research agents' web queries. <span class="featured-project-venue">EACL 2027</span></p>
     </div>
   </a>
 </div>

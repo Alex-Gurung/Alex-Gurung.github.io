@@ -10,15 +10,15 @@ authors:
     affiliation: "2,&dagger;"
     url: "https://Alex-Gurung.github.io"
   - name: Spandana Gella
-    affiliation: "1,4,*"
+    affiliation: "1,3,4,*"
   - name: Alexandre Drouin
-    affiliation: "1,3,6,*"
+    affiliation: "3,6,*,&dagger;"
   - name: Issam H. Laradji
     affiliation: "1,5"
   - name: Perouz Taslakian
-    affiliation: "1,3,4"
+    affiliation: "3,4,&dagger;"
   - name: Rafael Pardinas
-    affiliation: "1"
+    affiliation: "&dagger;"
 affiliations:
   - id: "1"
     name: "ServiceNow AI Research"
@@ -33,12 +33,19 @@ affiliations:
   - id: "6"
     name: "Universit&eacute; Laval"
 author_notes:
-  - "&dagger; Work done at ServiceNow AI Research"
+  - "&dagger; Work done while at ServiceNow AI Research"
   - "* Equal contribution"
+venue: "EACL 2027 (Main Conference)"
 links:
   - text: arxiv
     url: "https://arxiv.org/abs/2605.30727"
     icon: "fas fa-file-alt"
+  - text: Code
+    url: "https://github.com/ServiceNow/MosaicProject"
+    icon: "fab fa-github"
+  - text: Dataset
+    url: "https://huggingface.co/datasets/ServiceNow/mosaicleaks"
+    icon: "fas fa-database"
 bibtex: |
   @misc{gurung2026mosaicleaks,
     title  = {MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents},
@@ -55,7 +62,7 @@ bibtex: |
 ## TL;DR
 
 <div class="tldr">
-<strong>MosaicLeaks</strong> studies a core privacy risk in deep research agents: external web queries can leak information from private local documents, especially when individually harmless queries become revealing in aggregate. <strong>Privacy Aware-Deep Research (PA-DR)</strong> trains the agent with situational task rewards plus a learned privacy reward, improving strict chain success from 48.7% to 58.7% while reducing privacy leakage from 34.0% to 9.9%.
+<strong>MosaicLeaks</strong> studies a core privacy risk in deep research agents: external web queries can leak information from private local documents, especially when individually harmless queries become revealing in aggregate. <strong>Privacy-Aware Deep Research (PA-DR)</strong> trains the agent with situational task rewards plus a learned privacy reward, improving strict chain success from 48.7% to 58.1% while reducing privacy leakage from 34.0% to 6.5%.
 </div>
 
 ## Privacy Leakage in Deep-Research Agents
@@ -64,7 +71,7 @@ Deep research agents increasingly combine sensitive enterprise data with externa
 
 This risk is compounded by the <em>mosaic effect</em>, where individually harmless fragments become revealing in aggregate. MosaicLeaks treats web queries as the leakage channel: an adversary observes only the cumulative web queries and tries to infer private enterprise information.
 
-We measure leakage in three ways. <strong>Intent leakage</strong> asks whether the adversary can predict the research questions. <strong>Answer leakage</strong> asks whether it can answer supplied private questions about enterprise documents. <strong>Full-information leakage</strong> asks whether it can independently state true private claims without seeing those questions. As a single headline metric, we say a rollout exhibits <strong>privacy leakage</strong> if it shows either answer or full-information leakage.
+We measure leakage in three ways. <strong>Intent leakage</strong> asks whether the adversary can predict the research questions. <strong>Answer leakage</strong> asks whether it can answer supplied private questions about enterprise documents. <strong>Full-information leakage</strong> asks whether it can independently state true private claims without seeing those questions. As a single headline metric, we say a rollout exhibits <strong>privacy leakage</strong> if any of the adversary's answers or claims is a full or partial match to the private information; answer and full-information leakage count only full matches.
 
 <div class="mosaic-figure mosaic-narrow mosaic-compact-figure">
   <img src="/assets/img/mosaicleaks/mosaic-effect.png" alt="Diagram showing how three visible web queries can let an adversary infer intent leakage, answer leakage, and full-information leakage." loading="lazy">
@@ -132,7 +139,7 @@ At each iteration, the model can use four tools. <strong>Plan</strong> produces 
 
 Previous work often proposes a naive intervention: simply add privacy-aware instructions to the Plan prompt. We test a prompt that discourages web queries that may leak local information, and evaluate its effect on performance, leakage, and query behavior.
 
-The prompt helps slightly for some models, but its effect is inconsistent and significant leakage remains. It also often has a negative effect on task performance. For Qwen3-4B, the prompt lowers privacy leakage from 34.0% to 25.5%, but strict chain success drops from 48.7% to 44.5%. The primary behavioral change appears to be fewer web queries, not consistently safer query construction.
+The prompt helps slightly for some models, but its effect is inconsistent and significant leakage remains. It also has inconsistent effects on task performance. For Qwen3-4B, the prompt lowers privacy leakage from 34.0% to 25.5%, but strict chain success drops from 48.7% to 44.5%. The primary behavioral change appears to be fewer web queries, not consistently safer query construction.
 
 <div class="mosaic-figure">
   <img src="/assets/img/mosaicleaks/privacy-prompt-accuracy-leakage.png" alt="Bar charts comparing strict chain success and privacy leakage with and without privacy prompting across evaluated models." loading="lazy">
@@ -141,9 +148,9 @@ The prompt helps slightly for some models, but its effect is inconsistent and si
   </div>
 </div>
 
-## Privacy Aware-Deep Research (PA-DR) via _Situational_ Reinforcement Learning
+## Privacy-Aware Deep Research (PA-DR) via _Situational_ Reinforcement Learning
 
-We also investigate training exclusively for task performance. This improves strict chain success from 48.7% to 59.3%, but worsens privacy leakage from 34.0% to 51.7%, as the model learns to include more information in its web queries.
+We also investigate training exclusively for task performance. This improves strict chain success from 48.7% to 59.3%, but worsens privacy leakage from 34.0% to 51.8%, as the model learns to include more information in its web queries.
 
 To train long agent trajectories, we use <em>situational</em> rewards. Instead of giving every trainable call in a rollout the same outcome-level advantage, we group calls by hop, stage, and situation, then reward the behavior that is locally well defined. For example, a Plan call is rewarded for searching the correct source and retrieving the gold document; if the gold document is already available, not searching receives the maximum reward. This improves both outcome-based performance and training efficiency.
 
@@ -180,7 +187,7 @@ PA-DR adds a learned privacy reward on top of the situational task reward. For e
         <span>strict chain success</span>
       </div>
       <div class="mosaic-result-metric">
-        <strong>51.7%</strong>
+        <strong>51.8%</strong>
         <span>privacy leakage</span>
       </div>
     </div>
@@ -189,18 +196,18 @@ PA-DR adds a learned privacy reward on top of the situational task reward. For e
     <div class="mosaic-result-name">Task + PA-DR reward</div>
     <div class="mosaic-result-metrics">
       <div class="mosaic-result-metric">
-        <strong>58.7%</strong>
+        <strong>58.1%</strong>
         <span>strict chain success</span>
       </div>
       <div class="mosaic-result-metric">
-        <strong>9.9%</strong>
+        <strong>6.5%</strong>
         <span>privacy leakage</span>
       </div>
     </div>
   </div>
 </div>
 
-The privacy prompt also stacks with training: PA-DR plus the prompt reaches 59.3% strict chain success with just 7.6% privacy leakage, matching the task-only model's success rate at a fraction of its leakage.
+The privacy prompt also stacks with training: PA-DR plus the prompt lowers privacy leakage further to 5.1%, at 57.4% strict chain success.
 
 ## Situational Rewards Provide Dense Credit
 
@@ -239,14 +246,14 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
       <td data-label="Training reward">Situational task reward</td>
       <td data-label="Generated samples">842k</td>
       <td data-label="Strict success"><strong>59.3%</strong></td>
-      <td data-label="Privacy leakage">51.7%</td>
+      <td data-label="Privacy leakage">51.8%</td>
       <td data-label="Samples to 55% success"><strong>146k</strong></td>
     </tr>
     <tr>
       <td data-label="Training reward">Task + PA-DR reward</td>
       <td data-label="Generated samples"><strong>706k</strong></td>
-      <td data-label="Strict success">58.7%</td>
-      <td data-label="Privacy leakage"><strong>9.9%</strong></td>
+      <td data-label="Strict success">58.1%</td>
+      <td data-label="Privacy leakage"><strong>6.5%</strong></td>
       <td data-label="Samples to 55% success">183k</td>
     </tr>
   </tbody>
@@ -265,6 +272,6 @@ Situational rewards avoid this by comparing matching calls. The reward depends o
 
 ## Conclusion
 
-MosaicLeaks addresses the lack of existing resources to study mosaic privacy leakage of enterprise information in deep research settings. We construct a multi-hop deep research dataset with strong inter-document dependencies across local and web documents, and analyze the privacy leakage of several models. Prompting-based intervention has limited effect, and training an agent exclusively for task performance worsens privacy leakage. PA-DR instead trains privacy as part of the agent objective, producing a significantly more privacy-aware model without sacrificing task performance.
+MosaicLeaks addresses the lack of existing resources to study mosaic privacy leakage of enterprise information in deep research settings. We construct a multi-hop deep research dataset with strong inter-document dependencies across local and web documents, and analyze the privacy leakage of several models. Prompting-based intervention has inconsistent effects across models, and training an agent exclusively for task performance worsens privacy leakage. PA-DR instead trains privacy as part of the agent objective, producing a significantly more privacy-aware model without sacrificing task performance.
 
 </div>
